@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.4 2003/07/07 08:29:55 riccardo Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.5 2004/05/20 08:13:47 riccardo Exp $
 // 
 //  Original author: R.Giannitrapani
 //
@@ -218,7 +218,7 @@ void HepRepSvc::endEvent()
   // set the name of the instance tree representing the event this is
   // a temporary hack that set the name as Event-xxx, with xxx an
   // increasing integer
-  static temp = 0;
+  static int temp = 0;
   sName << "Event-" << temp;
   temp++;
 

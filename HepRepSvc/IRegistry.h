@@ -7,7 +7,6 @@
 #include <string>
 #include <vector>
 #include <map>
-#include "HepRepSvc/HepRepId.h"
 
 class IFiller;
 class IBuilder;
@@ -65,7 +64,7 @@ class IRegistry
   virtual const std::string getPrincipalTree() = 0;  
 
   /// Set the principal instance tree name
-  virtual setPrincipalTree(std::string) = 0;  
+  virtual void setPrincipalTree(std::string) = 0;  
   
   /// Get the type given the instance name
   virtual std::string getTypeByInstance(std::string) = 0;

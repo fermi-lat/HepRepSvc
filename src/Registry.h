@@ -64,7 +64,7 @@ class Registry: public IRegistry
     {m_dependencies[inst].push_back(dep);}
 
   /// Set the principal instance tree name
-  virtual setPrincipalTree(std::string name){m_principalTree = name;};  
+  virtual void setPrincipalTree(std::string name){m_principalTree = name;};  
   
   /// Get the principal instance tree name
   virtual const std::string getPrincipalTree(){return m_principalTree;};  
