@@ -33,7 +33,10 @@ class IServer
 
   /// The pure virtual method run
   virtual void run() = 0;
+  /// The pure virtual method run
+  virtual void shutDown() = 0;
 
+  
  protected:
   IRegistry* m_registry;
   ISvcAdapter* m_svcAdapter;
