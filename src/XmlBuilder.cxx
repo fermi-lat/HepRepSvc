@@ -132,6 +132,7 @@ void XMLBuilder::endTypes()
       gzprintf(m_file,"%s",addIdent(m_actualType.size()-i-1).c_str());
       gzprintf(m_file,"</type>\n");
     }
+  m_actualType.clear();
 }
 
 void XMLBuilder::endInstances()
@@ -141,6 +142,7 @@ void XMLBuilder::endInstances()
       gzprintf(m_file,"%s",addIdent(m_actualInstance.size()-i-1).c_str());
       gzprintf(m_file,"</instance>\n");
     }
+  m_actualInstance.clear();
 }
 
 void XMLBuilder::reset()

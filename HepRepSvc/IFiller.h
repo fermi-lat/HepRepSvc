@@ -34,7 +34,7 @@ class IFiller{
   virtual void fillInstances (std::vector<std::string>&) = 0;
 
   /// Set the abstract builder
-  void setBuilder(IBuilder* b){m_builder = b;};
+  virtual void setBuilder(IBuilder* b){m_builder = b;};
 
  protected:
   /// The builder to be used to build the heprep

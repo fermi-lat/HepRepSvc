@@ -170,13 +170,12 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
           }
         }
     }
-  
+
   if (hasType(typesList,"Particle"))
     {      
       // If there are trajectories in the TDS, we use them
       SmartDataPtr<Event::McTrajectoryList> 
         mcTraj(m_dpsvc, "/Event/MC/TrajectoryCol");
-      
       if (mcTraj !=0)
         {
           m_builder->addInstance("MC","ParticleCol");      
@@ -248,7 +247,7 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
                   m_builder->addAttValue("Ei",(float)in.e()-(float)in.m(),"");
                   m_builder->addAttValue("Eo",(float)out.e()-(float)out.m(),"");
 
-                  // m_builder->addAttValue("Proc",(*part)->getProcess(),"");
+                  m_builder->addAttValue("Proc",(*part)->getProcess(),"");
               
                   m_builder->addAttValue("PDG",hepid,"");
                   m_builder->addAttValue("Name",name,"");
