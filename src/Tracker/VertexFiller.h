@@ -1,5 +1,5 @@
-#ifndef TKRRECONFILLER_H
-#define TKRRECONFILLER_H
+#ifndef VertexFiller_H
+#define VertexFiller_H
 #include <vector>
 #include <string>
 
@@ -10,29 +10,25 @@ class IDataProviderSvc;
 class IParticlePropertySvc;
 
 /** 
- *  @class TkrReconFiller
+ *  @class VertexFiller
  *
  *  @brief 
  *
  *  @author R.Giannitrapani
  */
 
-class TkrReconFiller: public IFiller{
+class VertexFiller: public IFiller{
   
  public:
-  TkrReconFiller(IGlastDetSvc* gsvc,
+  VertexFiller(IGlastDetSvc* gsvc,
                  IDataProviderSvc* dpsvc,
                  IParticlePropertySvc* ppsvc);
-
-  virtual ~TkrReconFiller();
   
   /// This method init the type tree
   virtual void buildTypes ();
   /// This method fill the instance tree, using the string vector to decide
   /// which subinstances to fill
   virtual void fillInstances (std::vector<std::string>&);
-  /// This method to initialize the builder for the sub fillers
-  virtual void setBuilder(IBuilder* b);
 
   bool hasType(std::vector<std::string>& list, std::string type); 
 
@@ -41,8 +37,6 @@ class TkrReconFiller: public IFiller{
   IDataProviderSvc* m_dpsvc;
   IParticlePropertySvc* m_ppsvc;
 
-  std::vector<IFiller*> fillVector;
-
 };
 
-#endif //TKRRECONFILLER_H
+#endif //VertexFILLER_H

@@ -112,8 +112,8 @@ void CalReconFiller::buildTypes()
   m_builder->addAttValue("DrawAs","Prism","");
   m_builder->addAttValue("Color","red","");
 
-  m_builder->addType("CalRecon","ClusterCol","Cluster Collection","");
-  m_builder->addType("ClusterCol", "Cluster", "Cluster", "");
+  m_builder->addType("CalRecon","CalClusterCol","Cal Cluster Collection","");
+  m_builder->addType("CalClusterCol", "CalCluster", "Cal Cluster", "");
   m_builder->addAttDef("E","Cluster Energy","Physics","MeV");
 }
 
