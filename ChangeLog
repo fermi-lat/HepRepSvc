@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: riccardo  Tue Jul  8 07:31:18 PDT 2003
+HepRepSvc/src
+
+Modified Files:
+	MonteCarloFiller.cxx 
+Log Message:
+Start to fix the tracks reading from the TDS of the MonteCarloFiller class.
+
+
+    *
+------------------------------------------------------------
 User: riccardo  Mon Jul  7 01:30:00 PDT 2003
 HepRepSvc/src/test
 
