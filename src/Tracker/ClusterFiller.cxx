@@ -58,6 +58,7 @@ void ClusterFiller::buildTypes()
     m_builder->addAttDef("View","Cluster View","Physics","");
     m_builder->addAttDef("First Strip","Cluster First Strip","Physics","");
     m_builder->addAttDef("Last Strip","Cluster Last Strip","Physics","");
+    m_builder->addAttDef("Position","Cluster Global Position","Physics","");
     m_builder->addAttDef("ToT","Cluster Time over Threshold","Physics","");
 
     m_builder->addType("TkrCluster","TkrClusterToT"," ","");
@@ -105,8 +106,18 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
                 m_builder->addAttValue("View",        view,"");
                 m_builder->addAttValue("First Strip", pCluster->firstStrip(),"");
                 m_builder->addAttValue("Last Strip",  pCluster->lastStrip(),"");
+
+                //Build string for cluster position
+                std::stringstream clusterPosition;
+                clusterPosition.setf(std::ios::fixed);
+                clusterPosition.precision(3);
+                clusterPosition << " (" << pCluster->position().x()
+                    << ","  << pCluster->position().y() 
+                    << ","  << pCluster->position().z() << ")";
+                m_builder->addAttValue("Position",clusterPosition.str(),"");
+
                 m_builder->addAttValue("ToT",         (float)(pCluster->ToT()),"");
-	      
+
                 //Draw the width of the cluster
                 if (pCluster->v() == Event::TkrCluster::Y)
                 {
