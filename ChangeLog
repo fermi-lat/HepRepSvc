@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: riccardo  Tue Jan 11 02:15:44 PST 2005
+HepRepSvc/src
+
+Modified Files:
+      Tag: GlastRelease-v4r7
+	HepRepSvc.cxx HepRepSvc.h SvcAdapter.cxx SvcAdapter.h 
+Log Message:
+Added support to "back" feature in FRED in the EM branch
+
+    *
+------------------------------------------------------------
 User: riccardo  Tue Jan 11 02:15:43 PST 2005
 HepRepSvc/HepRepSvc
 
