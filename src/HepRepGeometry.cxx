@@ -1,5 +1,5 @@
 // File and Version Information:
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepGeometry.cxx,v 1.5 2004/05/25 09:39:17 riccardo Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepGeometry.cxx,v 1.6 2004/07/21 15:31:29 riccardo Exp $
 //
 // Author(s):
 //      R.Giannitrapani
@@ -56,7 +56,7 @@ HepRepGeometry::pushShape(ShapeType s, const UintVector& idvec,
 					// The color is set only to the root of the geometry, so it will be possible
 					// to change the color of subtypes 
 					if (name == "LAT")
-						m_builder->addAttValue("Color","gray","");
+						m_builder->addAttValue("Color","0.98,0.92,0.8","");
 
           m_builder->addAttDef("Volume type","The kind of volume (simple, composition, stack or sensitive)","Physics","");
           m_builder->addAttDef("Material","The material name of the volume","Physics","");
