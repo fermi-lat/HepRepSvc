@@ -1,5 +1,20 @@
 ------------------------------------------------------------
 User: riccardo  Wed Sep 22 09:45:49 PDT 2004
+HepRepSvc/src
+
+Modified Files:
+	AcdReconFiller.cxx CalReconFiller.cxx GeometryFiller.cxx 
+	GeometryFiller.h HeaderFiller.cxx HepRepGeometry.cxx 
+	HepRepGeometry.h HepRepSvc.cxx HepRepSvc.h 
+	MonteCarloFiller.cxx ReconFiller.cxx SvcAdapter.cxx 
+	SvcAdapter.h TkrReconFiller.cxx 
+Log Message:
+Migration to the new HepRep2 stuff; more rationality in the fillers; fixed some errors in fillers; new command
+support to Replay algorithms on the fly
+
+    *
+------------------------------------------------------------
+User: riccardo  Wed Sep 22 09:45:49 PDT 2004
 HepRepSvc/HepRepSvc
 
 Modified Files:
