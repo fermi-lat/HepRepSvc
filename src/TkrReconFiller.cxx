@@ -1,8 +1,6 @@
 #include "TkrReconFiller.h"
 
 #include "Tracker/ClusterFiller.h"
-#include "Tracker/CandTrackFiller.h"
-//#include "Tracker/FitTrackFiller.h"
 #include "Tracker/TrackFiller.h"
 #include "Tracker/VertexFiller.h"
 
@@ -37,7 +35,6 @@ TkrReconFiller::TkrReconFiller(IGlastDetSvc* gsvc,
     fillVector.clear();
 
     fillVector.push_back(new ClusterFiller(gsvc,dpsvc,ppsvc));
-    fillVector.push_back(new CandTrackFiller(gsvc,dpsvc,ppsvc));
     fillVector.push_back(new TrackFiller(gsvc,dpsvc,ppsvc));
     fillVector.push_back(new VertexFiller(gsvc,dpsvc,ppsvc));
 }
