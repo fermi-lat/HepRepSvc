@@ -1,4 +1,19 @@
 ------------------------------------------------------------
+User: riccardo  Wed Aug 25 01:03:08 PDT 2004
+HepRepSvc/src
+
+Modified Files:
+	HepRepGeometry.cxx HepRepSvc.cxx 
+Added Files:
+	HeaderFiller.cxx HeaderFiller.h 
+Log Message:
+Added an Header filler; this add a new Instance to the Event InstanceTree containing information from the 
+EventHeader of the Event (if exists). For the moment it contains just the Event and Run numbers. Changed also 
+the default color for the geometry.
+
+
+    *
+------------------------------------------------------------
 User: riccardo  Mon Aug  2 01:44:39 PDT 2004
 HepRepSvc/doc
 
