@@ -39,7 +39,9 @@ void ReconFiller::buildTypes()
 {
   m_builder->addType("","Recon","Recon Tree","");
   for(unsigned int i=0;i<m_subFillers.size();i++)
+  {
     m_subFillers[i]->buildTypes();
+  }  
 }
 
 
