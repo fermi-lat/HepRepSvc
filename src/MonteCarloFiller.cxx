@@ -47,7 +47,7 @@ void MonteCarloFiller::buildTypes()
   m_builder->addAttDef("PDG","The PDG code of the particle","Physics","");
   m_builder->addAttDef("Ei","Initial energy","Physics","");
   m_builder->addAttDef("Eo","Final energy","Physics","");
-  m_builder->addAttDef("Proc.","Process name","Physics","");
+  m_builder->addAttDef("Proc","Process name","Physics","");
   
   m_builder->addAttValue("DrawAs","Line","");
 
@@ -176,12 +176,12 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
     {      
       m_builder->addInstance("MC","ParticleCol");      
       // If there are trajectories in the TDS, we use them
-      SmartDataPtr<Event::McTrajectoryList> 
+      SmartDataPtr<Event::McTrajectoryCol> 
         mcTraj(m_dpsvc, "/Event/MC/TrajectoryCol");
       if (mcTraj !=0)
         {
           m_builder->setSubinstancesNumber("ParticleCol", mcTraj->size());
-          for(Event::McTrajectoryList::const_iterator traj=mcTraj->begin(); 
+          for(Event::McTrajectoryCol::const_iterator traj=mcTraj->begin(); 
               traj != mcTraj->end(); traj++) {
             {
               Event::McParticle* part = (*traj)->getMcParticle();
