@@ -1,0 +1,37 @@
+//##############################################################
+//
+// Job options file for FluxSvc test program
+//
+ApplicationMgr.DLLs   = { "GlastSvc", "HepRepSvc"};
+
+ApplicationMgr.ExtSvc = { 
+    "EventCnvSvc", 
+    "GlastDetSvc",
+    "HepRepSvc"};
+
+
+ApplicationMgr.ExtSvc += { "ParticlePropertySvc" };
+
+EventPersistencySvc.CnvServices = {"EventCnvSvc"};
+EventSelector.Input = "NONE";
+
+// Set output level threshold (2=DEBUG, 3=INFO, 4=WARNING, 5=ERROR, 6=FATAL )
+MessageSvc.OutputLevel      = 2;
+
+// Stuff for detModel
+GlastDetSvc.xmlfile="$(XMLGEODBSROOT)/xml/flight/flight.xml";
+// select one of the following for a top volume 
+GlastDetSvc.topVolume="LAT";         // the whole schebang 
+
+// Save an XML file
+HepRepSvc.saveXml = 1;
+
+ApplicationMgr.EvtSel = "NONE";
+ApplicationMgr.EvtMax = 1;
+
+//==============================================================
+//
+// End of job options file
+//
+//##############################################################
+
