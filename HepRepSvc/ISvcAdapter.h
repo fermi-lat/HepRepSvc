@@ -24,6 +24,11 @@ class ISvcAdapter
   virtual void setSource(std::string) = 0;
 	/// stop the GAUDI job
 	virtual void shutDown() = 0;
+  /// sent the valid setEvent command accepted by this server
+  virtual std::string getCommands() = 0;  
+  /// This method set the Event ID to a pair Run/Event
+  virtual bool setEventId(int run, int event) =  0;
+
 };
 
 #endif //ISVCADAPTER_H
