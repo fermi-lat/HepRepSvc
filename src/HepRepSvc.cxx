@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.3 2003/01/28 13:06:55 riccardo Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.4 2003/07/07 08:29:55 riccardo Exp $
 // 
 //  Original author: R.Giannitrapani
 //
@@ -17,6 +17,9 @@
 #include "MonteCarloFiller.h"
 #include "ReconFiller.h"
 #include "GeometryFiller.h"
+
+#include "FluxSvc/IFluxSvc.h"
+#include "FluxSvc/IFlux.h"
 
 #include "Event/TopLevel/Event.h"
 #include "GaudiKernel/SvcFactory.h"
@@ -110,7 +113,18 @@ StatusCode HepRepSvc::initialize ()
       return status;
     }
 
-   // use the incident service to register begin, end events
+    // get the Flux Service    
+    IService* theSvc;
+    StatusCode sc = serviceLocator()->getService( "FluxSvc", theSvc, true );
+    if ( sc.isSuccess() ) {
+      sc = theSvc->queryInterface(IFluxSvc::interfaceID(), (void**)&m_fluxSvc);
+    }
+    if( sc.isFailure() ) {
+        log << MSG::ERROR << "Could not find FluxSvc, or wrong interface ID" << endreq;
+        return sc;
+    }
+
+    // use the incident service to register begin, end events
     IIncidentSvc* incsvc = 0;
     status = service ("IncidentSvc", incsvc, true);
     if( status.isFailure() ) return status;
@@ -209,11 +223,14 @@ void HepRepSvc::endEvent()
   temp++;
 
   // Set the registry with the instance trees names of this event
-  // after clearing the names list
+  // after clearing the names list; we also add the dependency of
+  // the event instancetree to the geometry instancetree
   m_registry->clearInstanceTrees();
   m_registry->addInstanceTree("Geometry3D","GLAST-LAT");
   m_registry->addInstanceTree("Event",sName.str());
-
+  m_registry->addDependency(sName.str(),"GLAST-LAT");
+//  m_registry->setPrincipalTree(sName.str());
+  
   // If autoStream has been set to a name of a streamer in the
   // jobOptions file, than we save automatically the HepRep to a file
   if (m_autoStream!="")
@@ -222,7 +239,7 @@ void HepRepSvc::endEvent()
       sFileName << m_streamPath << sName.str();
       saveHepRep(m_autoStream, sFileName.str());
       log << MSG::DEBUG << "Streamed the HepRep to file using the " << 
-	m_autoStream << " streamer" << endreq;
+    	m_autoStream << " streamer" << endreq;
     }
 }
 
@@ -251,6 +268,35 @@ void HepRepSvc::addStreamer(std::string name, IStreamer* s)
   s->setRegistry(m_registry);
   m_streamers[name] = s;
 }
+
+// This method return the list of sources
+std::string HepRepSvc::getSources(){
+  std::stringstream sNames;
+
+  std::vector<std::pair< std::string ,std::list<std::string> > > sources = m_fluxSvc->sourceOriginList();
+  std::vector<std::pair< std::string ,std::list<std::string> > >::const_iterator sit;
+
+      for (sit=sources.begin(); sit!=sources.end(); ++sit) {
+        std::string libname = (*sit).first;
+        std::list<std::string> slist = (*sit).second;
+        std::list<std::string>::const_iterator fit;
+        sNames << libname << ": \n";
+        for(fit=slist.begin(); fit!=slist.end(); ++fit){
+            sNames << "  - " << (*fit) << "\n";            
+        }
+      }
+
+      sNames << '\0';
+
+  return sNames.str();
+}
+
+// This method set the actual source
+void HepRepSvc::setSource(std::string source){
+  IFlux *   iflux;
+  m_fluxSvc->source(source, iflux);
+}
+
 
 /// Query interface
 StatusCode HepRepSvc::queryInterface(const IID& riid, void** ppvInterface)  {

@@ -3,7 +3,7 @@
 #ifndef SVCADAPTER_H
 #define SVCADAPTER_H
 
-#include <vector>
+#include <list>
 #include <string>
 #include "HepRepSvc/ISvcAdapter.h"
 
@@ -20,7 +20,7 @@ class SvcAdapter: public ISvcAdapter
  public:
   SvcAdapter(HepRepSvc* h):m_hrsvc(h){};
   virtual void nextEvent(int);
-  virtual std::vector<std::string>& getSources();
+  std::string getSources();
   virtual void setSource(std::string);
   
  private:

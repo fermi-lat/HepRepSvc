@@ -82,27 +82,31 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
               std::vector<double> params;
     
               m_gdsvc->getShapeByID(id, &shape, &params); 
-              HepPoint3D origin(0,0,0);
 
-              origin = global*origin;
-                  
               double dx = params[0]/2;
               double dy = params[1]/2;
               double dz = params[2]/2;
+                            
+              HepPoint3D temp;
               
-              double x = origin.x();
-              double y = origin.y();
-              double z = origin.z();
-              
-              m_builder->addPoint(x+dx,y+dy,z+dz);
-              m_builder->addPoint(x-dx,y+dy,z+dz);
-              m_builder->addPoint(x-dx,y-dy,z+dz);
-              m_builder->addPoint(x+dx,y-dy,z+dz);
-              m_builder->addPoint(x+dx,y+dy,z-dz);
-              m_builder->addPoint(x-dx,y+dy,z-dz);
-              m_builder->addPoint(x-dx,y-dy,z-dz);
-              m_builder->addPoint(x+dx,y-dy,z-dz);
+              temp = global*HepPoint3D(dx,dy,dz);
+              m_builder->addPoint(temp.x(),temp.y(),temp.z());
+              temp = global*HepPoint3D(-dx,dy,dz);
+              m_builder->addPoint(temp.x(),temp.y(),temp.z());
+              temp = global*HepPoint3D(-dx,-dy,dz);
+              m_builder->addPoint(temp.x(),temp.y(),temp.z());
+              temp = global*HepPoint3D(dx,-dy,dz);
+              m_builder->addPoint(temp.x(),temp.y(),temp.z());
+              temp = global*HepPoint3D(dx,dy,-dz);
+              m_builder->addPoint(temp.x(),temp.y(),temp.z());
+              temp = global*HepPoint3D(-dx,dy,-dz);
+              m_builder->addPoint(temp.x(),temp.y(),temp.z());
+              temp = global*HepPoint3D(-dx,-dy,-dz);
+              m_builder->addPoint(temp.x(),temp.y(),temp.z());
+              temp = global*HepPoint3D(dx,-dy,-dz);
+              m_builder->addPoint(temp.x(),temp.y(),temp.z());
 
+              
               if(hasType(typesList,"PosHitSteps"))
                 {
                   m_builder->addInstance("PosHit","PosHitSteps");
@@ -149,25 +153,29 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
             
             m_builder->addAttValue("E", (float)(*inHit)->totalEnergy(), "");
 
-            origin = global*origin;
-
             double dx = params[0]/2;
             double dy = params[1]/2;
             double dz = params[2]/2;
             
-            double x = origin.x();
-            double y = origin.y();
-            double z = origin.z();
-    
-            m_builder->addPoint(x+dx,y+dy,z+dz);
-            m_builder->addPoint(x-dx,y+dy,z+dz);
-            m_builder->addPoint(x-dx,y-dy,z+dz);
-            m_builder->addPoint(x+dx,y-dy,z+dz);
-            m_builder->addPoint(x+dx,y+dy,z-dz);
-            m_builder->addPoint(x-dx,y+dy,z-dz);
-            m_builder->addPoint(x-dx,y-dy,z-dz);
-            m_builder->addPoint(x+dx,y-dy,z-dz);
+            HepPoint3D temp;
+              
             
+            temp = global*HepPoint3D(dx,dy,dz);
+            m_builder->addPoint(temp.x(),temp.y(),temp.z());
+            temp = global*HepPoint3D(-dx,dy,dz);
+            m_builder->addPoint(temp.x(),temp.y(),temp.z());
+            temp = global*HepPoint3D(-dx,-dy,dz);
+            m_builder->addPoint(temp.x(),temp.y(),temp.z());
+            temp = global*HepPoint3D(dx,-dy,dz);
+            m_builder->addPoint(temp.x(),temp.y(),temp.z());
+            temp = global*HepPoint3D(dx,dy,-dz);
+            m_builder->addPoint(temp.x(),temp.y(),temp.z());
+            temp = global*HepPoint3D(-dx,dy,-dz);
+            m_builder->addPoint(temp.x(),temp.y(),temp.z());
+            temp = global*HepPoint3D(-dx,-dy,-dz);
+            m_builder->addPoint(temp.x(),temp.y(),temp.z());
+            temp = global*HepPoint3D(dx,-dy,-dz);
+            m_builder->addPoint(temp.x(),temp.y(),temp.z());
           }
         }
     }
@@ -212,8 +220,15 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
                     m_builder->addAttValue("Color","white","");
                 }
               else
-                m_builder->addAttValue("Color","yellow","");
-
+              {                  
+                if ((*traj)->getCharge()>0)
+                    m_builder->addAttValue("Color","green","");
+                else if ((*traj)->getCharge()<0)
+                    m_builder->addAttValue("Color","red","");
+                else
+                    m_builder->addAttValue("Color","white","");  
+              }
+                
               std::vector<Hep3Vector> points = (*traj)->getPoints();
               std::vector<Hep3Vector>::const_iterator pit;
               
@@ -268,8 +283,7 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
               }
             }
         }
-    }
-  
+    }  
 }
 
 bool MonteCarloFiller::hasType(std::vector<std::string>& list, std::string type) 

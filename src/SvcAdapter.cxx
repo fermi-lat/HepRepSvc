@@ -7,15 +7,13 @@ void SvcAdapter::nextEvent(int i)
   m_hrsvc->getAppMgrUI()->nextEvent(i);
 }
 
-std::vector<std::string>& SvcAdapter::getSources()
-{
-  std::vector<std::string> res;
-
-  return res;
+std::string SvcAdapter::getSources()
+{  
+  return m_hrsvc->getSources();
 }
 
-void SvcAdapter::setSource(std::string)
+void SvcAdapter::setSource(std::string source)
 {
-
+  m_hrsvc->setSource(source);
 }
   

@@ -56,6 +56,19 @@ class Registry: public IRegistry
   /// Get the type given the instance name
   virtual std::string getTypeByInstance(std::string);
 
+  /// Get possible dependent instance trees name given an instance tree name
+  virtual const std::vector<std::string>& getDependencies(std::string);
+
+  /// This method add an instancetrees dependency
+  virtual void addDependency(std::string inst, std::string dep)
+    {m_dependencies[inst].push_back(dep);}
+
+  /// Set the principal instance tree name
+  virtual setPrincipalTree(std::string name){m_principalTree = name;};  
+  
+  /// Get the principal instance tree name
+  virtual const std::string getPrincipalTree(){return m_principalTree;};  
+
  private:
   /// This map holds the fillers registered in indexed by the typetree name
   std::map<std::string, fillerCol> m_fillers;
@@ -63,6 +76,12 @@ class Registry: public IRegistry
   /// This map holds the actual instance trees for the event indexed
   /// by the relative typetree
   std::map<std::string, std::string> m_instances;
+
+  /// This map holds the possible instance trees dependencies
+  std::map<std::string, std::vector<std::string> > m_dependencies;
+
+  /// The principal instance tree
+  std::string m_principalTree;
 };
 
 #endif //REGISTRY_H

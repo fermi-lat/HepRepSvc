@@ -3,7 +3,7 @@
 #ifndef ISVCADAPTER_H
 #define ISVCADAPTER_H
 
-#include <vector>
+#include <list>
 #include <string>
 
 /* @class: ISvcAdapter 
@@ -19,7 +19,7 @@ class ISvcAdapter
   /// used to step to the next event 
   virtual void nextEvent(int) = 0;
   /// return a list of sources names to be used by FluxSvc
-  virtual std::vector<std::string>& getSources() = 0;
+  virtual std::string getSources() = 0;
   /// set the source to be used by FluxSvc
   virtual void setSource(std::string) = 0;
 };

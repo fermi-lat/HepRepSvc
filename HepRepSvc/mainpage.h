@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/HepRepSvc/mainpage.h,v 1.1.1.1 2002/09/20 08:50:19 riccardo Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/HepRepSvc/mainpage.h,v 1.2 2003/07/07 08:29:55 riccardo Exp $
 // Mainpage for doxygen
 
 /** @mainpage package HepRepSvc
@@ -124,10 +124,32 @@
     volumes (that can be dangerous for both performances of the graphical
     clients and memory usage)
 
-  @section test test
+  @section heprep What is HepRep?
 
-  A simple test program produce an XML HepRep file with the LAT geometry (no event). 
+  HepRep is an abstract protocol suitable to describe an high energy physics 
+  event (althought it is quite general to be useful also for other kind of 
+  situations). This abstract protocol can be implemented in various way, from
+  a persistent file (like XML) to a communication protocol between clients and
+  servers (like in CORBA). You can see it as a format that is quite flexible to 
+  describe a hierarchy of graphics object each one with various graphics attributes
+  (color, shading etc.etc) and possibly augmented with physics attributes.
+
+  An HepRep event is formed by a certain number of trees of two possible kind:
+
+  - <b>TypeTree</b>: this kind of tree specify what are the types of object that you
+    can represent in your event (a track, a geometry box and so on); it is a tree, so 
+    that you can have a hierarchy (for example for the geometry, or for the montecarlo 
+    tree, and so on). Each TypeTree has a name and a version (contained in a compact 
+    object called <e>id</e>) and each TypeTree, as we have said, contains a hierarchy
+    of <b>Type</b> that we will describe in details later. The important thing to know
+    is that a TypeTree doesn't represent true objects, but just possible types of 
+    objects.
   
+  - <b>InstanceTree</b>: this second kind of tree represent a true hierarchy of "real"
+    objects, instances of the types described in a TypeTree; for this an InstanceTree is
+    always connected (by a property) to a TypeTree and its objects, the <b>Instance</b> 
+    ones, are of the Type described by the that TypeTree.
+
   <br>
 
   <br>
