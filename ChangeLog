@@ -1,0 +1,40 @@
+------------------------------------------------------------
+User: riccardo  Fri Sep 20 01:50:19 PDT 2002
+HepRepSvc
+
+Log Message:
+First release of HepRepSvc package; this package provides methods to produce HepRep representations of
+an actual event in the TDS and of the GLAST geometry. Various concrete representation can be supported; this
+version support XML persistency file production, while a CORBA representation will be provided by another
+package. This release is for test purpouses and will likely rapidly change in the near future.
+
+
+Status:
+
+Vendor Tag:	GLAST
+Release Tags:	v0r1
+		
+N HepRepSvc/.cvsignore
+N HepRepSvc/cmt/requirements
+N HepRepSvc/doc/release.notes
+N HepRepSvc/HepRepSvc/IBuilder.h
+N HepRepSvc/HepRepSvc/IFiller.h
+N HepRepSvc/HepRepSvc/IHepRepSvc.h
+N HepRepSvc/HepRepSvc/mainpage.h
+N HepRepSvc/src/GeometryFiller.cxx
+N HepRepSvc/src/GeometryFiller.h
+N HepRepSvc/src/HepRepGeometry.cxx
+N HepRepSvc/src/HepRepGeometry.h
+N HepRepSvc/src/HepRepSvc.cxx
+N HepRepSvc/src/HepRepSvc.h
+N HepRepSvc/src/MonteCarloFiller.cxx
+N HepRepSvc/src/MonteCarloFiller.h
+N HepRepSvc/src/XmlBuilder.cxx
+N HepRepSvc/src/XmlBuilder.h
+N HepRepSvc/src/Dll/HepRepSvc_dll.cxx
+N HepRepSvc/src/Dll/HepRepSvc_load.cxx
+N HepRepSvc/src/test/jobOptions.txt
+
+No conflicts created by this import
+
+    *
