@@ -2,7 +2,8 @@
 
 #include "Tracker/ClusterFiller.h"
 #include "Tracker/CandTrackFiller.h"
-#include "Tracker/FitTrackFiller.h"
+//#include "Tracker/FitTrackFiller.h"
+#include "Tracker/TrackFiller.h"
 #include "Tracker/VertexFiller.h"
 
 #include "HepRepSvc/IBuilder.h"
@@ -15,8 +16,6 @@
 #include "GaudiKernel/SmartDataPtr.h"
 
 #include "Event/TopLevel/EventModel.h"
-#include "Event/Recon/TkrRecon/TkrVertex.h"
-#include "Event/Recon/TkrRecon/TkrFitTrackBase.h"
 
 #include "idents/VolumeIdentifier.h"
 #include "CLHEP/Geometry/Transform3D.h"
@@ -39,7 +38,7 @@ TkrReconFiller::TkrReconFiller(IGlastDetSvc* gsvc,
 
     fillVector.push_back(new ClusterFiller(gsvc,dpsvc,ppsvc));
     fillVector.push_back(new CandTrackFiller(gsvc,dpsvc,ppsvc));
-    fillVector.push_back(new FitTrackFiller(gsvc,dpsvc,ppsvc));
+    fillVector.push_back(new TrackFiller(gsvc,dpsvc,ppsvc));
     fillVector.push_back(new VertexFiller(gsvc,dpsvc,ppsvc));
 }
 
