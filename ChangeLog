@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: riccardo  Mon Apr  5 08:57:57 PDT 2004
+HepRepSvc/src
+
+Modified Files:
+	HepRepGeometry.cxx MonteCarloFiller.cxx ReconFiller.cxx 
+	TkrReconFiller.cxx 
+Log Message:
+Fixed a bug in the fillers construction that caused a segfault if ReconFiller was used.
+
+    *
+------------------------------------------------------------
 User: riccardo  Wed Sep 17 01:06:27 PDT 2003
 HepRepSvc/src
 
