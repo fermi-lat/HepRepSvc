@@ -1,4 +1,17 @@
 ------------------------------------------------------------
+User: usher  Fri May 14 14:05:16 PDT 2004
+HepRepSvc/src
+
+Modified Files:
+	CalReconFiller.cxx TkrReconFiller.cxx TkrReconFiller.h 
+Log Message:
+Augment Tracker display by adding Track Clusters, Candidate tracks and adding
+features to the Fit Track and Vertex display.
+Also, rearrange by making individual tracker components sub fillers of TkrReconFiller
+finally, modify CalReconFiller by renaming "Cluster" to "CalCluster"
+
+    *
+------------------------------------------------------------
 User: usher  Fri May 14 14:01:39 PDT 2004
 HepRepSvc/src/Tracker
 
