@@ -2,7 +2,6 @@ package HepRepSvc
 version v0r1
 
 use GlastPolicy
-use FluxSvc
 use Event 
 use GlastSvc 
 use ZLIB

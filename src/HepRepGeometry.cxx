@@ -1,5 +1,5 @@
 // File and Version Information:
-// $Header: /nfs/slac/g/glast/ground/cvs/G4Generator/src/G4Geometry.cxx,v 1.13 2002/04/19 12:51:30 riccardo Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepGeometry.cxx,v 1.1.1.1 2002/09/20 08:50:19 riccardo Exp $
 //
 // Author(s):
 //      R.Giannitrapani
@@ -56,10 +56,9 @@ HepRepGeometry::pushShape(ShapeType s, const UintVector& idvec,
           m_builder->addAttDef("Volume type","","Physics","");
           m_builder->addAttDef("Material","","Physics","");
           m_builder->addAttDef("Shape","","Physics","");
+          m_builder->addAttValue("Color","gray","");
           
           m_builder->addAttValue("Material",material,"");
-          m_builder->addAttValue("LineColor","gray","");
-
           
           switch(type)
             {
