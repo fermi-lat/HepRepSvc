@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: riccardo  Tue May 20 05:43:44 PDT 2003
+HepRepSvc/src
+
+Modified Files:
+	HepRepGeometry.cxx MonteCarloFiller.cxx 
+Log Message:
+Small changes for compatibility with heprep
+
+    *
+------------------------------------------------------------
+User: riccardo  Tue May 20 05:43:44 PDT 2003
 HepRepSvc/cmt
 
 Modified Files:
