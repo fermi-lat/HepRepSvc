@@ -33,6 +33,7 @@ class VertexFiller: public IFiller{
   bool hasType(std::vector<std::string>& list, std::string type); 
 
  private:
+  std::string getBits(unsigned int statBits, int highBit, int lowBit);
   IGlastDetSvc* m_gdsvc;
   IDataProviderSvc* m_dpsvc;
   IParticlePropertySvc* m_ppsvc;

@@ -42,7 +42,8 @@ void VertexFiller::buildTypes()
     m_builder->addType("GammaVtxCol","GammaVtx","Reconstructed Gamma Vertex","");
     m_builder->addAttValue("DrawAs","Line","");
     m_builder->addAttValue("Color","yellow","");
-    m_builder->addAttDef("Hit Status","Hit Status Bits","Physics","");
+    m_builder->addAttDef("Status Low","Low Status Bits","Physics","");
+    m_builder->addAttDef("Status High","High Status Bits","Physics","");
     m_builder->addAttDef("Energy","Energy reconstructed","Physics","MeV");
     m_builder->addAttDef("ChiSquare","ChiSquare of fit", "Physics", "");
     m_builder->addAttDef("Quality","Quality","Physics","");
@@ -85,12 +86,10 @@ void VertexFiller::fillInstances (std::vector<std::string>& typesList)
                 m_builder->addAttValue("ArcLen2",   (float)(pVertex.getTkr2ArcLen()), "");
                 m_builder->addAttValue("DOCA",      (float)(pVertex.getDOCA()), "");
                     
-                //Build string for status bits
-                std::stringstream outString;
+                //Build strings for status bits
                 unsigned int      statBits = pVertex.getStatusBits();
-                outString.setf(std::ios::hex);
-                outString << std::hex << statBits;
-                m_builder->addAttValue("Hit Status",outString.str(),"");
+                m_builder->addAttValue("Status Low",getBits(statBits, 15, 0),"");
+                m_builder->addAttValue("Status High",getBits(statBits, 31, 16),"");
 
 	            double sx = pVertex.getPosition().x();
                 double sy = pVertex.getPosition().y();
@@ -122,3 +121,15 @@ bool VertexFiller::hasType(std::vector<std::string>& list, std::string type)
     if(i == list.end()) return 0;
     else return 1;
 }
+
+std::string VertexFiller::getBits(unsigned int statBits, int highBit, int lowBit)
+{                    
+    std::stringstream outString;
+    int bit;
+    for (bit=highBit; bit>=lowBit; --bit) {
+        outString << (statBits>>(bit)&1) ;
+        if (bit%4==0) outString << " ";
+    }
+    return outString.str();
+}
+
