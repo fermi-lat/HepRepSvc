@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: riccardo  Wed Jul 14 02:39:13 PDT 2004
+HepRepSvc/HepRepSvc
+
+Modified Files:
+	ISvcAdapter.h 
+Log Message:
+New stuff for random access to root files.
+
+    *
+------------------------------------------------------------
 User: usher  Mon Jun 14 14:05:06 PDT 2004
 HepRepSvc/doc
 
