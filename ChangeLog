@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: riccardo  Mon May 31 08:13:44 PDT 2004
+HepRepSvc/HepRepSvc
+
+Modified Files:
+	IServer.h ISvcAdapter.h 
+Log Message:
+Solved a crash in the MonteCarlo filler for some sources; added the shutdown of the Gleam application from the 
+remote client; small fixes for the HepRep building.
+
+    *
+------------------------------------------------------------
 User: riccardo  Tue May 25 02:39:17 PDT 2004
 HepRepSvc/src
 
