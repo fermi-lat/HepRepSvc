@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: riccardo  Fri Sep 20 07:21:07 PDT 2002
+HepRepSvc/src
+
+Modified Files:
+	HepRepSvc.cxx XmlBuilder.cxx 
+Log Message:
+Fix a problem with stdstring on Linux platform ..
+
+
+    *
+------------------------------------------------------------
 User: riccardo  Fri Sep 20 01:50:19 PDT 2002
 HepRepSvc
 
