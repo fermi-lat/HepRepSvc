@@ -42,9 +42,6 @@ void TkrReconFiller::buildTypes()
   m_builder->addType("TkrRecon","TrackCol",
 		     "Reconstructed Tracks collections","");
 
-  m_builder->addType("TkrRecon","GammaVtxCol",
-		     "Reconstructed Gamma Vertex collection","");
-
   m_builder->addType("TrackCol","Track","Reconstructed track","");
   m_builder->addAttValue("DrawAs","Line","");
   m_builder->addAttValue("Color","blue","");
@@ -53,6 +50,9 @@ void TkrReconFiller::buildTypes()
 		     "Chi Square plane segments","");
 
 
+  m_builder->addType("TkrRecon","GammaVtxCol",
+		     "Reconstructed Gamma Vertex collection","");
+  
   m_builder->addType("GammaVtxCol","GammaVtx","Reconstructed Gamma Vertex","");
   m_builder->addAttValue("DrawAs","Line","");
   m_builder->addAttValue("Color","yellow","");
@@ -60,7 +60,6 @@ void TkrReconFiller::buildTypes()
   m_builder->addAttDef("Q","Quality","Physics","");
   m_builder->addAttDef("Layer","Layer of conversion","Physics","");
   m_builder->addAttDef("Tower","Tower of conversion","Physics","");
-
 }
 
 

@@ -185,8 +185,8 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
               traj != mcTraj->end(); traj++) {
             {
               Event::McParticle* part = (*traj)->getMcParticle();
-	      m_builder->addInstance("ParticleCol","Particle");
-
+	            m_builder->addInstance("ParticleCol","Particle");
+                
               if (part)
                 {                  
                   Event::McParticle::StdHepId hepid= part->particleProperty();
