@@ -1,5 +1,5 @@
 // File and Version Information:
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepGeometry.cxx,v 1.4 2004/05/20 08:13:47 riccardo Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepGeometry.cxx,v 1.5 2004/05/25 09:39:17 riccardo Exp $
 //
 // Author(s):
 //      R.Giannitrapani
@@ -50,7 +50,7 @@ HepRepGeometry::pushShape(ShapeType s, const UintVector& idvec,
           m_actualDepth++;
 
           m_actualType.push_back(name);          
-          m_builder->addType(father,name,"","");
+          m_builder->addType(father,name,"A volume of the geometry; it can be simple, a composition or a stack","");
 
 
 					// The color is set only to the root of the geometry, so it will be possible
@@ -58,9 +58,9 @@ HepRepGeometry::pushShape(ShapeType s, const UintVector& idvec,
 					if (name == "LAT")
 						m_builder->addAttValue("Color","gray","");
 
-          m_builder->addAttDef("Volume type","","Physics","");
-          m_builder->addAttDef("Material","","Physics","");
-          m_builder->addAttDef("Shape","","Physics","");
+          m_builder->addAttDef("Volume type","The kind of volume (simple, composition, stack or sensitive)","Physics","");
+          m_builder->addAttDef("Material","The material name of the volume","Physics","");
+          m_builder->addAttDef("Shape","At the moment this can be just a Box","Physics","");
           
           m_builder->addAttValue("Material",material,"");
           

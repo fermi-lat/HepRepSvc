@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.8 2004/07/14 09:39:13 riccardo Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.9 2004/07/19 07:27:16 riccardo Exp $
 // 
 //  Original author: R.Giannitrapani
 //
@@ -239,11 +239,11 @@ void HepRepSvc::endEvent()
 
 
   // This is to retrive event and run number from the event, but seems to be
-  // broken
-  SmartDataPtr<Event::EventHeader>
-    evt(m_idpsvc, EventModel::EventHeader);
-  unsigned int evtRun = evt->run();
-  unsigned int evtEvent = evt->event();
+  // broken .. so I comment it out for now
+  // SmartDataPtr<Event::EventHeader>
+  //  evt(m_idpsvc, EventModel::EventHeader);
+  // unsigned int evtRun = evt->run();
+  // unsigned int evtEvent = evt->event();
   
   // Set the registry with the instance trees names of this event
   // after clearing the names list; we also add the dependency of
