@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.9 2004/07/19 07:27:16 riccardo Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.10 2004/07/21 15:31:29 riccardo Exp $
 // 
 //  Original author: R.Giannitrapani
 //
@@ -242,8 +242,11 @@ void HepRepSvc::endEvent()
   // broken .. so I comment it out for now
   // SmartDataPtr<Event::EventHeader>
   //  evt(m_idpsvc, EventModel::EventHeader);
+  // if (evt)
+  // {
   // unsigned int evtRun = evt->run();
   // unsigned int evtEvent = evt->event();
+  // }
   
   // Set the registry with the instance trees names of this event
   // after clearing the names list; we also add the dependency of
@@ -252,7 +255,6 @@ void HepRepSvc::endEvent()
   m_registry->addInstanceTree("Geometry3D","GLAST-LAT");
   m_registry->addInstanceTree("Event",sName.str());
   m_registry->addDependency(sName.str(),"GLAST-LAT");
-//  m_registry->setPrincipalTree(sName.str());
   
   // If autoStream has been set to a name of a streamer in the
   // jobOptions file, than we save automatically the HepRep to a file
