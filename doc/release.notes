@@ -1,4 +1,4 @@
-//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.16 2005/02/11 21:39:41 lsrea Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.17 2005/02/26 20:08:31 lsrea Exp $
 /*
  * v0r1     20-09-02 RG Inital release of the package
  * v0r2     07-07-03 RG Complete refactoring of HepRepSvc	
@@ -17,4 +17,5 @@
  * v0r12p2  26-01-05 LR Improved TrackFiller and ClusterFiller
  * v0r12p3  11-02-05 LR Add markers to clusters!
  * v0r12p4  26-02-05 LR Changed markers to little x's; added info to Vertex
+ * v0r13    08-03-05 RG Added a jobOptions property to set a FRED directory for auto start
 */
