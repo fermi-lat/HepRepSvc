@@ -44,6 +44,8 @@ void VertexFiller::buildTypes()
     m_builder->addAttValue("Color","yellow","");
     m_builder->addAttDef("Status Low","Low Status Bits","Physics","");
     m_builder->addAttDef("Status High","High Status Bits","Physics","");
+    m_builder->addAttDef("Start Position","Vtx start position","Physics","");
+    m_builder->addAttDef("Start Direction","Vtx start direction","Physics","");
     m_builder->addAttDef("Energy","Energy reconstructed","Physics","MeV");
     m_builder->addAttDef("ChiSquare","ChiSquare of fit", "Physics", "");
     m_builder->addAttDef("Quality","Quality","Physics","");
@@ -85,6 +87,10 @@ void VertexFiller::fillInstances (std::vector<std::string>& typesList)
                 m_builder->addAttValue("ArcLen1",   (float)(pVertex.getTkr1ArcLen()), "");
                 m_builder->addAttValue("ArcLen2",   (float)(pVertex.getTkr2ArcLen()), "");
                 m_builder->addAttValue("DOCA",      (float)(pVertex.getDOCA()), "");
+                m_builder->addAttValue("Start Position", 
+                    getPositionString(pVertex.getPosition()), "");
+                m_builder->addAttValue("Start Direction", 
+                    getDirectionString(pVertex.getDirection()), "");
                     
                 //Build strings for status bits
                 unsigned int      statBits = pVertex.getStatusBits();
@@ -133,3 +139,24 @@ std::string VertexFiller::getBits(unsigned int statBits, int highBit, int lowBit
     return outString.str();
 }
 
+std::string VertexFiller::getTripleString(int precis, double x, double y, double z)
+{
+    std::stringstream triple;
+    triple.setf(std::ios::fixed);
+    triple.precision(precis);
+    triple << " (" << x << "," << y << "," << z << ")";
+
+    return triple.str();
+}
+
+std::string VertexFiller::getPositionString(const Point& position)
+{
+    int precis = 3;
+    return getTripleString(precis, position.x(), position.y(), position.z());
+}
+
+std::string VertexFiller::getDirectionString(const Vector& direction)
+{
+    int precis = 5;
+    return getTripleString(precis, direction.x(), direction.y(), direction.z());
+}

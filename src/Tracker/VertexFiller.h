@@ -4,6 +4,8 @@
 #include <string>
 
 #include "HepRepSvc/IFiller.h"
+#include "geometry/Vector.h"
+#include "geometry/Point.h"
 
 class IGlastDetSvc;
 class IDataProviderSvc;
@@ -33,6 +35,9 @@ class VertexFiller: public IFiller{
   bool hasType(std::vector<std::string>& list, std::string type); 
 
  private:
+  std::string getTripleString(int precis, double x, double y, double z);
+  std::string getPositionString(const Point& position);
+  std::string getDirectionString(const Vector& position);
   std::string getBits(unsigned int statBits, int highBit, int lowBit);
   IGlastDetSvc* m_gdsvc;
   IDataProviderSvc* m_dpsvc;
