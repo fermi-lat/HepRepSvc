@@ -189,8 +189,6 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
               // as the size corresponding to the maximum energy
               double s = 0.45*m_xtalHeight*eneXtal/emax;
               
-              std::cout << s << std::endl;
-
               m_builder->addPoint(x+s,y+s,z+s);
               m_builder->addPoint(x-s,y+s,z+s);
               m_builder->addPoint(x-s,y-s,z+s);

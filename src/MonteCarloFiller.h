@@ -12,7 +12,9 @@ class IParticlePropertySvc;
 /** 
  *  @class MonteCarloFiller
  *
- *  @brief 
+ *  @brief The filler for the Montecarlo data
+ *
+ *  This filler is used to populate the HepRep event with the MonteCarlo tree.
  *
  *  @author R.Giannitrapani, M.Frailis
  */
@@ -27,10 +29,16 @@ class MonteCarloFiller: public IFiller{
 
   /// This method init the type tree
   virtual void buildTypes ();
-  /// This method fill the instance tree, using the string vector to decide
+
+	/// This method fill the instance tree, using the string vector to decide
   /// which subinstances to fill
   virtual void fillInstances (std::vector<std::string>&);
 
+	/// A support method to add electrical charge attributes
+	void MonteCarloFiller::setCharge(int charge);
+
+	/// A method that return true if list contain type
+	/// TODO STL already has this
   bool hasType(std::vector<std::string>& list, std::string type); 
 
  private:

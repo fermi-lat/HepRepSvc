@@ -45,9 +45,10 @@ void MonteCarloFiller::buildTypes()
   m_builder->addType("ParticleCol","Particle","An mc particle","");
   m_builder->addAttDef("Name","The name of the particle","Physics","");
   m_builder->addAttDef("PDG","The PDG code of the particle","Physics","");
-  m_builder->addAttDef("Ei","Initial energy","Physics","");
-  m_builder->addAttDef("Eo","Final energy","Physics","");
+  m_builder->addAttDef("Ei","Initial energy","Physics","MeV");
+  m_builder->addAttDef("Eo","Final energy","Physics","MeV");
   m_builder->addAttDef("Proc","Process name","Physics","");
+  m_builder->addAttDef("Charge","Electrical Charge (pos, neg, neutral)","Physics","");
   
   m_builder->addAttValue("DrawAs","Line","");
 
@@ -68,7 +69,7 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
         {
           m_builder->addInstance("MC","PosHitCol");
           for(Event::McPositionHitVector::const_iterator ihit=posHits->begin();
-              ihit != posHits->end(); ihit++)
+              ihit != posHits->end(); ihit++){
             {
               HepTransform3D global;
               idents::VolumeIdentifier id = (*ihit)->volumeID();
@@ -124,7 +125,7 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
             }      
         }
     }
-
+		}
   if (hasType(typesList,"IntHitCol") ||
       hasType(typesList,"IntHit")) 
     {
@@ -135,8 +136,8 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
         {
           m_builder->addInstance("MC","IntHitCol");
           for(Event::McIntegratingHitVector::const_iterator inHit=intHits->begin(); 
-              inHit != intHits->end(); inHit++) {
-
+              inHit != intHits->end(); inHit++) 
+					{
 
             m_builder->addInstance("IntHitCol","IntHit");
 
@@ -180,6 +181,7 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
         }
     }
 
+  // TODO lot of duplicated code here; needs to refactor
   if (hasType(typesList,"Particle"))
     {      
       m_builder->addInstance("MC","ParticleCol");      
@@ -211,34 +213,22 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
                   
                   m_builder->addAttValue("PDG",hepid,"");
                   m_builder->addAttValue("Name",name,"");
-                  
-                  if (ppty->charge()>0)
-                    m_builder->addAttValue("Color","green","");
-                  else if (ppty->charge()<0)
-                    m_builder->addAttValue("Color","red","");
-                  else
-                    m_builder->addAttValue("Color","white","");
+
+									setCharge(ppty->charge());
                 }
-              else
-              {                  
-                if ((*traj)->getCharge()>0)
-                    m_builder->addAttValue("Color","green","");
-                else if ((*traj)->getCharge()<0)
-                    m_builder->addAttValue("Color","red","");
-                else
-                    m_builder->addAttValue("Color","white","");  
-              }
-                
-              std::vector<Hep3Vector> points = (*traj)->getPoints();
-              std::vector<Hep3Vector>::const_iterator pit;
+              else                  
+								setCharge((*traj)->getCharge());               
+							
+							std::vector<Hep3Vector> points = (*traj)->getPoints();
+							std::vector<Hep3Vector>::const_iterator pit;
               
-              for(pit = points.begin(); pit != points.end(); pit++) 
-                {                
-                  m_builder->addPoint((*pit).x(),(*pit).y(),(*pit).z());
-                }      
-            }
-          }
-        }
+							for(pit = points.begin(); pit != points.end(); pit++) 
+							{                
+								m_builder->addPoint((*pit).x(),(*pit).y(),(*pit).z());
+							}      
+	         }		        
+				}
+			}
       else // otherwise we use the McParticle 
         {
           SmartDataPtr<Event::McParticleCol> 
@@ -267,16 +257,12 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
                   m_builder->addAttValue("PDG",hepid,"");
                   m_builder->addAttValue("Name",name,"");
                   
-                  if (ppty->charge()>0)
-                    m_builder->addAttValue("Color","green","");
-                  else if (ppty->charge()<0)
-                    m_builder->addAttValue("Color","red","");
-                  else
-                    m_builder->addAttValue("Color","white","");
                   
                   HepPoint3D start = (*part)->initialPosition();
                   HepPoint3D end = (*part)->finalPosition();
 
+									setCharge(ppty->charge());
+ 
                   m_builder->addPoint(start.x(),start.y(),start.z());
                   m_builder->addPoint(end.x(),end.y(),end.z());
                 }      
@@ -284,6 +270,27 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
             }
         }
     }  
+}
+
+// A support method to add electrical charge attributes
+void MonteCarloFiller::setCharge(int charge)
+{
+	if (charge>0)	
+	{
+		m_builder->addAttValue("Charge","pos","");
+		m_builder->addAttValue("Color","green","");
+	}
+	else if (charge<0)	
+	{	
+		m_builder->addAttValue("Charge","neg","");							
+		m_builder->addAttValue("Color","red","");		
+	}
+	else	
+	{	
+		m_builder->addAttValue("Charge","neutral","");		
+		m_builder->addAttValue("Color","white","");		
+	}
+
 }
 
 bool MonteCarloFiller::hasType(std::vector<std::string>& list, std::string type) 
