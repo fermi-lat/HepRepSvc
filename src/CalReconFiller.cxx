@@ -11,6 +11,8 @@
 #include "Event/TopLevel/EventModel.h"
 #include "Event/Recon/CalRecon/CalXtalRecData.h"
 #include "Event/Recon/CalRecon/CalCluster.h"
+#include "Event/Recon/CalRecon/CalRecon.h"
+
 
 #include "idents/VolumeIdentifier.h"
 #include "CLHEP/Geometry/Transform3D.h"
@@ -115,6 +117,15 @@ void CalReconFiller::buildTypes()
   m_builder->addType("CalRecon","CalClusterCol","Cal Cluster Collection","");
   m_builder->addType("CalClusterCol", "CalCluster", "Cal Cluster", "");
   m_builder->addAttDef("E","Cluster Energy","Physics","MeV");
+  m_builder->addAttValue("DrawAs","Point","");
+  m_builder->addAttValue("Color","green","");
+  m_builder->addType("CalCluster", "CalClusterLayers", "Cal Cluster Layers center","");
+  m_builder->addAttValue("DrawAs","Point","");
+  m_builder->addAttValue("Color","blue","");
+  m_builder->addAttValue("MarkerName","Cross","");  
+  m_builder->addType("CalCluster", "CalClusterDir", "Cal Cluster Direction","");
+  m_builder->addAttValue("DrawAs","Line","");
+  m_builder->addAttValue("Color","green","");
 }
 
 
@@ -206,6 +217,85 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
         }
       }
     }
+
+  if (hasType(typesList,"Recon/CalRecon/CalClusterCol"))
+  {      
+    m_builder->addInstance("CalRecon","CalClusterCol");    
+
+    // drawing the cross in the average position for each layer 
+
+    //  get pointer to the cluster reconstructed collection
+    Event::CalClusterCol* cls = SmartDataPtr<Event::CalClusterCol>(m_dpsvc,
+        EventModel::CalRecon::CalClusterCol);
+
+
+    // if pointer is not zero, start drawing
+    if(cls){
+      m_builder->addInstance("CalClusterCol", "CalCluster");    
+
+      // get pointer to the cluster 0 - the only one exiting now
+      Event::CalCluster* cl = cls->getCluster(0); 
+
+      // get total energy in the calorimeter
+      double energy_sum = cl->getEnergySum();
+
+      // get vector of layer energies
+      const std::vector<double>& eneLayer = cl->getEneLayer();
+
+      // get layer positions
+      const std::vector<Vector>& posLayer = cl->getPosLayer();
+
+      // draw only if there is some energy in the calorimeter        
+      if(energy_sum > 0){
+
+        // Draw the cluster center
+        double x = (cl->getPosition()).x();
+        double y = (cl->getPosition()).y();
+        double z = (cl->getPosition()).z();
+        m_builder->addPoint(x,y,z);            
+        
+        // Draw the layers reconstructed positions
+        m_builder->addInstance("CalCluster", "CalClusterLayers");    
+        // loop over calorimeter layers
+        for( int l=0;l<8;l++){
+
+          // if energy in this layer is not zero - draw blue cross at
+          // the average reconstructed position for this layer
+          if (eneLayer[l]>0){            
+            double x=(posLayer[l]).x();
+            double y=(posLayer[l]).y();
+            double z=(posLayer[l]).z();
+            m_builder->addPoint(x,y,z);            
+          }
+        }
+
+        // drawing the reconstructed shower direction
+        // as a green line
+        double dirX = (cl->getDirection()).x();
+        double dirY = (cl->getDirection()).y();
+        double dirZ = (cl->getDirection()).z();
+
+        // non display for non-physical or horizontal direction
+        if(dirZ >= -1. && dirZ != 0.){
+          // Draw the cluster direction
+          m_builder->addInstance("CalCluster", "CalClusterDir");    
+
+
+          // calculate x and y coordinates for the beginning and the end
+          // of line in the top and bottom calorimeter layers
+          double xTop = x+dirX*(m_calZtop-z)/dirZ;
+          double yTop = y+dirY*(m_calZtop-z)/dirZ;
+          double xBottom = x+dirX*(m_calZbottom-z)/dirZ;
+          double yBottom = y+dirY*(m_calZbottom-z)/dirZ;
+
+          m_builder->addPoint(xTop,yTop,m_calZtop);            
+          m_builder->addPoint(xBottom,yBottom,m_calZbottom);                            
+        }
+        
+      }
+    }
+
+  }
 
 }
 
