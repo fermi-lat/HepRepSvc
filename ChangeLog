@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: riccardo  Mon Jul  7 01:29:55 PDT 2003
+HepRepSvc/HepRepSvc
+
+Modified Files:
+	IBuilder.h IFiller.h IHepRepSvc.h mainpage.h 
+Added Files:
+	IRegister.h IRegistry.h IServer.h IStreamer.h ISvcAdapter.h 
+Log Message:
+Complete refactoring of HepRepSvc: new abstract classes to isolate any dependence from Xml or Corba, now contained in their own packages
+    *
+------------------------------------------------------------
 User: riccardo  Tue May 20 05:43:44 PDT 2003
 HepRepSvc/src
 
