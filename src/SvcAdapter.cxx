@@ -55,6 +55,13 @@ bool SvcAdapter::nextEvent(int i)
 	else return true;
 }
 
+// The method delegate to the HepRepSvc the command to go back of one event, if
+// possible
+bool SvcAdapter::previousEvent(int i)
+{
+  return m_hrsvc->previousEvent(i);
+}
+
 bool SvcAdapter::setEventId(int run, int event)
 {
   return m_hrsvc->setEventId(run, event);
