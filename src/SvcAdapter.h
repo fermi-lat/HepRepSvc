@@ -40,7 +40,11 @@ class SvcAdapter: public ISvcAdapter
       std::string propName, std::string propValue);  
   /// This method replay a given algorithm
   virtual bool replayAlgorithm(std::string algName);
+  /// This method return a dir with a FRED installation, if set so in the
+  /// jobOptions file; otherwise it returns (by default) an empty string
+  virtual std::string getStartFred(); 
 
+  
  private:
   HepRepSvc* m_hrsvc;
 };

@@ -7,7 +7,7 @@ use GlastSvc
 use FluxSvc
 use RootIo
 use flux
-
+use Fred * IExternal 
 
 apply_pattern packageShr
 apply_pattern package_include
