@@ -1,4 +1,4 @@
-//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.7 2004/08/02 08:44:39 riccardo Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.8 2004/08/26 13:14:25 riccardo Exp $
 /*
  * v0r1     20-09-02 RG Inital release of the package
  * v0r2     07-07-03 RG Complete refactoring of HepRepSvc	
@@ -8,4 +8,5 @@
  * v0r6     20-07-04 RG Updated to support random access to root files
  * v0r6p1   02-08-04 RG Fixed a bug that crash test.
  * v0r7     26-08-04 RG Added an Header Fillers with EventHeader info
+ * v0r8     29-09-04 RG Lot of changes to support full name Type and new commands
 */
