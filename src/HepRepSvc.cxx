@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.10 2004/07/21 15:31:29 riccardo Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.11 2004/08/02 08:39:40 riccardo Exp $
 // 
 //  Original author: R.Giannitrapani
 //
@@ -14,6 +14,7 @@
 #include "HepRepSvc.h"
 #include "HepRepGeometry.h"
 
+#include "HeaderFiller.h"
 #include "MonteCarloFiller.h"
 #include "ReconFiller.h"
 #include "GeometryFiller.h"
@@ -144,6 +145,8 @@ StatusCode HepRepSvc::initialize ()
     // Register the geometry filler
     m_registry->registerFiller(new GeometryFiller(m_geomDepth,gsvc), 
 			       "Geometry3D");
+    // Register the header filler
+    m_registry->registerFiller(new HeaderFiller(esvc), "Event");
     // Register the Recon filler 
     m_registry->registerFiller(new ReconFiller(gsvc,esvc,pps), "Event");
     // Register the mc filler
@@ -237,17 +240,17 @@ void HepRepSvc::endEvent()
   sName << "Event-" << temp;
   temp++;
 
-
   // This is to retrive event and run number from the event, but seems to be
   // broken .. so I comment it out for now
-  // SmartDataPtr<Event::EventHeader>
-  //  evt(m_idpsvc, EventModel::EventHeader);
-  // if (evt)
-  // {
-  // unsigned int evtRun = evt->run();
-  // unsigned int evtEvent = evt->event();
-  // }
-  
+//  SmartDataPtr<Event::EventHeader>
+//    evt(m_idpsvc, EventModel::EventHeader);
+//   if (evt)
+//   {
+//     unsigned int evtRun = evt->run();
+//     unsigned int evtEvent = evt->event();
+//     sName << "Event-" << evtRun << "-" << evtEvent << "\0"; 
+//   }
+
   // Set the registry with the instance trees names of this event
   // after clearing the names list; we also add the dependency of
   // the event instancetree to the geometry instancetree
