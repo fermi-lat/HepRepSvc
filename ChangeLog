@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: lsrea  Fri Feb 11 13:39:41 PST 2005
+HepRepSvc/src/Tracker
+
+Modified Files:
+	ClusterFiller.cxx ClusterFiller.h 
+Log Message:
+add markers to clusters; requires FRED v0r97, but won't crash earlier FRED
+
+    *
+------------------------------------------------------------
+User: lsrea  Fri Feb 11 13:39:41 PST 2005
 HepRepSvc/doc
 
 Modified Files:
