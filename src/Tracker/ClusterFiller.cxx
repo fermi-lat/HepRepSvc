@@ -30,11 +30,18 @@ m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc)
 {
     double siWaferActiveSide;
     int    ladderNStrips;
+    double siWaferSide;
+    double ssdGap;
+    int    nWaferAcross;
 
-    gsvc->getNumericConstByName("towerPitch",        &m_towerPitch);
     gsvc->getNumericConstByName("SiWaferActiveSide", &siWaferActiveSide);
     gsvc->getNumericConstByName("stripPerWafer",     &ladderNStrips);
     gsvc->getNumericConstByName("SiThick",           &m_siThickness);
+    gsvc->getNumericConstByName("SiWaferSide",       &siWaferSide);
+    gsvc->getNumericConstByName("ssdGap",            &ssdGap);
+    gsvc->getNumericConstByName("nWaferAcross",     &nWaferAcross);
+
+    m_stripLength = nWaferAcross*siWaferSide + (nWaferAcross-1)*ssdGap;
 
     m_siStripPitch = siWaferActiveSide / ladderNStrips;
 }
@@ -64,6 +71,12 @@ void ClusterFiller::buildTypes()
     m_builder->addType("TkrCluster","TkrClusterToT"," ","");
     m_builder->addAttValue("DrawAs","Line","");
     m_builder->addAttValue("Color","green","");
+
+    m_builder->addType("TkrCluster", "ClusterMarker", " ", "");
+    m_builder->addAttValue("DrawAs", "Point", "");
+    m_builder->addAttValue("Color", "green", "");
+    m_builder->addAttValue("MarkerName", "Cross", "");
+    m_builder->addAttValue("MarkerSize", "1", "");
 }
 
 
@@ -82,7 +95,8 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
 
     //Loop over all cluster hits in the SiClusters vector
     if (!hasType(typesList,"Recon/TkrRecon/TkrClusterCol/TkrCluster")) return;
-
+    
+    double markerOffset = m_siStripPitch;
     while(nHits--)
     {
         Event::TkrCluster* pCluster = (*pClusters)[nHits];
@@ -92,10 +106,10 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
         double y    = clusPos.y();
         double z    = clusPos.z();
         double dx   = 0.5 * pCluster->size() * m_siStripPitch;
-        double dy   = 0.5 * (m_towerPitch - 20.);  // One day we will fix this...
+        double dy   = 0.5 * (m_stripLength);  // One day we will fix this...
         double dz   = 0.5 * m_siThickness;
         double xToT = x;
-        double yToT = y - dy;
+        double yToT = y - dy - markerOffset;
         double ToT  = pCluster->ToT() / 64.;       // So, max ToT = 4 mm
 
         int    view   = pCluster->getTkrId().getView();
@@ -124,9 +138,10 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
         if (pCluster->getTkrId().getView() == idents::TkrId::eMeasureY)
         {
             dy   = 0.5 * pCluster->size() * m_siStripPitch;
-            dx   = 0.5 * m_towerPitch;
-            xToT = x - dx;
+            dx   = 0.5 * m_stripLength;
+            xToT = x - dx - markerOffset;
             yToT = y;
+
         }
 
         //Now draw the hit strips
@@ -138,6 +153,9 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
         m_builder->addPoint(x-dx,y+dy,z-dz);
         m_builder->addPoint(x-dx,y-dy,z-dz);
         m_builder->addPoint(x+dx,y-dy,z-dz);
+
+        m_builder->addInstance("TkrCluster", "ClusterMarker");
+        m_builder->addPoint(xToT, yToT, z);
 
         //Time over threshold add here
         if (hasType(typesList,

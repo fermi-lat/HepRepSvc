@@ -38,7 +38,7 @@ class ClusterFiller: public IFiller{
     IParticlePropertySvc* m_ppsvc;
 
     double m_siStripPitch; 
-    double m_towerPitch;
+    double m_stripLength;
     double m_siThickness;
 };
 
