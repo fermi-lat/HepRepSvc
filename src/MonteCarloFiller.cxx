@@ -29,7 +29,7 @@ void MonteCarloFiller::buildTypes()
   m_builder->addType("PosHitCol","PosHit","Position Hit","");
   m_builder->addAttDef("E","Energy deposited","Physics","MeV");
   m_builder->addAttValue("DrawAs","Prism","");
-  m_builder->addAttValue("LineColor","red","");
+  m_builder->addAttValue("Color","red","");
 
   m_builder->addType("PosHit","PosHitSteps","Position Hit Steps","");
   m_builder->addAttValue("DrawAs","Point","");
@@ -39,7 +39,7 @@ void MonteCarloFiller::buildTypes()
   m_builder->addType("IntHitCol","IntHit","Integrating Hit","");
   m_builder->addAttDef("E","Energy deposited","Physics","MeV");
   m_builder->addAttValue("DrawAs","Prism","");
-  m_builder->addAttValue("LineColor","blue","");
+  m_builder->addAttValue("Color","blue","");
 
   m_builder->addType("MC","ParticleCol","The particles collection","");  
   m_builder->addType("ParticleCol","Particle","An mc particle","");
@@ -205,14 +205,14 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
                   m_builder->addAttValue("Name",name,"");
                   
                   if (ppty->charge()>0)
-                    m_builder->addAttValue("LineColor","green","");
+                    m_builder->addAttValue("Color","green","");
                   else if (ppty->charge()<0)
-                    m_builder->addAttValue("LineColor","red","");
+                    m_builder->addAttValue("Color","red","");
                   else
-                    m_builder->addAttValue("LineColor","white","");
+                    m_builder->addAttValue("Color","white","");
                 }
               else
-                m_builder->addAttValue("LineColor","yellow","");
+                m_builder->addAttValue("Color","yellow","");
 
               std::vector<Hep3Vector> points = (*traj)->getPoints();
               std::vector<Hep3Vector>::const_iterator pit;
@@ -253,11 +253,11 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
                   m_builder->addAttValue("Name",name,"");
                   
                   if (ppty->charge()>0)
-                    m_builder->addAttValue("LineColor","green","");
+                    m_builder->addAttValue("Color","green","");
                   else if (ppty->charge()<0)
-                    m_builder->addAttValue("LineColor","red","");
+                    m_builder->addAttValue("Color","red","");
                   else
-                    m_builder->addAttValue("LineColor","white","");
+                    m_builder->addAttValue("Color","white","");
                   
                   HepPoint3D start = (*part)->initialPosition();
                   HepPoint3D end = (*part)->finalPosition();
