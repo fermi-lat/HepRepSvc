@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: riccardo  Mon Jul  7 01:30:00 PDT 2003
+HepRepSvc/src/test
+
+Modified Files:
+	jobOptions.txt 
+Log Message:
+Complete refactoring of HepRepSvc: new abstract classes to isolate any dependence from Xml or Corba, now contained in their own packages
+    *
+------------------------------------------------------------
 User: riccardo  Mon Jul  7 01:29:55 PDT 2003
 HepRepSvc/src
 
