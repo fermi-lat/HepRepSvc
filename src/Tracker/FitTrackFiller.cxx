@@ -11,6 +11,7 @@
 #include "Event/TopLevel/EventModel.h"
 #include "Event/Recon/TkrRecon/TkrVertex.h"
 #include "Event/Recon/TkrRecon/TkrFitTrackBase.h"
+#include "Event/Recon/TkrRecon/TkrKalFitTrack.h"
 
 #include "idents/VolumeIdentifier.h"
 #include "CLHEP/Geometry/Transform3D.h"
@@ -51,6 +52,10 @@ void FitTrackFiller::buildTypes()
     m_builder->addAttDef("Energy","Fit Track Energy","Physics","MeV");
     m_builder->addAttDef("Quality","Fit Track Quality","Physics","");
     m_builder->addAttDef("# Hits","Number of Hits on Track","Physics","");
+    m_builder->addAttDef("Chi-Square(smooth)","Fit Track Smoothed Chi-Square","Physics","");
+    m_builder->addAttDef("Tkr-Cal RadLens","Fit Track Smoothed Chi-Square","Physics","");
+    m_builder->addAttDef("Kalman Theta MS","Fit Track Smoothed Chi-Square","Physics","");
+    m_builder->addAttDef("Kalman Energy","Fit Track Smoothed Chi-Square","Physics","");
     m_builder->addAttDef("Start Position","Track start position","Physics","");
     m_builder->addAttDef("Start Slopes","Track start slopes","Physics","");
 
@@ -85,7 +90,8 @@ void FitTrackFiller::fillInstances (std::vector<std::string>& typesList)
 	  
 	        if (numTracks > 0) 
 	        {
-                int trackId = 0;
+                int trackId  = 0;
+                int trackWid = 2;
 	            Event::TkrFitTrackCol::const_iterator it = pTracks->begin();
 
 	            while(it != pTracks->end())
@@ -96,12 +102,23 @@ void FitTrackFiller::fillInstances (std::vector<std::string>& typesList)
         		    Event::TkrFitHit::TYPE  fit      = Event::TkrFitHit::SMOOTH;
 		            Event::TkrFitHit::TYPE  typ      = Event::TkrFitHit::SMOOTH;
 
-                    m_builder->addAttValue("TrackId", trackId++, "");
-                    m_builder->addAttValue("Layer",track.getLayer(), "");
-                    m_builder->addAttValue("Tower",track.getTower(), "");
-	                m_builder->addAttValue("Quality", (float)(track.getQuality()), "");
-	                m_builder->addAttValue("Energy", (float)(track.getEnergy()), "");
-                    m_builder->addAttValue("# Hits", (int)(track.size()), "");
+                    if (trackId > 1) trackWid = 1;
+
+                    m_builder->addAttValue("TrackId",   trackId++, "");
+                    m_builder->addAttValue("LineWidth", trackWid, "");
+                    m_builder->addAttValue("Layer",     track.getLayer(), "");
+                    m_builder->addAttValue("Tower",     track.getTower(), "");
+	                m_builder->addAttValue("Quality",   (float)(track.getQuality()), "");
+	                m_builder->addAttValue("Energy",    (float)(track.getEnergy()), "");
+                    m_builder->addAttValue("# Hits",    (int)(track.size()), "");
+
+                    if (const Event::TkrKalFitTrack* kalTrack = dynamic_cast<const Event::TkrKalFitTrack*>(&track))
+                    {
+    	                m_builder->addAttValue("Chi-Square(smooth)", (float)(kalTrack->getChiSquareSmooth()), "");
+    	                m_builder->addAttValue("Tkr-Cal RadLens",    (float)(kalTrack->getTkrCalRadlen()), "");
+    	                m_builder->addAttValue("Kalman Theta MS",    (float)(kalTrack->getKalThetaMS()), "");
+    	                m_builder->addAttValue("Kalman Energy",      (float)(kalTrack->getKalEnergy()), "");
+                    }
                         
                     //Build string for track start position
                     std::stringstream trkPosition;
@@ -136,6 +153,7 @@ void FitTrackFiller::fillInstances (std::vector<std::string>& typesList)
 		            for(Event::TkrFitPlaneConPtr hitIter = track.begin(); hitIter < track.end(); hitIter++)
 		            {
 		                m_builder->addInstance("Track","TkrHitPlane");
+                        m_builder->addAttValue("LineWidth", trackWid, "");
 
 		                Event::TkrFitPlane plane = *hitIter;
 
