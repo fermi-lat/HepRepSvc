@@ -17,11 +17,13 @@ class ISvcAdapter
 {
  public:
   /// used to step to the next event 
-  virtual void nextEvent(int) = 0;
+  virtual bool nextEvent(int) = 0;
   /// return a list of sources names to be used by FluxSvc
   virtual std::string getSources() = 0;
   /// set the source to be used by FluxSvc
   virtual void setSource(std::string) = 0;
+	/// stop the GAUDI job
+	virtual void shutDown() = 0;
 };
 
 #endif //ISVCADAPTER_H

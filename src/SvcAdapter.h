@@ -19,10 +19,11 @@ class SvcAdapter: public ISvcAdapter
 {
  public:
   SvcAdapter(HepRepSvc* h):m_hrsvc(h){};
-  virtual void nextEvent(int);
+  virtual bool nextEvent(int);
   std::string getSources();
   virtual void setSource(std::string);
-  
+	/// stop the GAUDI job
+	virtual void shutDown();
  private:
   HepRepSvc* m_hrsvc;
 };

@@ -59,7 +59,7 @@ void MonteCarloFiller::buildTypes()
 void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
 {
   m_builder->addInstance("","MC");
-  
+
   if (hasType(typesList,"PosHitCol") ||
       hasType(typesList,"PosHitSteps"))
     {
@@ -184,7 +184,7 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
   // TODO lot of duplicated code here; needs to refactor
   if (hasType(typesList,"Particle"))
     {      
-      m_builder->addInstance("MC","ParticleCol");      
+     m_builder->addInstance("MC","ParticleCol");      
       // If there are trajectories in the TDS, we use them
       SmartDataPtr<Event::McTrajectoryCol> 
         mcTraj(m_dpsvc, "/Event/MC/TrajectoryCol");
@@ -199,10 +199,14 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
                 
               if (part)
                 {                  
-                  Event::McParticle::StdHepId hepid= part->particleProperty();
+									std::string name;
+									Event::McParticle::StdHepId hepid= part->particleProperty();
                   ParticleProperty* ppty = m_ppsvc->findByStdHepID( hepid );
-                  std::string name = ppty->particle(); 
-                  
+									if (ppty)
+										name = ppty->particle(); 
+									else
+										name = "Unknown"; 
+
                   HepLorentzVector in = part->initialFourMomentum();
                   HepLorentzVector out = part->finalFourMomentum();
                   
@@ -214,7 +218,8 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
                   m_builder->addAttValue("PDG",hepid,"");
                   m_builder->addAttValue("Name",name,"");
 
-									setCharge(ppty->charge());
+									if (ppty)
+										setCharge(ppty->charge());
                 }
               else                  
 								setCharge((*traj)->getCharge());               
@@ -240,11 +245,15 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
               for(Event::McParticleCol::const_iterator part=mcPart->begin()++; 
                  part != mcPart->end(); part++) {
                 {
-                  m_builder->addInstance("ParticleCol","Particle");
+									m_builder->addInstance("ParticleCol","Particle");
                   
                   Event::McParticle::StdHepId hepid= (*part)->particleProperty();
                   ParticleProperty* ppty = m_ppsvc->findByStdHepID( hepid );
-                  std::string name = ppty->particle(); 
+										
+									if (ppty)
+										m_builder->addAttValue("Name",ppty->particle(),"");
+									else
+										m_builder->addAttValue("Name","Unknown","");
                   
                   HepLorentzVector in = (*part)->initialFourMomentum();
                   HepLorentzVector out = (*part)->finalFourMomentum();
@@ -254,14 +263,13 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
 
                   m_builder->addAttValue("Proc",(*part)->getProcess(),"");
               
-                  m_builder->addAttValue("PDG",hepid,"");
-                  m_builder->addAttValue("Name",name,"");
-                  
+                  m_builder->addAttValue("PDG",hepid,"");                  
                   
                   HepPoint3D start = (*part)->initialPosition();
                   HepPoint3D end = (*part)->finalPosition();
 
-									setCharge(ppty->charge());
+									if(ppty)
+										setCharge(ppty->charge());
  
                   m_builder->addPoint(start.x(),start.y(),start.z());
                   m_builder->addPoint(end.x(),end.y(),end.z());

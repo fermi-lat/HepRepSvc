@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.5 2004/05/20 08:13:47 riccardo Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.6 2004/05/25 09:39:17 riccardo Exp $
 // 
 //  Original author: R.Giannitrapani
 //
@@ -191,7 +191,12 @@ StatusCode HepRepSvc::finalize ()
 {
   // @todo Need to destroy all the streamers and the server
   StatusCode  status = StatusCode::SUCCESS;
-  
+
+  if (m_server!=0)
+    m_server->shutDown();
+
+	std::cout << "Closing " << std::endl;
+
   return status;
 }
 
