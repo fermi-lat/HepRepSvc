@@ -4,6 +4,7 @@
 #include <string>
 
 #include "HepRepSvc/IFiller.h"
+#include "geometry/Vector.h"
 
 class IGlastDetSvc;
 class IDataProviderSvc;
@@ -43,7 +44,10 @@ class TrackFiller: public IFiller{
 
  private:
   std::string getTkrIdString(const idents::TkrId& tkrId);
+  std::string getTripleString(int precis, double x, double y, double z);
+  std::string getBits(unsigned int statBits, int highBit, int lowBit);
   std::string getPositionString(const Point& position);
+  std::string getDirectionString(const Vector& position);
   std::string getSlopeString(const Event::TkrTrackParams& params);
 
   IGlastDetSvc* m_gdsvc;

@@ -1,4 +1,4 @@
-//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.12 2005/01/11 10:28:58 riccardo Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.13 2005/01/18 16:09:40 riccardo Exp $
 /*
  * v0r1     20-09-02 RG Inital release of the package
  * v0r2     07-07-03 RG Complete refactoring of HepRepSvc	
@@ -13,4 +13,5 @@
  * v0r10p1  27-12-04 LR remove TkrCluster id from fillers
  * v0r11    11-01-05 RG imported changes in EM branch to support back button in FRED
  * v0r12    18-01-05 RG Fixed a bug about previousEvent missing method
+ * v0r12p1  18-01-05 LR Improved TrackFiller and VtxFiller
 */
