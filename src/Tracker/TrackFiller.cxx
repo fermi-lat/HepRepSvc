@@ -149,6 +149,8 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
 
 		                Event::TkrTrackHit& plane = **hitIter;
 
+                        if (!(plane.getStatusBits() & Event::TkrTrackHit::HITONFIT)) continue;
+
 		                double x0, y0, z0, xl, xr, yl, yr;
 		                double delta= 10. * plane.getChiSquareSmooth(); //Scale factor! We're in mm now!
 
@@ -177,13 +179,18 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
                         m_builder->addAttValue("Hit Volume", getTkrIdString(plane.getTkrId()), "");
 
                         //Build string for the measuring view
-                        std::stringstream hitView;
+                        std::stringstream hitView("No valid hit found");
+                        int clusterId = -1;
 
-                        if (plane.getTkrId().getView() == idents::TkrId::eMeasureX) hitView << "This is an X measuring plane";
-                        else                                                        hitView << "This is a Y measuring plane";
+                        if (plane.getStatusBits() & Event::TkrTrackHit::HITONFIT)
+                        {
+                            if (plane.getTkrId().getView() == idents::TkrId::eMeasureX) hitView << "This is an X measuring plane";
+                            else                                                        hitView << "This is a Y measuring plane";
+                            clusterId = plane.getClusterPtr()->id();
+                        }
+
                         m_builder->addAttValue("Projection",hitView.str(),"");
-
-                        m_builder->addAttValue("ClusterID",(int)(plane.getClusterPtr()->id()),"");
+                        m_builder->addAttValue("ClusterID",clusterId,"");
                         m_builder->addAttValue("Energy",(float)(plane.getEnergy()),"");
                         m_builder->addAttValue("RadLen",(float)(plane.getRadLen()),"");
                         m_builder->addAttValue("ActDist",(float)(plane.getActiveDist()),"");
