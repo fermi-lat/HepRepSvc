@@ -1,5 +1,17 @@
 ------------------------------------------------------------
 User: usher  Wed Dec 15 20:40:22 PST 2004
+HepRepSvc/src/Tracker
+
+Modified Files:
+	ClusterFiller.cxx VertexFiller.cxx 
+Removed Files:
+	CandTrackFiller.cxx CandTrackFiller.h FitTrackFiller.cxx 
+	FitTrackFiller.h 
+Log Message:
+Modifications to use  new TDS classes, and remove references to obsolete classes
+    *
+------------------------------------------------------------
+User: usher  Wed Dec 15 20:40:22 PST 2004
 HepRepSvc/src
 
 Modified Files:
