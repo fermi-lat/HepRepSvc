@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: lsrea  Wed Oct 27 16:37:37 PDT 2004
+HepRepSvc/src/Tracker
+
+Modified Files:
+	VertexFiller.cxx 
+Log Message:
+remove a faulty line of debug printout
+
+    *
+------------------------------------------------------------
 User: usher  Fri Oct  1 12:46:47 PDT 2004
 HepRepSvc/src/Tracker
 
