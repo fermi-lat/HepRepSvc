@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/FluxSvc/src/FluxSvc.cxx,v 1.18 2002/02/02 01:33:25 srobinsn Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.1.1.1 2002/09/20 08:50:19 riccardo Exp $
 // 
 //  Original author: R.Giannitrapani
 //
@@ -204,10 +204,16 @@ void HepRepSvc::endEvent()
   
   clearInstanceTrees();
   addInstanceTree("Geometry3D","GLAST-LAT");
+#ifdef DEFECT_NO_STRINGSTREAM
+  sName << std::ends;
+#endif
   addInstanceTree("Event",sName.str());
   if (m_saveXml)
     {
       sFileName << m_xmlPath << sName.str() << ".xml.gz";
+#ifdef DEFECT_NO_STRINGSTREAM
+      sFileName << std::ends;
+#endif
       saveXML(sFileName.str());
       log << MSG::DEBUG << "Saved XML file for HepRep" << endreq;
     }

@@ -160,6 +160,10 @@ std::string XMLBuilder::addIdent(int n)
 
   for(unsigned int i=0;i<n;i++)
     ident << "  ";
+
+#ifdef DEFECT_NO_STRINGSTREAM
+  ident << std::ends;
+#endif
   return ident.str();
 }
 
