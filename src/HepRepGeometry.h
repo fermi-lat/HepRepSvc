@@ -15,7 +15,8 @@ class HepTransform3D;
  *
  *  @author R.Giannitrapani
  */
-class HepRepGeometry : public IGeometry{
+class HepRepGeometry : public IGeometry 
+{
  public:
   HepRepGeometry(unsigned int depth, std::string mode = "propagate");
   ~HepRepGeometry();
