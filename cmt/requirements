@@ -1,5 +1,5 @@
 package HepRepSvc
-version v0r7
+version v0r8
 
 use GlastPolicy
 use Event 
