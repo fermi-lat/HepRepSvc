@@ -1,21 +1,16 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.2 2002/09/20 14:21:07 riccardo Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.3 2003/01/28 13:06:55 riccardo Exp $
 // 
 //  Original author: R.Giannitrapani
 //
 
-#ifdef DEFECT_NO_STRINGSTREAM
-#include <strstream>
-#else
 #include <sstream>
-#endif
 
-#include "zlib.h"
+#include "Registry.h"
+#include "HepRepSvc/IServer.h"
+#include "HepRepSvc/IStreamer.h"
+#include "HepRepSvc/IRegister.h"
 
-#include "HepRepSvc/IFiller.h"
-#include "HepRepSvc/IBuilder.h"
-
-#include "XmlBuilder.h"
-
+#include "SvcAdapter.h"
 #include "HepRepSvc.h"
 #include "HepRepGeometry.h"
 
@@ -30,6 +25,9 @@
 #include "GaudiKernel/SmartDataPtr.h"
 #include "GaudiKernel/Incident.h"
 #include "GaudiKernel/IIncidentSvc.h"
+#include "GaudiKernel/IObjManager.h"
+#include "GaudiKernel/IToolFactory.h"
+#include "GaudiKernel/IAppMgrUI.h"
 #include "GaudiKernel/Property.h"
 #include "GaudiKernel/IParticlePropertySvc.h"
 #include "GaudiKernel/ParticleProperty.h"
@@ -45,15 +43,28 @@ const ISvcFactory& HepRepSvcFactory = a_factory;
 HepRepSvc::HepRepSvc(const std::string& name,ISvcLocator* svc)
 : Service(name,svc)
 {
-  declareProperty("saveXml" , m_saveXml=0); 
-  declareProperty("xmlPath"   , m_xmlPath="");
+  /// This property turn on/off the auto streaming of the heprep at
+  /// the end of each event
+  declareProperty("autoStream" , m_autoStream=""); 
+  declareProperty("streamPath"   , m_streamPath="");
   declareProperty("geometryDepth", m_geomDepth=4);
+
+  m_server=0;
 }
 
 // Standard Destructor
 HepRepSvc::~HepRepSvc()  
 {
 }
+
+// This method implement the IRunnable run method by delegating it to
+// the registered IServer, if it has been registered.
+StatusCode HepRepSvc::run()
+{
+  if (m_server!=0)
+    m_server->run();
+  return StatusCode::SUCCESS;
+};
 
 // initialize
 StatusCode HepRepSvc::initialize () 
@@ -62,6 +73,15 @@ StatusCode HepRepSvc::initialize ()
     
     // bind all of the properties for this service
     setProperties ();
+
+    // get the application manager UI
+    serviceLocator()->queryInterface(IID_IAppMgrUI, (void**)&m_appMgrUI);
+
+    // Build the registry
+    m_registry = new Registry();
+
+    // Build the service adapter
+    m_adapter = new SvcAdapter(this);
     
     // open the message log
     MsgStream log( msgSvc(), name() );
@@ -94,77 +114,71 @@ StatusCode HepRepSvc::initialize ()
     IIncidentSvc* incsvc = 0;
     status = service ("IncidentSvc", incsvc, true);
     if( status.isFailure() ) return status;
-
     incsvc->addListener(this, "BeginEvent", 100);
     incsvc->addListener(this, "EndEvent", 0);
-
-    registerFiller(new GeometryFiller(m_geomDepth,gsvc), "Geometry3D");
-    registerFiller(new ReconFiller(gsvc,esvc,pps), "Event");
-    registerFiller(new MonteCarloFiller(gsvc,esvc,pps), "Event");
     
-    return status;
-}
+    // Register the geometry filler
+    m_registry->registerFiller(new GeometryFiller(m_geomDepth,gsvc), 
+			       "Geometry3D");
+    // Register the Recon filler 
+    m_registry->registerFiller(new ReconFiller(gsvc,esvc,pps), "Event");
+    // Register the mc filler
+    m_registry->registerFiller(new MonteCarloFiller(gsvc,esvc,pps), "Event");
 
-// This method set a builder to be used by the registered fillers
-void HepRepSvc::useBuilder(IBuilder* b)
-{
-  std::map<std::string, fillerCol>::iterator i;
 
-  for(i=m_fillers.begin();i!=m_fillers.end();i++)
-    {
-      fillerCol::iterator j;
+
+    //----------------------------------------------------------------
+    // most of  the following taken from FluxSvc
+    
+    // look for a factory of an AlgTool that implements the IRegister interface:
+    // if found, make one and call the special method 
+    
+    // Manager of the AlgTool Objects
+    IObjManager* objManager=0;             
+    
+    // locate Object Manager to locate later the tools 
+    status = serviceLocator()->service("ApplicationMgr", objManager );
+    if( status.isFailure()) {
+      log << MSG::ERROR << "Unable to locate ObjectManager Service" << endreq;
+      return status;
+    }
+    
+    IToolFactory* toolfactory = 0;
+    
+    // search throught all objects (factories?)
+    for(IObjManager::ObjIterator it = objManager->objBegin(); 
+	it !=objManager->objEnd(); ++ it){
       
-      for(j=(i->second).begin();j!=(i->second).end();j++)
-        {
-          (*j)->setBuilder(b);
-        }
+      std::string tooltype= (*it)->ident();
+      // is it a tool factory?
+      const IFactory* factory = objManager->objFactory( tooltype );
+      IFactory* fact = const_cast<IFactory*>(factory);
+      status = fact->queryInterface( IID_IToolFactory, (void**)&toolfactory );
+      if( status.isSuccess() ) {
+	
+	IAlgTool* itool = toolfactory->instantiate(name()+"."+tooltype,  this );       
+	IRegister* ireg;
+	status =itool->queryInterface( IRegister::interfaceID(), (void**)&ireg);
+	if( status.isSuccess() ){
+	  log << MSG::INFO << "Registering HepRep server/streamer " << endreq;
+	  ireg->registerMe(this);
+	}
+	log << MSG::DEBUG << "Releasing the tool " << tooltype << endreq;
+	itool->release();
+      }
+      
     }
-}
-
-// This method return the fillers by the type
-IHepRepSvc::fillerCol& HepRepSvc::getFillersByType(std::string type)
-{
-  return m_fillers[type];
-}
-
-std::vector<std::string>& HepRepSvc::getTypeTrees()
-{
-  std::vector<std::string>* types = new std::vector<std::string>; 
-
-  std::map<std::string, fillerCol>::iterator i;
-  
-  for(i=m_fillers.begin();i!=m_fillers.end();i++)
-    {
-      types->push_back(i->first);
-    }
-  
-  return *types;
-}
-
-// Register a filler with the service
-void HepRepSvc::registerFiller(IFiller* f, std::string tree)
-{
-  m_fillers[tree].push_back(f);
+    
+    return StatusCode::SUCCESS;
 }
 
 // finalize
 StatusCode HepRepSvc::finalize ()
 {
-    StatusCode  status = StatusCode::SUCCESS;
-
-    return status;
-}
-
-/// Query interface
-StatusCode HepRepSvc::queryInterface(const IID& riid, void** ppvInterface)  {
-    if ( IID_IHepRepSvc.versionMatch(riid) )  {
-        *ppvInterface = (IHepRepSvc*)this;
-    }
-    else  {
-        return Service::queryInterface(riid, ppvInterface);
-    }
-    addRef();
-    return SUCCESS;
+  // @todo Need to destroy all the streamers and the server
+  StatusCode  status = StatusCode::SUCCESS;
+  
+  return status;
 }
 
 // handle "incidents"
@@ -185,105 +199,74 @@ void HepRepSvc::endEvent()
   // open the message log
   MsgStream log( msgSvc(), name() );
 
-#ifdef DEFECT_NO_STRINGSTREAM
-  std::strstream sName;
-  std::strstream sFileName;
-#else
   std::stringstream sName;
-  std::stringstream sFileName;
-#endif
-
-  IDataProviderSvc* esvc = 0;
-  service("EventDataSvc", esvc);
-
-  SmartDataPtr<Event::EventHeader>
-    event(esvc, "/Event");
-
+  
+  // set the name of the instance tree representing the event this is
+  // a temporary hack that set the name as Event-xxx, with xxx an
+  // increasing integer
   static temp = 0;
-  // sName << "Event-" << event->event();
   sName << "Event-" << temp;
   temp++;
-  
-  clearInstanceTrees();
-  addInstanceTree("Geometry3D","GLAST-LAT");
-#ifdef DEFECT_NO_STRINGSTREAM
-  sName << std::ends;
-#endif
-  addInstanceTree("Event",sName.str());
-  if (m_saveXml)
+
+  // Set the registry with the instance trees names of this event
+  // after clearing the names list
+  m_registry->clearInstanceTrees();
+  m_registry->addInstanceTree("Geometry3D","GLAST-LAT");
+  m_registry->addInstanceTree("Event",sName.str());
+
+  // If autoStream has been set to a name of a streamer in the
+  // jobOptions file, than we save automatically the HepRep to a file
+  if (m_autoStream!="")
     {
-      sFileName << m_xmlPath << sName.str() << ".xml.gz";
-#ifdef DEFECT_NO_STRINGSTREAM
-      sFileName << std::ends;
-#endif
-      saveXML(sFileName.str());
-      log << MSG::DEBUG << "Saved XML file for HepRep" << endreq;
+      std::stringstream sFileName;
+      sFileName << m_streamPath << sName.str();
+      saveHepRep(m_autoStream, sFileName.str());
+      log << MSG::DEBUG << "Streamed the HepRep to file using the " << 
+	m_autoStream << " streamer" << endreq;
     }
 }
 
-void HepRepSvc::saveXML(std::string nameFile)
+// This method save the HepRep to an external file using one streamer
+// identified by its name
+void HepRepSvc::saveHepRep(std::string strName, std::string fileName)
 {
-  
-  gzFile file = gzopen(nameFile.c_str(), "wb9");  
-  
-  XMLBuilder builder(file);
-  useBuilder(&builder);
-  
-  typedef std::vector<IFiller*> fillerCol;
-  std::vector<std::string>::const_iterator i; 
+  IStreamer* st = m_streamers[strName];
 
-  gzprintf(file,"<heprep>\n");
-
-  std::vector<std::string>& types = getTypeTrees();
-
-  for(i=types.begin();i!=types.end();i++)
-    {
-      fillerCol::const_iterator j;
-      gzprintf(file,
-               "<typetree name=\"%s\" version=\"1.0\">\n",  
-               (*i).c_str());
-      
-      fillerCol temp = getFillersByType((*i));
-      
-      for(j=temp.begin();j!=temp.end();j++)
-        {
-          (*j)->buildTypes();
-          builder.endTypes();
-        }
-
-      gzprintf(file,"</typetree>\n");
-      builder.reset();
-    }
-
-  std::map<std::string, std::string>::const_iterator it;
-
-  std::vector<std::string> typesList;
-
-  for(it=m_instances.begin();it!=m_instances.end();it++)
-    {
-      std::cout << it->second.c_str() << std::endl;
-      fillerCol::const_iterator jt;
-      fillerCol temp = getFillersByType(it->first);
-      gzprintf(file,
-              "<instancetree name=\"%s\" version=\"1.0\" reqtypetree=\"\" ",  
-              it->second.c_str()); 
-      gzprintf(file,"typeName=\"%s\" typeVersion=\"1.0\">\n" ,it->first.c_str());
-
-      for(jt=temp.begin();jt!=temp.end();jt++)
-        {
-          (*jt)->fillInstances(typesList);          
-          builder.endInstances();
-        }
-      gzprintf(file,"</instancetree>\n");
-      builder.reset();
-    }      
-
-  gzprintf(file,"</heprep>\n");
-  
-  gzclose(file);
-
-
+  if (st != 0)
+    st->saveHepRep(fileName);
 }
+
+// This method set the server used for an interactive session
+void HepRepSvc::setServer(IServer* s)
+{
+  s->setRegistry(m_registry);
+  s->setSvcAdapter(m_adapter);
+  m_server = s;
+}
+
+// This method add a new streamer to the list of registered one, using
+// a (unique) name for identification
+void HepRepSvc::addStreamer(std::string name, IStreamer* s)
+{
+  s->setRegistry(m_registry);
+  m_streamers[name] = s;
+}
+
+/// Query interface
+StatusCode HepRepSvc::queryInterface(const IID& riid, void** ppvInterface)  {
+    if ( IID_IHepRepSvc.versionMatch(riid) )  {
+        *ppvInterface = (IHepRepSvc*)this;
+    }
+    else if (IID_IRunable.versionMatch(riid) ) {
+      *ppvInterface = (IRunable*)this;
+    }
+    else  {
+      return Service::queryInterface(riid, ppvInterface);
+    }
+    addRef();
+    return SUCCESS;
+}
+
 
 void WARNING (const char * text ){  std::cerr << "WARNING: " << text << '\n';}
 void FATAL(const char* s){std::cerr << "\nERROR: "<< s;}

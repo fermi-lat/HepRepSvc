@@ -1,5 +1,6 @@
 #include "ReconFiller.h"
 #include "CalReconFiller.h"
+#include "TkrReconFiller.h"
 #include "HepRepSvc/IBuilder.h"
 
 #include "GaudiKernel/MsgStream.h"
@@ -21,7 +22,9 @@ ReconFiller::ReconFiller(IGlastDetSvc* gsvc,
   m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc)
 {
   CalReconFiller* calRecon = new CalReconFiller(m_gdsvc, m_dpsvc, m_ppsvc);
+  TkrReconFiller* tkrRecon = new TkrReconFiller(m_gdsvc, m_dpsvc, m_ppsvc);
   m_subFillers.push_back(calRecon);
+  m_subFillers.push_back(tkrRecon);
 }
 
 void ReconFiller::setBuilder(IBuilder* b)

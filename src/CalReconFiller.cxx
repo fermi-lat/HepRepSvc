@@ -110,7 +110,7 @@ void CalReconFiller::buildTypes()
   m_builder->addType("XtalCol", "Xtal", "Crystal reconstruction", "");
   m_builder->addAttDef("E","Energy reconstructed","Physics","MeV");
   m_builder->addAttValue("DrawAs","Prism","");
-  m_builder->addAttValue("LineColor","red","");
+  m_builder->addAttValue("Color","red","");
 
   m_builder->addType("CalRecon","ClusterCol","Cluster Collection","");
   m_builder->addType("ClusterCol", "Cluster", "Cluster", "");
