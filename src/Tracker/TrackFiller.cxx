@@ -234,14 +234,10 @@ std::string TrackFiller::getTkrIdString(const idents::TkrId& tkrId)
     int tower   = 4 * tkrId.getTowerX() + tkrId.getTowerY();
     int trayNum = tkrId.getTray();
 
-    if (tkrId.getBotTop() == idents::TkrId::eTKRSiTop)
-    {
-        tkrIdStream << " Tower #" << tower << ", top of tray #" << trayNum;
-    }
-    else
-    {
-        tkrIdStream << " Tower #" << tower << ", bottom of tray #" << trayNum;
-    }
+    tkrIdStream << " Tower " << tower << ", tray " << trayNum;
+
+    if (tkrId.getBotTop()==idents::TkrId::eTKRSiTop) {tkrIdStream << " top";}
+    else                                             {tkrIdStream << " bot";}
 
     return tkrIdStream.str();
 }
