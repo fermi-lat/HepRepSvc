@@ -45,7 +45,7 @@ void VertexFiller::buildTypes()
     m_builder->addAttValue("Color","yellow","");
     m_builder->addAttDef("E","Energy reconstructed","Physics","MeV");
     m_builder->addAttDef("Q","Quality","Physics","");
-    m_builder->addAttDef("Layer","Layer of conversion","Physics","");
+    m_builder->addAttDef("ConvLayer","Layer of conversion","Physics","");
     m_builder->addAttDef("Tower","Tower of conversion","Physics","");
 }
 
@@ -53,7 +53,7 @@ void VertexFiller::buildTypes()
 // This method fill the instance tree Event with the actual TDS content
 void VertexFiller::fillInstances (std::vector<std::string>& typesList)
 {
-    if (hasType(typesList,"GammaVtx"))
+    if (hasType(typesList,"Recon/TkrRecon/GammaVtxCol/GammaVtx"))
     {
         Event::TkrVertexCol* pVertices = SmartDataPtr<Event::TkrVertexCol>(m_dpsvc,"/Event/TkrRecon/TkrVertexCol");
       
@@ -61,7 +61,7 @@ void VertexFiller::fillInstances (std::vector<std::string>& typesList)
         if (pVertices)
 	    {
             std::string color("yellow");
-            int         lineWidth = 2;
+            double         lineWidth = 2;
 	        m_builder->addInstance("TkrRecon","GammaVtxCol");
 	        Event::TkrVertexCol::const_iterator iter;
 	  
@@ -75,10 +75,10 @@ void VertexFiller::fillInstances (std::vector<std::string>& typesList)
 
 
                 m_builder->addAttValue("Color",color,"");
-                m_builder->addAttValue("LineWidth", lineWidth, "");
+                m_builder->addAttValue("LineWidth", (float)lineWidth, "");
 	            m_builder->addAttValue("Q", (float)(pVertex.getQuality()), "");
 	            m_builder->addAttValue("E", (float)(pVertex.getEnergy()), "");
-	            m_builder->addAttValue("Layer", (pVertex.getLayer()), "");
+	            m_builder->addAttValue("ConvLayer", (pVertex.getLayer()), "");
 	            m_builder->addAttValue("Tower", (pVertex.getTower()), "");
 
 	            double sx = pVertex.getPosition().x();
@@ -107,6 +107,9 @@ bool VertexFiller::hasType(std::vector<std::string>& list, std::string type)
 
     std::vector<std::string>::const_iterator i; 
 
+    for(unsigned int j; j< list.size(); j++)
+      std::cout << list[j] << std::endl;
+    
     i = std::find(list.begin(),list.end(),type);
     if(i == list.end()) return 0;
     else return 1;

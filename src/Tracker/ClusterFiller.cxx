@@ -43,7 +43,7 @@ ClusterFiller::ClusterFiller(IGlastDetSvc* gsvc,
 
 // This method build the types for the HepRep
 void ClusterFiller::buildTypes()
-{
+{  
     m_builder->addType("TkrRecon","TkrClusterCol",
 		     "Reconstructed Cluster collections","");
 
@@ -69,8 +69,8 @@ void ClusterFiller::buildTypes()
 
 // This method fill the instance tree Event with the actual TDS content
 void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
-{
-    if (hasType(typesList,"Cluster"))
+{  
+    if (hasType(typesList,"Recon/TkrRecon/TkrClusterCol"))
     {
         Event::TkrClusterCol* pClusters = SmartDataPtr<Event::TkrClusterCol>(m_dpsvc,EventModel::TkrRecon::TkrClusterCol);
 
@@ -80,12 +80,14 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
 
             m_builder->addInstance("TkrRecon","TkrClusterCol");
 
+
             //Loop over all cluster hits in the SiClusters vector
-            while(nHits--)
-            {
+            if (hasType(typesList,"Recon/TkrRecon/TkrClusterCol/TkrCluster"))
+              while(nHits--)
+              {
                 Event::TkrCluster* pCluster = pClusters->getHit(nHits);
                 Point              clusPos  = pCluster->position();
-     
+
                 double x    = clusPos.x();
                 double y    = clusPos.y();
                 double z    = clusPos.z();
@@ -97,7 +99,7 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
                 double ToT  = pCluster->ToT() / 64.;       // So, max ToT = 4 mm
 
                 int    view   = pCluster->v();
-                        
+
                 m_builder->addInstance("TkrClusterCol","TkrCluster");
 
                 m_builder->addAttValue("ID",          pCluster->id(),"");
@@ -112,8 +114,8 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
                 clusterPosition.setf(std::ios::fixed);
                 clusterPosition.precision(3);
                 clusterPosition << " (" << pCluster->position().x()
-                    << ","  << pCluster->position().y() 
-                    << ","  << pCluster->position().z() << ")";
+                  << ","  << pCluster->position().y() 
+                  << ","  << pCluster->position().z() << ")";
                 m_builder->addAttValue("Position",clusterPosition.str(),"");
 
                 m_builder->addAttValue("ToT",         (float)(pCluster->ToT()),"");
@@ -121,10 +123,10 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
                 //Draw the width of the cluster
                 if (pCluster->v() == Event::TkrCluster::Y)
                 {
-                    dy   = 0.5 * pCluster->size() * m_siStripPitch;
-                    dx   = 0.5 * m_towerPitch;
-                    xToT = x - dx;
-                    yToT = y;
+                  dy   = 0.5 * pCluster->size() * m_siStripPitch;
+                  dx   = 0.5 * m_towerPitch;
+                  xToT = x - dx;
+                  yToT = y;
                 }
 
                 //Now draw the hit strips
@@ -138,11 +140,14 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
                 m_builder->addPoint(x+dx,y-dy,z-dz);
 
                 //Time over threshold add here
-                m_builder->addInstance("TkrCluster","TkrClusterToT");
-                m_builder->addPoint(xToT,yToT,z);
-                m_builder->addPoint(xToT,yToT,z+ToT);
-            }
-        }
+                if (hasType(typesList,"Recon/TkrRecon/TkrClusterCol/TkrCluster/TkrClusterToT"))
+                {
+                  m_builder->addInstance("TkrCluster","TkrClusterToT");
+                  m_builder->addPoint(xToT,yToT,z);
+                  m_builder->addPoint(xToT,yToT,z+ToT);
+                }
+              }
+        }        
     } 
 }
 

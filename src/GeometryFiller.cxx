@@ -22,6 +22,7 @@ void GeometryFiller::fillInstances (std::vector<std::string>& typesList)
 {
   m_geometry->setBuilder(m_builder);
   m_geometry->setHepRepMode("instance"); 
+  m_geometry->setTypesList(typesList);
   m_gsvc->accept(*m_geometry);  
   m_geometry->reset();
 }

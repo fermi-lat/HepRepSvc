@@ -54,7 +54,10 @@ void CandTrackFiller::buildTypes()
 // This method fill the instance tree Event with the actual TDS content
 void CandTrackFiller::fillInstances (std::vector<std::string>& typesList)
 {
-    if (hasType(typesList,"Track"))
+    if (!hasType(typesList, "Recon/TkrRecon"))
+      return;
+
+    if (hasType(typesList,"Recon/TkrRecon/CandidateCol/Candidate"))
     { 
         Event::TkrPatCandCol* pTkrCandidates = SmartDataPtr<Event::TkrPatCandCol>(m_dpsvc,EventModel::TkrRecon::TkrPatCandCol);
 

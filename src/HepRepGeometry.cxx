@@ -1,5 +1,5 @@
 // File and Version Information:
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepGeometry.cxx,v 1.6 2004/07/21 15:31:29 riccardo Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepGeometry.cxx,v 1.7 2004/08/25 08:03:07 riccardo Exp $
 //
 // Author(s):
 //      R.Giannitrapani
@@ -36,11 +36,20 @@ HepRepGeometry::pushShape(ShapeType s, const UintVector& idvec,
 {
   if(m_hrMode == "type")
     {
+      // Build the full path name in the list of already built types
+      std::string fullName = "";
+      for(unsigned int j = 0; j<m_actualType.size();j++)
+      {
+        fullName = fullName + m_actualType[j] + "/";
+      }
+
+      fullName = fullName + name;
+
       std::vector<std::string>::const_iterator i;
-      i = std::find(m_types.begin(),m_types.end(),name);
+      i = std::find(m_types.begin(),m_types.end(),fullName);
       if (i == m_types.end())
-        {
-          m_types.push_back(name);          
+        {          
+          m_types.push_back(fullName);          
           std::string father;
           if (m_actualType.size() == 0)
             father = "";
@@ -56,12 +65,18 @@ HepRepGeometry::pushShape(ShapeType s, const UintVector& idvec,
 					// The color is set only to the root of the geometry, so it will be possible
 					// to change the color of subtypes 
 					if (name == "LAT")
+          {
 						m_builder->addAttValue("Color","0.98,0.92,0.8","");
+            m_builder->addAttValue("Layer","Geometry","");
+          }
 
           m_builder->addAttDef("Volume type","The kind of volume (simple, composition, stack or sensitive)","Physics","");
           m_builder->addAttDef("Material","The material name of the volume","Physics","");
           m_builder->addAttDef("Shape","At the moment this can be just a Box","Physics","");
-          
+
+          if (m_actualDepth > m_depth)
+            m_builder->addAttValue("Visibility", false, "");
+
           m_builder->addAttValue("Material",material,"");
           
           switch(type)
@@ -106,9 +121,13 @@ HepRepGeometry::pushShape(ShapeType s, const UintVector& idvec,
 
   else if (m_hrMode == "instance")
     {
+      std::string temp;
+      for(unsigned int k=0; k<m_actualInstance.size(); k++)
+        temp = temp + m_actualInstance[k] + "/";
+          
       double x=params[0], y=params[1], z=params[2];
       double rx=params[3], ry=params[4], rz=params[5];  
-      
+
       HepRotation rot(rx*M_PI/180, ry*M_PI/180, rz*M_PI/180);
       Hep3Vector t(x, y, z);  
       HepTransform3D tr(rot,t);
@@ -120,12 +139,17 @@ HepRepGeometry::pushShape(ShapeType s, const UintVector& idvec,
       else
         father = m_actualInstance.back();
 
+
       m_actualInstance.push_back(name);
       m_actualDepth++;            
 
-      m_builder->addInstance(father,name);
-      
-      if ((s == Box))
+      // Verify that this instance is in the typesList
+      if (hasType(m_typesList, temp+name))
+      {                                    
+        
+        m_builder->addInstance(father,name);
+
+        if ((s == Box))
         {
           double dx = params[6]/2;
           double dy = params[7]/2;
@@ -133,38 +157,41 @@ HepRepGeometry::pushShape(ShapeType s, const UintVector& idvec,
 
           HepPoint3D v;
           HepPoint3D v1;
-      
-          if ((((type == Simple) || (type == posSensitive) || (type == intSensitive)) 
-               && (m_actualDepth < m_depth)) || (m_actualDepth == m_depth)) 
-            
-            {
-          
-              v.setX(dx); v.setY(dy); v.setZ(dz); v1 = (atr*v);
-              m_builder->addPoint(v1.x(), v1.y(), v1.z());
-              v.setX(-dx); v.setY(dy); v.setZ(dz); v1 = atr*v;
-              m_builder->addPoint(v1.x(), v1.y(), v1.z());
-              v.setX(-dx); v.setY(-dy); v.setZ(dz); v1 = atr*v;
-              m_builder->addPoint(v1.x(), v1.y(), v1.z());
-              v.setX(dx); v.setY(-dy); v.setZ(dz); v1 = atr*v;
-              m_builder->addPoint(v1.x(), v1.y(), v1.z());
 
-          
-              v.setX(dx); v.setY(dy); v.setZ(-dz); v1 = atr*v;
-              m_builder->addPoint(v1.x(), v1.y(), v1.z());
-              v.setX(-dx); v.setY(dy); v.setZ(-dz); v1 = atr*v;
-              m_builder->addPoint(v1.x(), v1.y(), v1.z());              
-              v.setX(-dx); v.setY(-dy); v.setZ(-dz); v1 = atr*v;
-              m_builder->addPoint(v1.x(), v1.y(), v1.z());
-              v.setX(dx); v.setY(-dy); v.setZ(-dz); v1 = atr*v;
-              m_builder->addPoint(v1.x(), v1.y(), v1.z());              
-            }
+//          if ((((type == Simple) || (type == posSensitive) || (type == intSensitive)) 
+//                && (m_actualDepth < m_depth)) || (m_actualDepth == m_depth)) 
+          if ((type == Simple) || (type == posSensitive) || (type == intSensitive))
+          {
+
+            v.setX(dx); v.setY(dy); v.setZ(dz); v1 = (atr*v);
+            m_builder->addPoint(v1.x(), v1.y(), v1.z());
+            v.setX(-dx); v.setY(dy); v.setZ(dz); v1 = atr*v;
+            m_builder->addPoint(v1.x(), v1.y(), v1.z());
+            v.setX(-dx); v.setY(-dy); v.setZ(dz); v1 = atr*v;
+            m_builder->addPoint(v1.x(), v1.y(), v1.z());
+            v.setX(dx); v.setY(-dy); v.setZ(dz); v1 = atr*v;
+            m_builder->addPoint(v1.x(), v1.y(), v1.z());
+
+
+            v.setX(dx); v.setY(dy); v.setZ(-dz); v1 = atr*v;
+            m_builder->addPoint(v1.x(), v1.y(), v1.z());
+            v.setX(-dx); v.setY(dy); v.setZ(-dz); v1 = atr*v;
+            m_builder->addPoint(v1.x(), v1.y(), v1.z());              
+            v.setX(-dx); v.setY(-dy); v.setZ(-dz); v1 = atr*v;
+            m_builder->addPoint(v1.x(), v1.y(), v1.z());
+            v.setX(dx); v.setY(-dy); v.setZ(-dz); v1 = atr*v;
+            m_builder->addPoint(v1.x(), v1.y(), v1.z());              
+          }
         }
+      }            
       m_actualTransform.push_back(atr);
     }
+  else
+    return AbortSubtree;
 
-  if (m_actualDepth == m_depth)
-    return AbortSubtree;      
-  else 
+//  if (m_actualDepth == m_depth)
+//    return AbortSubtree;      
+//  else 
     return More;
 }
 
@@ -194,3 +221,15 @@ void HepRepGeometry::reset()
 }
 
 
+
+bool HepRepGeometry::hasType(std::vector<std::string>& list, std::string type) 
+{
+  if (list.size() == 0) return 1;
+
+  std::vector<std::string>::const_iterator i; 
+
+  i = std::find(list.begin(),list.end(),type);
+  if(i == list.end()) return 0;
+  else return 1;
+
+}

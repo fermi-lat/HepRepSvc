@@ -23,6 +23,7 @@
 void MonteCarloFiller::buildTypes()
 {
   m_builder->addType("","MC","Monte Carlo Tree","");
+  m_builder->addAttValue("Layer","Event","");
 
   m_builder->addType("MC","PosHitCol","Position Hits","");
 
@@ -58,10 +59,13 @@ void MonteCarloFiller::buildTypes()
 // This method fill the instance tree Event/MC with the actual TDS content
 void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
 {
+  if (!hasType(typesList,"MC")) 
+    return;  
+
   m_builder->addInstance("","MC");
 
-  if (hasType(typesList,"PosHitCol") ||
-      hasType(typesList,"PosHitSteps"))
+  if (hasType(typesList,"MC/PosHitCol/PosHit") ||
+      hasType(typesList,"MC/PosHitCol/PosHit/PosHitSteps"))
     {
       SmartDataPtr<Event::McPositionHitVector>
         posHits(m_dpsvc, "/Event/MC/PositionHitsCol");
@@ -126,8 +130,8 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
         }
     }
 		}
-  if (hasType(typesList,"IntHitCol") ||
-      hasType(typesList,"IntHit")) 
+  if (hasType(typesList,"MC/IntHitCol") ||
+      hasType(typesList,"MC/IntHitCol/IntHit")) 
     {
       SmartDataPtr<Event::McIntegratingHitVector>
         intHits(m_dpsvc, "/Event/MC/IntegratingHitsCol");
@@ -182,7 +186,7 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
     }
 
   // TODO lot of duplicated code here; needs to refactor
-  if (hasType(typesList,"Particle"))
+  if (hasType(typesList,"MC/ParticleCol/Particle"))
     {      
      m_builder->addInstance("MC","ParticleCol");      
       // If there are trajectories in the TDS, we use them

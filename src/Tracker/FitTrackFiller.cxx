@@ -47,7 +47,7 @@ void FitTrackFiller::buildTypes()
     m_builder->addAttValue("DrawAs","Line","");
     m_builder->addAttValue("Color","blue","");
     m_builder->addAttDef("TrackId","Track ID #","Physics","");
-    m_builder->addAttDef("Layer","Layer at Track Start","Physics","");
+    m_builder->addAttDef("TkrLayer","Layer at Track Start","Physics","");
     m_builder->addAttDef("Tower","Tower at Track Start","Physics","");
     m_builder->addAttDef("Energy","Fit Track Energy","Physics","MeV");
     m_builder->addAttDef("Quality","Fit Track Quality","Physics","");
@@ -76,7 +76,7 @@ void FitTrackFiller::buildTypes()
 // This method fill the instance tree Event with the actual TDS content
 void FitTrackFiller::fillInstances (std::vector<std::string>& typesList)
 {
-    if (hasType(typesList,"Track"))
+    if (hasType(typesList,"Recon/TkrRecon/TrackCol/Track"))
     { 
         Event::TkrFitTrackCol* pTracks = 
 	    SmartDataPtr<Event::TkrFitTrackCol>(m_dpsvc,EventModel::TkrRecon::TkrFitTrackCol);
@@ -91,7 +91,7 @@ void FitTrackFiller::fillInstances (std::vector<std::string>& typesList)
 	        if (numTracks > 0) 
 	        {
                 int trackId  = 0;
-                int trackWid = 2;
+                double trackWid = 2.0;
 	            Event::TkrFitTrackCol::const_iterator it = pTracks->begin();
 
 	            while(it != pTracks->end())
@@ -102,11 +102,11 @@ void FitTrackFiller::fillInstances (std::vector<std::string>& typesList)
         		    Event::TkrFitHit::TYPE  fit      = Event::TkrFitHit::SMOOTH;
 		            Event::TkrFitHit::TYPE  typ      = Event::TkrFitHit::SMOOTH;
 
-                    if (trackId > 1) trackWid = 1;
+                    if (trackId > 1) trackWid = 1.0;
 
                     m_builder->addAttValue("TrackId",   trackId++, "");
-                    m_builder->addAttValue("LineWidth", trackWid, "");
-                    m_builder->addAttValue("Layer",     track.getLayer(), "");
+                    m_builder->addAttValue("LineWidth", (float)trackWid, "");
+                    m_builder->addAttValue("TkrLayer",     track.getLayer(), "");
                     m_builder->addAttValue("Tower",     track.getTower(), "");
 	                m_builder->addAttValue("Quality",   (float)(track.getQuality()), "");
 	                m_builder->addAttValue("Energy",    (float)(track.getEnergy()), "");
@@ -153,7 +153,7 @@ void FitTrackFiller::fillInstances (std::vector<std::string>& typesList)
 		            for(Event::TkrFitPlaneConPtr hitIter = track.begin(); hitIter < track.end(); hitIter++)
 		            {
 		                m_builder->addInstance("Track","TkrHitPlane");
-                        m_builder->addAttValue("LineWidth", trackWid, "");
+                        m_builder->addAttValue("LineWidth", (float)trackWid, "");
 
 		                Event::TkrFitPlane plane = *hitIter;
 
