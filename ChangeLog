@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: lsrea  Sat Feb 26 12:08:30 PST 2005
+HepRepSvc/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+prepare for new tag: changed markers to little x's; added pos and dir info to Vertex
+
+    *
+------------------------------------------------------------
 User: richard  Tue Feb 15 21:21:11 PST 2005
 HepRepSvc/src
 
