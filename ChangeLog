@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: richard  Tue Feb 15 21:21:11 PST 2005
+HepRepSvc/src
+
+Modified Files:
+	CalReconFiller.cxx 
+Log Message:
+Multiple clusters; calculate energy sum from layers. energySum not filled when reading from Root
+
+    *
+------------------------------------------------------------
 User: riccardo  Tue Feb 15 02:15:59 PST 2005
 HepRepSvc/src
 
