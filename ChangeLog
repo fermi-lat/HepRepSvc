@@ -1,5 +1,20 @@
 ------------------------------------------------------------
 User: riccardo  Mon Jul  7 01:29:55 PDT 2003
+HepRepSvc/src
+
+Modified Files:
+	CalReconFiller.cxx HepRepSvc.cxx HepRepSvc.h 
+	MonteCarloFiller.cxx ReconFiller.cxx 
+Added Files:
+	Registry.cxx Registry.h SvcAdapter.cxx SvcAdapter.h 
+	TkrReconFiller.cxx TkrReconFiller.h 
+Removed Files:
+	XmlBuilder.cxx XmlBuilder.h 
+Log Message:
+Complete refactoring of HepRepSvc: new abstract classes to isolate any dependence from Xml or Corba, now contained in their own packages
+    *
+------------------------------------------------------------
+User: riccardo  Mon Jul  7 01:29:55 PDT 2003
 HepRepSvc/doc
 
 Modified Files:
