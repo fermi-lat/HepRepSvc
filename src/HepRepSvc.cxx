@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.1.1.1 2002/09/20 08:50:19 riccardo Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.2 2002/09/20 14:21:07 riccardo Exp $
 // 
 //  Original author: R.Giannitrapani
 //
@@ -20,6 +20,7 @@
 #include "HepRepGeometry.h"
 
 #include "MonteCarloFiller.h"
+#include "ReconFiller.h"
 #include "GeometryFiller.h"
 
 #include "Event/TopLevel/Event.h"
@@ -98,12 +99,13 @@ StatusCode HepRepSvc::initialize ()
     incsvc->addListener(this, "EndEvent", 0);
 
     registerFiller(new GeometryFiller(m_geomDepth,gsvc), "Geometry3D");
+    registerFiller(new ReconFiller(gsvc,esvc,pps), "Event");
     registerFiller(new MonteCarloFiller(gsvc,esvc,pps), "Event");
     
     return status;
 }
 
-// This method set a builde to be used by the registered fillers
+// This method set a builder to be used by the registered fillers
 void HepRepSvc::useBuilder(IBuilder* b)
 {
   std::map<std::string, fillerCol>::iterator i;
@@ -259,6 +261,7 @@ void HepRepSvc::saveXML(std::string nameFile)
 
   for(it=m_instances.begin();it!=m_instances.end();it++)
     {
+      std::cout << it->second.c_str() << std::endl;
       fillerCol::const_iterator jt;
       fillerCol temp = getFillersByType(it->first);
       gzprintf(file,

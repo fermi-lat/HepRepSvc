@@ -5,7 +5,6 @@ use GlastPolicy
 use FluxSvc
 use Event 
 use GlastSvc 
-use CLHEP v2* IExternal
 use ZLIB
 
 apply_pattern packageShr
