@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: riccardo  Mon Aug  2 01:39:40 PDT 2004
+HepRepSvc/HepRepSvc
+
+Modified Files:
+	mainpage.h 
+Log Message:
+Commented a broken code in HepRepSvc .. this should fix the test programs.
+
+    *
+------------------------------------------------------------
 User: riccardo  Wed Jul 21 14:44:08 PDT 2004
 HepRepSvc/src
 
