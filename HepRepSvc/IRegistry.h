@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include "HepRepSvc/HepRepId.h"
 
 class IFiller;
 class IBuilder;
@@ -36,7 +37,7 @@ class IRegistry
   
   /// This method retrive the collection of Fillers registered
   /// for a given typetree name
-  virtual const fillerCol& getFillersByType(std::string type) = 0;
+  virtual const fillerCol& getFillersByType(std::string) = 0;
   
   /// This method retrive the list of typetree names registered
   virtual const std::vector<std::string>& getTypeTrees() = 0;
@@ -54,6 +55,18 @@ class IRegistry
   /// Get the instance trees map
   virtual const std::map<std::string, std::string>& getInstanceTrees() = 0;
 
+  /// Get possible dependent instance trees name given an instance tree name
+  virtual const std::vector<std::string>& getDependencies(std::string) = 0;
+
+  /// This method add an instancetrees dependency
+  virtual void addDependency(std::string inst, std::string dep) = 0;
+  
+  /// Get the principal instance tree name
+  virtual const std::string getPrincipalTree() = 0;  
+
+  /// Set the principal instance tree name
+  virtual setPrincipalTree(std::string) = 0;  
+  
   /// Get the type given the instance name
   virtual std::string getTypeByInstance(std::string) = 0;
 

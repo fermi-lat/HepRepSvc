@@ -48,6 +48,11 @@ void Registry::useBuilder(IBuilder* b)
     }
 }
 
+
+const std::vector<std::string>& Registry::getDependencies(std::string tree){
+  return m_dependencies[tree];
+}
+
 std::string Registry::getTypeByInstance(std::string name)
 {
   return m_instances[name];

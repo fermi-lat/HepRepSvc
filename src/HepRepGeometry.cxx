@@ -1,5 +1,5 @@
 // File and Version Information:
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepGeometry.cxx,v 1.2 2003/05/20 12:43:44 riccardo Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepGeometry.cxx,v 1.3 2004/04/05 15:57:57 riccardo Exp $
 //
 // Author(s):
 //      R.Giannitrapani
@@ -50,7 +50,7 @@ HepRepGeometry::pushShape(ShapeType s, const UintVector& idvec,
           m_actualDepth++;
 
           m_actualType.push_back(name);          
-		      m_builder->addType(father,name,"","");
+          m_builder->addType(father,name,"","");
 
 
           m_builder->addAttDef("Volume type","","Physics","");

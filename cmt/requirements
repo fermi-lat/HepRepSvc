@@ -5,6 +5,7 @@ use GlastPolicy
 use Event 
 use GlastSvc 
 use FluxSvc
+use flux
 
 
 apply_pattern packageShr
