@@ -1,5 +1,5 @@
-#ifndef CALRECONFILLER_H
-#define CALRECONFILLER_H
+#ifndef ACDRECONFILLER_H
+#define ACDRECONFILLER_H
 #include <vector>
 #include <string>
 
@@ -10,19 +10,19 @@ class IDataProviderSvc;
 class IParticlePropertySvc;
 
 /** 
- *  @class CalReconFiller
+ *  @class AcdReconFiller
  *
- *  @brief This is the HepRep fillers for all the Calorimeter relevant
+ *  @brief This is the HepRep fillers for all the ACD relevant
  *  objects (recond and digi). This is a "bookmark" filler waiting for some real
- *  CAL expert to help in developing it
+ *  ACD expert to help in developing it
  *
  *  @author R.Giannitrapani
  */
 
-class CalReconFiller: public IFiller{
+class AcdReconFiller: public IFiller{
   
  public:
-  CalReconFiller(IGlastDetSvc* gsvc,
+  AcdReconFiller(IGlastDetSvc* gsvc,
                  IDataProviderSvc* dpsvc,
                  IParticlePropertySvc* ppsvc);
   
@@ -39,14 +39,6 @@ class CalReconFiller: public IFiller{
   IDataProviderSvc* m_dpsvc;
   IParticlePropertySvc* m_ppsvc;
 
-  /// crystal height
-  float m_xtalHeight;
-
-  /// Z position of top calorimeter layer
-  float m_calZtop;
-  
-  /// Z position of bottom calorimeter layer
-  float m_calZbottom;
 };
 
 #endif //CALRECONFILLER_H
