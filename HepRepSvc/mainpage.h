@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/HepRepSvc/mainpage.h,v 1.2 2003/07/07 08:29:55 riccardo Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/HepRepSvc/mainpage.h,v 1.3 2004/05/20 08:13:47 riccardo Exp $
 // Mainpage for doxygen
 
 /** @mainpage package HepRepSvc
@@ -54,22 +54,22 @@
      format
 
     - <b>IStreamer</b>: an interface to a concrete implementation of
-     the HepRep; a streamer is not interactive, it just stream out the
-     HepRep on a file directly by command or automatically at the end
-     of every event (see the property autoStream later). The command
-     to stream a file is the following one
-    
-     HepRepSvc::saveHepRep(std::string streamerName, std::string fileName);
-
-     where streamerName is the name that identify the streamer, while
-     fileName is the name of the file to save on; note that the
-     fileName must not include the extension, is up to the streamer to
-     add the proper extension.
-     
-     Example of streamer is the Xml one that can be found in the
-     HepRepXml package.
-
-     HepRepSvc support any number of registered streamer.
+      the HepRep; a streamer is not interactive, it just stream out the
+      HepRep on a file directly by command or automatically at the end
+      of every event (see the property autoStream later). The command
+      to stream a file is the following one
+      <p>
+      HepRepSvc::saveHepRep(std::string streamerName, std::string fileName);
+      <p>
+      where streamerName is the name that identify the streamer, while
+      fileName is the name of the file to save on; note that the
+      fileName must not include the extension, is up to the streamer to
+      add the proper extension.
+      <p>
+      Example of streamer is the Xml one that can be found in the
+      HepRepXml package.
+      <p>
+      HepRepSvc support any number of registered streamer.
 
     - <b>IServer</b>: an interface to a concrete implementation of the
      HepRep; a server is an interactive session of HepRep, and it is
@@ -92,10 +92,6 @@
   big impact on the job performance; the normal use of the HepRepSvc so is
   during the analysis of a particular event that the user want to browse, not
   during production of big runs.
-
-  The actual version of the HepRepSvc is quite incomplete and it has been
-  committed on the repository for test purpouses. Expect big changes and
-  improvments in future releases.
 
   For a concrete example of usage of this service, look at the
   HepRepXml package.
