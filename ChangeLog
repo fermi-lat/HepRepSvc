@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: riccardo  Wed Sep 17 01:06:27 PDT 2003
+HepRepSvc/src
+
+Modified Files:
+	HepRepGeometry.h HepRepSvc.h TkrReconFiller.cxx 
+Log Message:
+Some fixes
+    *
+------------------------------------------------------------
 User: riccardo  Thu Jul 17 15:26:13 PDT 2003
 HepRepSvc/doc
 
