@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.h,v 1.6 2004/07/19 07:27:16 riccardo Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.h,v 1.7.2.1 2005/01/11 10:15:44 riccardo Exp $
 // 
 //  Original author: R.Giannitrapani
 
@@ -74,6 +74,10 @@ class HepRepSvc : virtual public Service,
   /// sent the valid setEvent command accepted by this server
   std::string getCommands();  
 
+
+  /// The method tries to go back to a previous event
+  bool previousEvent(int);
+  
   /// This method set the Event ID to a pair Run/Event
   bool setEventId(int run, int event);
 
