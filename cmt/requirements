@@ -1,0 +1,27 @@
+package HepRepSvc
+version v0r1
+
+use GlastPolicy
+use facilities
+use GaudiSvc
+use Event 
+use GlastSvc 
+use CLHEP
+use ZLIB
+
+apply_pattern packageShr
+apply_pattern package_include
+
+private
+
+apply_pattern package_headers
+apply_pattern package_Cshlibflags
+
+library HepRepSvc *.cxx \
+ Dll/*.cxx\
+ ${HepRepSvc_headers}
+
+
+# test program, using local joboptions
+public set JOBOPTIONS ${HEPREPSVCROOT}/src/test/jobOptions.txt
+apply_pattern package_test
