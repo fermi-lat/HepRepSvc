@@ -70,13 +70,14 @@ void ClusterFiller::buildTypes()
 
     m_builder->addType("TkrCluster","TkrClusterToT"," ","");
     m_builder->addAttValue("DrawAs","Line","");
-    m_builder->addAttValue("Color","green","");
+    m_builder->addAttValue("Color","red","");
 
+    // Tracy hates the fixed-size marker, try again!
     m_builder->addType("TkrCluster", "ClusterMarker", " ", "");
-    m_builder->addAttValue("DrawAs", "Point", "");
+    m_builder->addAttValue("DrawAs", "Line", "");
     m_builder->addAttValue("Color", "green", "");
-    m_builder->addAttValue("MarkerName", "Cross", "");
-    m_builder->addAttValue("MarkerSize", "1", "");
+    //m_builder->addAttValue("MarkerName", "Cross", "");
+    //m_builder->addAttValue("MarkerSize", "1", "");
 }
 
 
@@ -97,6 +98,7 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
     if (!hasType(typesList,"Recon/TkrRecon/TkrClusterCol/TkrCluster")) return;
     
     double markerOffset = m_siStripPitch;
+    double markerSize   = 5.0*m_siStripPitch;
     while(nHits--)
     {
         Event::TkrCluster* pCluster = (*pClusters)[nHits];
@@ -110,7 +112,9 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
         double dz   = 0.5 * m_siThickness;
         double xToT = x;
         double yToT = y - dy - markerOffset;
-        double ToT  = pCluster->ToT() / 64.;       // So, max ToT = 4 mm
+        double deltaY = 0.0;
+        double deltaX = markerSize;
+        double ToT  = pCluster->getRawToT() / 64.;       // So, max ToT = 4 mm
 
         int    view   = pCluster->getTkrId().getView();
 
@@ -141,6 +145,8 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
             dx   = 0.5 * m_stripLength;
             xToT = x - dx - markerOffset;
             yToT = y;
+            deltaY = markerSize;
+            deltaX = 0.0;
 
         }
 
@@ -154,8 +160,13 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
         m_builder->addPoint(x-dx,y-dy,z-dz);
         m_builder->addPoint(x+dx,y-dy,z-dz);
 
+        // make the cross in the measured view
         m_builder->addInstance("TkrCluster", "ClusterMarker");
-        m_builder->addPoint(xToT, yToT, z);
+        m_builder->addPoint(xToT+deltaX, yToT+deltaY, z+markerSize);
+        m_builder->addPoint(xToT-deltaX, yToT-deltaY, z-markerSize);  
+        m_builder->addInstance("TkrCluster", "ClusterMarker");
+        m_builder->addPoint(xToT-deltaX, yToT-deltaY, z+markerSize);
+        m_builder->addPoint(xToT+deltaX, yToT+deltaY, z-markerSize);
 
         //Time over threshold add here
         if (hasType(typesList,
