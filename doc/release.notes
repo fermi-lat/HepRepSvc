@@ -1,4 +1,4 @@
-//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.9 2004/09/29 10:41:55 riccardo Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.10 2004/12/16 19:31:15 usher Exp $
 /*
  * v0r1     20-09-02 RG Inital release of the package
  * v0r2     07-07-03 RG Complete refactoring of HepRepSvc	
@@ -10,4 +10,5 @@
  * v0r7     26-08-04 RG Added an Header Fillers with EventHeader info
  * v0r8     29-09-04 RG Lot of changes to support full name Type and new commands
  * v0r9     16-12-04 TU Change over to using new Tracker TDS classes
+ * v0r10p1  27-12-04 LR remove TkrCluster id from fillers
 */
