@@ -42,7 +42,8 @@ void CandTrackFiller::buildTypes()
 
     m_builder->addType("CandidateCol","Candidate","Candidate track","");
     m_builder->addAttValue("DrawAs","Line","");
-    m_builder->addAttValue("Color","orange","");
+    m_builder->addAttValue("Color","green","");
+    m_builder->addAttValue("LineStyle","Dashed","");
     m_builder->addAttDef("TrackId","Track ID #","Physics","");
 
     m_builder->addType("Candidate","CandHit", "Candidate Track Hits", "");
