@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: usher  Mon Jun 14 13:40:29 PDT 2004
+HepRepSvc/src/Tracker
+
+Modified Files:
+	CandTrackFiller.cxx FitTrackFiller.cxx VertexFiller.cxx 
+Log Message:
+
+    *
+------------------------------------------------------------
 User: riccardo  Fri Jun  4 04:29:45 PDT 2004
 HepRepSvc/doc
 
