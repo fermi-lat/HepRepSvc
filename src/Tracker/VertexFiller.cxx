@@ -10,7 +10,7 @@
 
 #include "Event/TopLevel/EventModel.h"
 #include "Event/Recon/TkrRecon/TkrVertex.h"
-#include "Event/Recon/TkrRecon/TkrFitTrackBase.h"
+//#include "Event/Recon/TkrRecon/TkrFitTrackBase.h"
 
 #include "idents/VolumeIdentifier.h"
 #include "CLHEP/Geometry/Transform3D.h"
@@ -107,8 +107,7 @@ bool VertexFiller::hasType(std::vector<std::string>& list, std::string type)
 
     std::vector<std::string>::const_iterator i; 
 
-    for(unsigned int j; j< list.size(); j++)
-      std::cout << list[j] << std::endl;
+    //for(unsigned int j=0; j< list.size(); j++) std::cout << list[j] << std::endl;
     
     i = std::find(list.begin(),list.end(),type);
     if(i == list.end()) return 0;
