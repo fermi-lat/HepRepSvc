@@ -180,17 +180,17 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
 
                         //Build string for the measuring view
                         std::stringstream hitView("No valid hit found");
-                        int clusterId = -1;
+                        //int clusterId = -1;
 
                         if (plane.getStatusBits() & Event::TkrTrackHit::HITONFIT)
                         {
                             if (plane.getTkrId().getView() == idents::TkrId::eMeasureX) hitView << "This is an X measuring plane";
                             else                                                        hitView << "This is a Y measuring plane";
-                            clusterId = plane.getClusterPtr()->id();
+                            //clusterId = -1; //plane.getClusterPtr()->id();
                         }
 
                         m_builder->addAttValue("Projection",hitView.str(),"");
-                        m_builder->addAttValue("ClusterID",clusterId,"");
+                        //m_builder->addAttValue("ClusterID",clusterId,"");
                         m_builder->addAttValue("Energy",(float)(plane.getEnergy()),"");
                         m_builder->addAttValue("RadLen",(float)(plane.getRadLen()),"");
                         m_builder->addAttValue("ActDist",(float)(plane.getActiveDist()),"");

@@ -51,7 +51,7 @@ void ClusterFiller::buildTypes()
     //m_builder->addAttValue("DrawAs","Line","");
     //m_builder->addAttValue("MarkName","Cross","");
     m_builder->addAttValue("Color","green","");
-    m_builder->addAttDef("ID","Cluster ID","Physics","");
+    //m_builder->addAttDef("ID","Cluster ID","Physics","");
     m_builder->addAttDef("Plane","Cluster Plane #","Physics","");
     m_builder->addAttDef("Tower","Cluster Tower #","Physics","");
     m_builder->addAttDef("View","Cluster View","Physics","");
@@ -101,8 +101,8 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
 
                 m_builder->addInstance("TkrClusterCol","TkrCluster");
 
-                m_builder->addAttValue("ID",          pCluster->id(),"");
-                m_builder->addAttValue("Plane",       (int)pCluster->getTkrId().getPlane(),"");
+                //m_builder->addAttValue("ID",          -1 /*pCluster->id()*/,"");
+                m_builder->addAttValue("Plane",       (int)pCluster->getPlane(),"");
                 m_builder->addAttValue("Tower",       pCluster->tower(),"");
                 m_builder->addAttValue("View",        view,"");
                 m_builder->addAttValue("First Strip", pCluster->firstStrip(),"");
