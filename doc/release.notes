@@ -1,4 +1,4 @@
-//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.14 2005/01/19 08:58:20 lsrea Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.15 2005/01/25 20:29:05 lsrea Exp $
 /*
  * v0r1     20-09-02 RG Inital release of the package
  * v0r2     07-07-03 RG Complete refactoring of HepRepSvc	
@@ -15,4 +15,5 @@
  * v0r12    18-01-05 RG Fixed a bug about previousEvent missing method
  * v0r12p1  18-01-05 LR Improved TrackFiller and VtxFiller
  * v0r12p2  26-01-05 LR Improved TrackFiller and ClusterFiller
+ * v0r12p3  11-02-05 LR Add markers to clusters!
 */
