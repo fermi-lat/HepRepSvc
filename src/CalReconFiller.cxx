@@ -114,16 +114,17 @@ void CalReconFiller::buildTypes()
   m_builder->addAttValue("DrawAs","Prism","");
   m_builder->addAttValue("Color","red","");
 
-  m_builder->addType("CalRecon","CalClusterCol","Cal Cluster Collection","");
-  m_builder->addType("CalClusterCol", "CalCluster", "Cal Cluster", "");
+  m_builder->addType("CalRecon","ClusterCol","Cal Cluster Collection","");
+  m_builder->addType("ClusterCol", "Cluster", "Cal Cluster", "");
   m_builder->addAttDef("E","Cluster Energy","Physics","MeV");
   m_builder->addAttValue("DrawAs","Point","");
   m_builder->addAttValue("Color","green","");
-  m_builder->addType("CalCluster", "CalClusterLayers", "Cal Cluster Layers center","");
+  m_builder->addType("Cluster", "ClusterLayers", "Cal Cluster Layers center","");
   m_builder->addAttValue("DrawAs","Point","");
   m_builder->addAttValue("Color","blue","");
   m_builder->addAttValue("MarkerName","Cross","");  
-  m_builder->addType("CalCluster", "CalClusterDir", "Cal Cluster Direction","");
+  m_builder->addAttValue("MarkerSize", 2, "");
+  m_builder->addType("Cluster", "ClusterDir", "Cal Cluster Direction","");
   m_builder->addAttValue("DrawAs","Line","");
   m_builder->addAttValue("Color","green","");
 }
@@ -218,9 +219,9 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
       }
     }
 
-  if (hasType(typesList,"Recon/CalRecon/CalClusterCol"))
+  if (hasType(typesList,"Recon/CalRecon/ClusterCol"))
   {      
-    m_builder->addInstance("CalRecon","CalClusterCol");    
+    m_builder->addInstance("CalRecon","ClusterCol");    
 
     // drawing the cross in the average position for each layer 
 
@@ -231,7 +232,7 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
 
     // if pointer is not zero, start drawing
     if(cls){
-      m_builder->addInstance("CalClusterCol", "CalCluster");    
+      m_builder->addInstance("ClusterCol", "Cluster");    
 
       // get pointer to the cluster 0 - the only one exiting now
       Event::CalCluster* cl = cls->getCluster(0); 
@@ -255,7 +256,7 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
         m_builder->addPoint(x,y,z);            
         
         // Draw the layers reconstructed positions
-        m_builder->addInstance("CalCluster", "CalClusterLayers");    
+        m_builder->addInstance("Cluster", "ClusterLayers");    
         // loop over calorimeter layers
         for( int l=0;l<8;l++){
 
@@ -278,7 +279,7 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
         // non display for non-physical or horizontal direction
         if(dirZ >= -1. && dirZ != 0.){
           // Draw the cluster direction
-          m_builder->addInstance("CalCluster", "CalClusterDir");    
+          m_builder->addInstance("Cluster", "ClusterDir");    
 
 
           // calculate x and y coordinates for the beginning and the end
