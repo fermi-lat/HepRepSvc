@@ -1,5 +1,16 @@
 ------------------------------------------------------------
 User: riccardo  Mon Sep  6 03:55:14 PDT 2004
+HepRepSvc/src
+
+Modified Files:
+	HeaderFiller.cxx 
+Log Message:
+Added a Text instance as an example of adding 2D text to an HepRep in the HeaderFiller; now the Event ID will be printed on
+the 3D view (it can be hide as usual as any other instance of an HepRep).
+
+    *
+------------------------------------------------------------
+User: riccardo  Mon Sep  6 03:55:14 PDT 2004
 HepRepSvc/cmt
 
 Modified Files:
