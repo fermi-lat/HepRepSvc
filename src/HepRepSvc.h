@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.h,v 1.1.1.1 2002/09/20 08:50:19 riccardo Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.h,v 1.2 2003/07/07 08:29:55 riccardo Exp $
 // 
 //  Original author: R.Giannitrapani
 
@@ -22,8 +22,10 @@ class IServer;
 class IAppMgrUI;
 class SvcAdapter;
 
-class HepRepSvc : virtual public Service,  virtual public IIncidentListener,
-                  virtual public IHepRepSvc, virtual public IRunable
+class HepRepSvc : virtual public Service,  
+                  virtual public IIncidentListener, 
+                  virtual public IHepRepSvc, 
+                  virtual public IRunable 
 {  
  public:
 

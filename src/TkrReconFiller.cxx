@@ -10,6 +10,7 @@
 
 #include "Event/TopLevel/EventModel.h"
 #include "Event/Recon/TkrRecon/TkrVertex.h"
+#include "Event/Recon/TkrRecon/TkrFitTrackBase.h"
 
 #include "idents/VolumeIdentifier.h"
 #include "CLHEP/Geometry/Transform3D.h"
@@ -20,6 +21,7 @@
 #include "idents/VolumeIdentifier.h"
 
 #include <algorithm>
+
 
 // Constructor
 TkrReconFiller::TkrReconFiller(IGlastDetSvc* gsvc,
@@ -37,8 +39,19 @@ void TkrReconFiller::buildTypes()
 {
   m_builder->addType("Recon","TkrRecon","TkrRecon Tree","");
 
+  m_builder->addType("TkrRecon","TrackCol",
+		     "Reconstructed Tracks collections","");
+
   m_builder->addType("TkrRecon","GammaVtxCol",
 		     "Reconstructed Gamma Vertex collection","");
+
+  m_builder->addType("TrackCol","Track","Reconstructed track","");
+  m_builder->addAttValue("DrawAs","Line","");
+  m_builder->addAttValue("Color","blue","");
+
+  m_builder->addType("Track","TrackChiPlane",
+		     "Chi Square plane segments","");
+
 
   m_builder->addType("GammaVtxCol","GammaVtx","Reconstructed Gamma Vertex","");
   m_builder->addAttValue("DrawAs","Line","");
@@ -94,7 +107,72 @@ void TkrReconFiller::fillInstances (std::vector<std::string>& typesList)
   
     }
 
+  if (hasType(typesList,"Track"))
+    { 
+      Event::TkrFitTrackCol* pTracks = 
+	SmartDataPtr<Event::TkrFitTrackCol>(m_dpsvc,EventModel::TkrRecon::TkrFitTrackCol);
+      
+      //Now see if we can do the drawing
+      if (pTracks)
+	{
+	  m_builder->addInstance("TkrRecon","TrackCol");
+
+	  int numTracks = pTracks->size();
+	  
+	  if (numTracks > 0) 
+	    {
+	      Event::TkrFitTrackCol::const_iterator it = pTracks->begin();
+
+	      while(it != pTracks->end())
+		{
+		  m_builder->addInstance("TrackCol","Track");
+		  const Event::TkrFitTrackBase& track = **it++;
+
+		  Event::TkrFitHit::TYPE  fit      = Event::TkrFitHit::SMOOTH;
+		  Event::TkrFitHit::TYPE  typ      = Event::TkrFitHit::SMOOTH;
+
+		  Event::TkrFitPlaneConPtr hitIter = track.begin();
+		  while(hitIter < track.end())
+		    {
+		      m_builder->addInstance("Track","TrackChiPlane");
+
+		      Event::TkrFitPlane plane = *hitIter++;
+
+		      Event::TkrFitPlane::AXIS prj = plane.getProjection();
+
+		      double x0, y0, z0, xl, xr, yl, yr;
+		      double delta= plane.getDeltaChiSq(typ)*10.; //Scale factor! We're in mm now!
+
+		      if(prj == Event::TkrCluster::X){
+			x0 = plane.getHit(typ).getPar().getXPosition();
+			y0 = plane.getHit(fit).getPar().getYPosition(); 
+			z0 = plane.getZPlane()+0.1;
+			xl = x0-0.5*delta;
+			xr = x0+0.5*delta;
+			yl = y0;
+			yr = y0;
+		      } 
+		      else {
+			x0 = plane.getHit(fit).getPar().getXPosition();
+			y0 = plane.getHit(typ).getPar().getYPosition(); 
+			z0 = plane.getZPlane()+0.1;
+			xl = x0;
+			xr = x0;
+			yl = y0-0.5*delta;
+			yr = y0+0.5*delta;
+		      }       
+		      m_builder->addPoint(xl,yl,z0);
+		      m_builder->addPoint(xr,yr,z0);
+		    }
+		}
+	      
+	      
+	    }
+	}
+    }
+  
 }
+
 
 bool TkrReconFiller::hasType(std::vector<std::string>& list, std::string type) 
 {
