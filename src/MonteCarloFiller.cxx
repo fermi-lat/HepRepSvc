@@ -133,6 +133,7 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
           for(Event::McIntegratingHitVector::const_iterator inHit=intHits->begin(); 
               inHit != intHits->end(); inHit++) {
 
+
             m_builder->addInstance("IntHitCol","IntHit");
 
             HepTransform3D global;
@@ -173,19 +174,18 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
 
   if (hasType(typesList,"Particle"))
     {      
+      m_builder->addInstance("MC","ParticleCol");      
       // If there are trajectories in the TDS, we use them
       SmartDataPtr<Event::McTrajectoryList> 
         mcTraj(m_dpsvc, "/Event/MC/TrajectoryCol");
       if (mcTraj !=0)
         {
-          m_builder->addInstance("MC","ParticleCol");      
           m_builder->setSubinstancesNumber("ParticleCol", mcTraj->size());
           for(Event::McTrajectoryList::const_iterator traj=mcTraj->begin(); 
               traj != mcTraj->end(); traj++) {
             {
               Event::McParticle* part = (*traj)->getMcParticle();
-
-              m_builder->addInstance("ParticleCol","Particle");
+	      m_builder->addInstance("ParticleCol","Particle");
 
               if (part)
                 {                  

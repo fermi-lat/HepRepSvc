@@ -1,8 +1,8 @@
 //##############################################################
 //
-// Job options file for FluxSvc test program
+// Job options file for HepRepXml test program
 //
-ApplicationMgr.DLLs   = { "GlastSvc", "HepRepSvc"};
+ApplicationMgr.DLLs   = { "GlastSvc", "HepRepSvc", "FluxSvc"};
 
 ApplicationMgr.ExtSvc = { 
     "EventCnvSvc", 
@@ -22,9 +22,6 @@ MessageSvc.OutputLevel      = 2;
 GlastDetSvc.xmlfile="$(XMLGEODBSROOT)/xml/flight/flight.xml";
 // select one of the following for a top volume 
 GlastDetSvc.topVolume="LAT";         // the whole schebang 
-
-// Save an XML file
-HepRepSvc.saveXml = 1;
 
 ApplicationMgr.EvtSel = "NONE";
 ApplicationMgr.EvtMax = 1;

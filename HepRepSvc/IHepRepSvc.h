@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/FluxSvc/FluxSvc/IFluxSvc.h,v 1.12 2002/01/14 23:22:39 burnett Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/HepRepSvc/IHepRepSvc.h,v 1.1.1.1 2002/09/20 08:50:19 riccardo Exp $
 // 
 //!  \author: R.Giannitrapani
 //
@@ -6,41 +6,41 @@
 #ifndef IHEPREPSVC_H
 #define IHEPREPSVC_H
 #include <string>
-#include <vector>
 #include "GaudiKernel/IService.h"
 
-class IFiller;
-class IBuilder;
-class Registry;
+class IRegistry;
+class IServer;
+class IStreamer;
 
 // Declaration of the interface ID ( interface id, major version, minor version) 
 static const InterfaceID IID_IHepRepSvc(950, 1 , 0); 
 
 
-//! Abstract interface for the HepRep service, HepRepSvc.
+/** 
+ * @class IHepRepSvc
+ *
+ * @brief The abstract interface to the HepRepSvc
+ *
+ * This service is the main one to be used for HepRep production
+ *
+ */
 class  IHepRepSvc : virtual public IService {
  public:
-
-  typedef std::vector<IFiller*> fillerCol;
 
   /// Retrieve interface ID
   static const InterfaceID& interfaceID() { return IID_IHepRepSvc; } 
   
-  /// Method to register a new filler, given a TypeTree name
-  virtual void registerFiller(IFiller* f, std::string tree) = 0;
+  /// Return the pointer to the Registry
+  virtual const IRegistry* getRegistry() = 0;
 
-  /// Method to set a concrete builder for the fillers
-  virtual void useBuilder(IBuilder* b) = 0;
+  /// Use a streamer to save an HepRep file
+  virtual void saveHepRep(std::string strName, std::string fileName) = 0;
 
-  /// Return a vector of fillers given the TypeTree name
-  virtual fillerCol& getFillersByType(std::string type) = 0;
+  /// Set a server 
+  virtual void setServer(IServer*) = 0;
 
-  /// Return a vector of TypeTree names
-  virtual std::vector<std::string>& getTypeTrees() = 0;
-
-  /// Return the number of TypeTrees
-  virtual unsigned int size() = 0;
-  
+  /// Add a streamer with a name
+  virtual void addStreamer(std::string, IStreamer*) = 0;
 };
 
 #endif  // IHEPREPSVC_H

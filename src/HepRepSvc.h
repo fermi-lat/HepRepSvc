@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/FluxSvc/src/FluxSvc.h,v 1.1 2002/02/02 01:33:25 srobinsn Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.h,v 1.1.1.1 2002/09/20 08:50:19 riccardo Exp $
 // 
 //  Original author: R.Giannitrapani
 
@@ -10,30 +10,25 @@
 #include <map>
 #include "GaudiKernel/Service.h"
 #include "GaudiKernel/IIncidentListener.h"
+#include "GaudiKernel/IRunable.h"
 #include "HepRepSvc/IHepRepSvc.h"
 
 //forward declarations
 template <class TYPE> class SvcFactory;
 class IGlastDetSvc;
-class IFiller;
-
+class IRegistry;
+class IStreamer;
+class IServer;
+class IAppMgrUI;
+class SvcAdapter;
 
 class HepRepSvc : virtual public Service,  virtual public IIncidentListener,
-                  virtual public IHepRepSvc
+                  virtual public IHepRepSvc, virtual public IRunable
 {  
  public:
+
+  virtual const IRegistry* getRegistry(){return m_registry;};
   
-  //  virtual StatusCode buildGeometry();
-  virtual void registerFiller(IFiller*, std::string);
-
-  virtual void useBuilder(IBuilder* b);
-
-  virtual fillerCol& getFillersByType(std::string type);
-
-  virtual std::vector<std::string>& getTypeTrees();
-
-  virtual unsigned int size(){return m_fillers.size();};
-
   //------------------------------------------------------------------
   //  stuff required by a Service
     
@@ -45,22 +40,24 @@ class HepRepSvc : virtual public Service,  virtual public IIncidentListener,
   
   /// Query interface
   virtual StatusCode queryInterface( const IID& riid, void** ppvUnknown );
+
+  /// for the IRunnable interfce
+  virtual StatusCode run();
     
   /// Handles incidents, implementing IIncidentListener interface
   virtual void handle(const Incident& inc);    
 
-  /// This method produce an XML file with the actual HepRep representation. 
-  void saveXML(std::string fileName);
+  /// Set a server
+  virtual void setServer(IServer* s);
 
-  /// This method add an instancetree 
-  void addInstanceTree(std::string type, std::string instance)
-    {m_instances[type] = instance;}
+  /// Add a streamer
+  virtual void addStreamer(std::string name, IStreamer* s);
 
-  /// This method clear the instancetree map
-  void clearInstanceTrees(){m_instances.clear();}
+  /// Use a streamer to save an HepRep file
+  virtual void saveHepRep(std::string strName, std::string fileName);
 
-  /// Get the instance trees map
-  const std::map<std::string, std::string>& getInstanceTrees(){return m_instances;};  
+  /// Get the pointer to the application manager
+  IAppMgrUI*  getAppMgrUI(){return m_appMgrUI;};  
 
 protected: 
     
@@ -79,22 +76,32 @@ private:
     /// Method invoked at the end of every event
     void endEvent();
 
-    /// A property to be used to set the saving of XML HepRep files to true
-    /// or false
-    bool m_saveXml;
+    /// A property to be used to set the saving of XML HepRep files to
+    /// true or false by setting the name of a streamer; by default it
+    /// is a null string, so autostream is disabled
+    std::string m_autoStream;
 
     /// A property to set the local path to save the XML HepRep files
-    std::string m_xmlPath;
+    std::string m_streamPath;
 
     /// A property to set the depth of the geometry 
     int m_geomDepth;
 
-    /// This map holds the fillers registered in indexed by the typetree name
-    std::map<std::string, fillerCol> m_fillers;
-    
-    /// This map holds the actual instance trees for the event together indexed
-    /// by the relative typetree
-    std::map<std::string, std::string> m_instances;
+    /// The fillers registry
+    IRegistry* m_registry;
+
+    /// A server to be used in the run method
+    IServer* m_server;
+
+    /// A map of streamers indexed by name
+    std::map<std::string, IStreamer*> m_streamers;
+
+    /// Reference to application manager UI
+    IAppMgrUI*    m_appMgrUI;
+
+    /// The service adapter
+    SvcAdapter* m_adapter;
+
 };
 
 
