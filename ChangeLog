@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: riccardo  Tue May 25 02:39:17 PDT 2004
+HepRepSvc/HepRepSvc
+
+Modified Files:
+	IRegistry.h 
+Log Message:
+Fixes for Linux compatibility; small fix in MonteCarloFiller and Geometry to accomodate
+colors changes
+
+    *
+------------------------------------------------------------
 User: riccardo  Thu May 20 01:13:47 PDT 2004
 HepRepSvc/src
 
