@@ -1,5 +1,17 @@
 ------------------------------------------------------------
 User: riccardo  Tue May 25 02:39:17 PDT 2004
+HepRepSvc/src
+
+Modified Files:
+	CalReconFiller.cxx HepRepGeometry.cxx HepRepSvc.cxx 
+	MonteCarloFiller.cxx MonteCarloFiller.h Registry.h 
+Log Message:
+Fixes for Linux compatibility; small fix in MonteCarloFiller and Geometry to accomodate
+colors changes
+
+    *
+------------------------------------------------------------
+User: riccardo  Tue May 25 02:39:17 PDT 2004
 HepRepSvc/HepRepSvc
 
 Modified Files:
