@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.7 2004/05/31 15:13:44 riccardo Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.8 2004/07/14 09:39:13 riccardo Exp $
 // 
 //  Original author: R.Giannitrapani
 //
@@ -24,6 +24,8 @@
 #include "RootIo/IRootIoSvc.h"
 
 #include "Event/TopLevel/Event.h"
+#include "Event/TopLevel/EventModel.h"
+
 #include "GaudiKernel/SvcFactory.h"
 #include "GaudiKernel/MsgStream.h"
 
@@ -114,7 +116,8 @@ StatusCode HepRepSvc::initialize ()
       log << MSG::ERROR << "Could not find EventDataSvc" << endreq;
       return status;
     }
-        
+
+    m_idpsvc = esvc;
     // get the Flux Service    
     IService* theSvc;
     StatusCode sc = serviceLocator()->getService( "FluxSvc", theSvc, true );
@@ -234,6 +237,14 @@ void HepRepSvc::endEvent()
   sName << "Event-" << temp;
   temp++;
 
+
+  // This is to retrive event and run number from the event, but seems to be
+  // broken
+  SmartDataPtr<Event::EventHeader>
+    evt(m_idpsvc, EventModel::EventHeader);
+  unsigned int evtRun = evt->run();
+  unsigned int evtEvent = evt->event();
+  
   // Set the registry with the instance trees names of this event
   // after clearing the names list; we also add the dependency of
   // the event instancetree to the geometry instancetree
@@ -292,7 +303,7 @@ std::string HepRepSvc::getCommands()
     sNames << ",fluxes,source";
   
   if (m_rootIoSvc)
-    sNames << ",eventId";
+    sNames << ",eventId,eventIdx";
   
   return sNames.str();     
 }
@@ -325,6 +336,12 @@ bool HepRepSvc::setEventId(int run, int event)
   // Make sure Index is set to -1
   m_rootIoSvc->setIndex(-1);
   return m_rootIoSvc->setRunEventPair(std::pair<int, int>(run, event));
+}
+
+// This method set the Event index
+bool HepRepSvc::setEventIndex(int index)
+{
+  return m_rootIoSvc->setIndex(index);
 }
 
 // This method set the actual source

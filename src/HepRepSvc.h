@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.h,v 1.4 2004/05/20 08:13:47 riccardo Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.h,v 1.5 2004/07/14 09:39:13 riccardo Exp $
 // 
 //  Original author: R.Giannitrapani
 
@@ -23,6 +23,7 @@ class IAppMgrUI;
 class SvcAdapter;
 class IFluxSvc;
 class IRootIoSvc;
+class IDataProviderSvc;
 
 class HepRepSvc : virtual public Service,  
                   virtual public IIncidentListener, 
@@ -75,6 +76,9 @@ class HepRepSvc : virtual public Service,
   /// This method set the Event ID to a pair Run/Event
   bool setEventId(int run, int event);
 
+  /// This method set the Event index 
+  bool setEventIndex(int index);
+
 protected: 
     
     /// Standard Constructor
@@ -124,6 +128,9 @@ private:
     /// The RootIoSvc used to set event Run/Event for random access from Root
     ///files
     IRootIoSvc* m_rootIoSvc;
+
+    /// The Data Provider Service Interface.
+    IDataProviderSvc* m_idpsvc;
 };
 
 
