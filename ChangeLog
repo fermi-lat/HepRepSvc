@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: lsrea  Mon Dec 27 08:31:59 PST 2004
+HepRepSvc/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+prepare for tag v0r10p1; remove TkrCluster id() from fillers
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v0r10, operation: add
 Package: HepRepSvc
