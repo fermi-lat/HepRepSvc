@@ -46,9 +46,12 @@ void AcdReconFiller::buildTypes()
 // This method fill the instance tree Event/MC with the actual TDS content
 void AcdReconFiller::fillInstances (std::vector<std::string>& typesList)
 {
+  if (!hasType(typesList, "Recon/AcdRecon"))
+    return;
+  
   m_builder->addInstance("Recon","AcdRecon");
   
-  if (hasType(typesList,"DocaCol"))
+  if (hasType(typesList,"Recon/AcdRecon/DocaCol/DocaTile"))
     {      
 
       SmartDataPtr<Event::AcdRecon> acdRec(m_dpsvc, EventModel::AcdRecon::Event);

@@ -1,9 +1,10 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.11 2004/08/02 08:39:40 riccardo Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.12 2004/08/25 08:03:07 riccardo Exp $
 // 
 //  Original author: R.Giannitrapani
 //
 
 #include <sstream>
+#include "GaudiKernel/SmartIF.h"
 
 #include "Registry.h"
 #include "HepRepSvc/IServer.h"
@@ -28,8 +29,10 @@
 #include "Event/TopLevel/EventModel.h"
 
 #include "GaudiKernel/SvcFactory.h"
+#include "GaudiKernel/Algorithm.h"
+#include "GaudiKernel/IAlgorithm.h"
 #include "GaudiKernel/MsgStream.h"
-
+#include "GaudiKernel/IAlgManager.h"
 #include "GaudiKernel/SmartDataPtr.h"
 #include "GaudiKernel/Incident.h"
 #include "GaudiKernel/IIncidentSvc.h"
@@ -102,6 +105,16 @@ StatusCode HepRepSvc::initialize ()
       return status;
     }
 
+
+    // get the algorithms manager
+    m_AlgMgr = 0;
+    status = service("ApplicationMgr", m_AlgMgr);
+    if (status.isFailure())
+    {
+      log << MSG::ERROR << "No application manager???" << endreq;
+      return status;
+    }
+    
     // get the Glast Detector Service    
     IGlastDetSvc* gsvc = 0;
     status = service("GlastDetSvc", gsvc);
@@ -143,8 +156,7 @@ StatusCode HepRepSvc::initialize ()
     incsvc->addListener(this, "EndEvent", 0);
     
     // Register the geometry filler
-    m_registry->registerFiller(new GeometryFiller(m_geomDepth,gsvc), 
-			       "Geometry3D");
+    m_registry->registerFiller(new GeometryFiller(m_geomDepth,gsvc), "Geometry3D");
     // Register the header filler
     m_registry->registerFiller(new HeaderFiller(esvc), "Event");
     // Register the Recon filler 
@@ -302,7 +314,7 @@ void HepRepSvc::addStreamer(std::string name, IStreamer* s)
 std::string HepRepSvc::getCommands()
 {
   std::stringstream sNames;
-  sNames << "next,commands";  
+  sNames << "next,commands,getEventId";  
   
   if (m_fluxSvc)
     sNames << ",fluxes,source";
@@ -343,6 +355,25 @@ bool HepRepSvc::setEventId(int run, int event)
   return m_rootIoSvc->setRunEventPair(std::pair<int, int>(run, event));
 }
 
+
+// This is to retrive event and run number from the event
+std::string HepRepSvc::getEventId()
+{
+  std::stringstream sName;
+
+  SmartDataPtr<Event::EventHeader> evt(m_idpsvc, EventModel::EventHeader);
+  if (evt)
+   {
+     unsigned int evtRun = evt->run();
+     unsigned int evtEvent = evt->event();
+     sName << "Event-" << evtRun << "-" << evtEvent << "\0"; 
+     return sName.str();     
+   }
+  else
+    return "";
+  
+}
+
 // This method set the Event index
 bool HepRepSvc::setEventIndex(int index)
 {
@@ -355,6 +386,62 @@ void HepRepSvc::setSource(std::string source){
   m_fluxSvc->source(source, iflux);
 }
 
+// This method try to set the given property of the given algorithm to the given
+// value
+bool HepRepSvc::setAlgProperty(std::string algName, 
+                               std::string propName, 
+                               std::string propValue)
+{
+  IAlgorithm * alg=0; 
+  
+  // open the message log
+  MsgStream log( msgSvc(), name() );
+
+  if( (m_AlgMgr->getAlgorithm(algName,  alg)).isFailure() ) {
+    log << MSG::ERROR 
+      << "Did not find the Algorithm "<< algName  << endreq;
+    return 0;    
+  }
+  
+  SmartIF<IProperty> propMgr(IID_IProperty, alg);
+
+  if (propMgr->setProperty(propName, propValue).isFailure())
+  {
+    log << MSG::ERROR 
+      << "Failed to set the property " << propValue << " of Algorithm " 
+      << algName  << " at value " << propValue<< endreq;
+    return 0;
+  }
+  else
+  {
+    log << MSG::INFO 
+      << "Set the property " << propName << " of Algorithm " 
+      << algName  << " at value " << propValue<< endreq;
+    return 1;
+  }
+}
+
+// This method try to replay a given algorithm
+bool HepRepSvc::replayAlgorithm(std::string algName)
+{
+  IAlgorithm * alg=0; 
+  
+  // open the message log
+  MsgStream log( msgSvc(), name() );
+
+  if( (m_AlgMgr->getAlgorithm(algName,  alg)).isFailure() ) {
+    log << MSG::ERROR 
+      << "Did not find the Algorithm "<< algName  << endreq;
+    return 0;    
+  }else
+  {
+    alg->resetExecuted();
+    alg->execute();
+  
+    log << MSG::INFO << "Replayed " << algName  << endreq;
+    return 1;
+  }
+}
 
 /// Query interface
 StatusCode HepRepSvc::queryInterface(const IID& riid, void** ppvInterface)  {

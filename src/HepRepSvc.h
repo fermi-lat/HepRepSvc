@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.h,v 1.5 2004/07/14 09:39:13 riccardo Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.h,v 1.6 2004/07/19 07:27:16 riccardo Exp $
 // 
 //  Original author: R.Giannitrapani
 
@@ -24,6 +24,7 @@ class SvcAdapter;
 class IFluxSvc;
 class IRootIoSvc;
 class IDataProviderSvc;
+class IAlgManager;
 
 class HepRepSvc : virtual public Service,  
                   virtual public IIncidentListener, 
@@ -76,9 +77,18 @@ class HepRepSvc : virtual public Service,
   /// This method set the Event ID to a pair Run/Event
   bool setEventId(int run, int event);
 
+  /// This method get the Event ID as a pair Run/Event
+  std::string getEventId();
+
   /// This method set the Event index 
   bool setEventIndex(int index);
 
+  /// This method replay a given algorithm
+  bool replayAlgorithm(std::string algName);
+
+  /// This method change the property of a given algorithm
+  bool setAlgProperty(std::string algName, std::string propName, std::string propValue);
+  
 protected: 
     
     /// Standard Constructor
@@ -131,6 +141,9 @@ private:
 
     /// The Data Provider Service Interface.
     IDataProviderSvc* m_idpsvc;
+
+    /// The interface to the Algorithms manager
+    IAlgManager* m_AlgMgr;
 };
 
 

@@ -41,6 +41,8 @@ void ReconFiller::setBuilder(IBuilder* b)
 void ReconFiller::buildTypes()
 {
   m_builder->addType("","Recon","Recon Tree","");
+  m_builder->addAttValue("Layer","Event","");
+ 
   for(unsigned int i=0;i<m_subFillers.size();i++)
   {
     m_subFillers[i]->buildTypes();
@@ -51,6 +53,9 @@ void ReconFiller::buildTypes()
 // This method fill the instance tree Event/MC with the actual TDS content
 void ReconFiller::fillInstances (std::vector<std::string>& typesList)
 {
+  if (!hasType(typesList, "Recon"))  
+    return;
+  
   m_builder->addInstance("","Recon");
   for(unsigned int i=0;i<m_subFillers.size();i++)
     m_subFillers[i]->fillInstances(typesList);

@@ -14,6 +14,8 @@
 void HeaderFiller::buildTypes()
 {
   m_builder->addType("","Header","Event Header Tree","");
+  m_builder->addAttValue("Layer","Event","");
+  
   m_builder->addAttValue("DrawAs","Text","");
   m_builder->addAttDef("EventID","The event identifier","Physics","");
 }
@@ -36,10 +38,13 @@ void HeaderFiller::fillInstances (std::vector<std::string>& typesList)
      unsigned int evtEvent = evt->event();
      sName << evtRun << "-" << evtEvent; 
 
+     double hpos = 0.05;
+     double vpos = 0.1;
+     
      m_builder->addAttValue("EventID",sName.str(),"");
      m_builder->addAttValue("Text","ID: " + sName.str(),"");
-     m_builder->addAttValue("HPos","0.05","");
-     m_builder->addAttValue("VPos","0.1","");     
+     m_builder->addAttValue("HPos",(float)hpos,"");
+     m_builder->addAttValue("VPos",(float)vpos,"");     
    }  
 
 }

@@ -80,6 +80,9 @@ void TkrReconFiller::buildTypes()
 // This method fill the instance tree Event with the actual TDS content
 void TkrReconFiller::fillInstances (std::vector<std::string>& typesList)
 {
+  if (!hasType(typesList, "Recon/TkrRecon"))
+    return;
+  
   m_builder->addInstance("Recon","TkrRecon");
 
   for(std::vector<IFiller*>::const_iterator fillIter = fillVector.begin(); fillIter < fillVector.end(); fillIter++)

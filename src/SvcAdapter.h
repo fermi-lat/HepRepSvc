@@ -28,8 +28,14 @@ class SvcAdapter: public ISvcAdapter
   virtual std::string getCommands(); 
   /// This method set the Event ID to a pair Run/Event
   virtual bool setEventId(int run, int event);
+  /// This method return the Event ID as a pair Run/Event
+  virtual std::string getEventId();  
   /// This method set the Event index 
   virtual bool setEventIndex(int index);
+  /// Set the property of an algorithm to a given value
+  virtual bool setAlgProperty(std::string algName, std::string propName, std::string propValue);  
+  /// This method replay a given algorithm
+  virtual bool replayAlgorithm(std::string algName);
 
  private:
   HepRepSvc* m_hrsvc;

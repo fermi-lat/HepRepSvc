@@ -27,6 +27,7 @@ class GeometryFiller: public IFiller{
   /// which subinstances to fill
   virtual void fillInstances (std::vector<std::string>&);
 
+  
  private:
   HepRepGeometry* m_geometry;
   IGlastDetSvc* m_gsvc;

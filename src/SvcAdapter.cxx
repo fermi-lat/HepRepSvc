@@ -65,6 +65,11 @@ bool SvcAdapter::setEventIndex(int index)
   return m_hrsvc->setEventIndex(index);
 }
 
+std::string SvcAdapter::getEventId()
+{
+  return m_hrsvc->getEventId();
+}
+
 std::string SvcAdapter::getCommands()
 {
   return m_hrsvc->getCommands();
@@ -80,9 +85,19 @@ void SvcAdapter::setSource(std::string source)
   m_hrsvc->setSource(source);
 }
  
+// Set the property of an algorithm to a given value
+bool SvcAdapter::setAlgProperty(std::string algName, std::string propName, std::string propValue)
+{
+  return m_hrsvc->setAlgProperty(algName, propName, propValue);
+}
+
+// This method replay a given algorithm
+bool SvcAdapter::replayAlgorithm(std::string algName)
+{
+  return m_hrsvc->replayAlgorithm(algName);
+}
 
 void SvcAdapter::shutDown()
 {
   m_hrsvc->getAppMgrUI()->finalize();
-//  m_hrsvc->getAppMgrUI()->terminate();
 }

@@ -121,9 +121,12 @@ void CalReconFiller::buildTypes()
 // This method fill the instance tree Event/MC with the actual TDS content
 void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
 {
+  if (!hasType(typesList, "Recon/CalRecon"))
+    return;
+
   m_builder->addInstance("Recon","CalRecon");
 
-  if (hasType(typesList,"XtalCol"))
+  if (hasType(typesList,"Recon/CalRecon/XtalCol"))
     {      
       const HepPoint3D p0(0.,0.,0.);  
       
@@ -171,7 +174,7 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
         
         
             // draw only crystals containing more than 1% of maximum energy
-            if(eneXtal>0.01*emax){
+            if((eneXtal>0.01*emax) && (hasType(typesList, "Recon/CalRecon/XtalCol/Xtal"))){
               m_builder->addInstance("XtalCol", "Xtal");    
               m_builder->addAttValue("E", (float)eneXtal, "");
 

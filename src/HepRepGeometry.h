@@ -38,8 +38,16 @@ class HepRepGeometry : public IGeometry
 
   void reset();
 
+  /// Set the visibile typesList
+  void setTypesList(std::vector<std::string> l){m_typesList = l;};
+
+  bool hasType(std::vector<std::string>& list, std::string type); 
+
  private:
+  std::vector<std::string> m_typesList;
+
   std::vector<std::string> m_actualType;
+
   std::vector<std::string> m_actualInstance;
 
   std::vector<std::string> m_types;
