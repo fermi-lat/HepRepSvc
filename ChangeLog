@@ -1,5 +1,19 @@
 ------------------------------------------------------------
 User: riccardo  Thu May 20 01:13:47 PDT 2004
+HepRepSvc/src
+
+Modified Files:
+	HepRepGeometry.cxx HepRepSvc.cxx HepRepSvc.h 
+	MonteCarloFiller.cxx Registry.cxx Registry.h SvcAdapter.cxx 
+	SvcAdapter.h 
+Log Message:
+Fixed some bugs and added support for a new bootstrap during the Corba connection. Added back also
+support for transmitting to a client the sources list and let the client ask to use a particular
+source.
+
+    *
+------------------------------------------------------------
+User: riccardo  Thu May 20 01:13:47 PDT 2004
 HepRepSvc/cmt
 
 Modified Files:
