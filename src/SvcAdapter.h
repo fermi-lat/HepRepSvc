@@ -19,7 +19,10 @@ class SvcAdapter: public ISvcAdapter
 {
  public:
   SvcAdapter(HepRepSvc* h):m_hrsvc(h){};
+  /// go to the next event
   virtual bool nextEvent(int);
+  /// step back to the previous event (if allowed by the application)
+  virtual bool previousEvent(int);  
   virtual std::string getSources();
   virtual void setSource(std::string);
 	/// stop the GAUDI job
@@ -33,7 +36,8 @@ class SvcAdapter: public ISvcAdapter
   /// This method set the Event index 
   virtual bool setEventIndex(int index);
   /// Set the property of an algorithm to a given value
-  virtual bool setAlgProperty(std::string algName, std::string propName, std::string propValue);  
+  virtual bool setAlgProperty(std::string algName, 
+      std::string propName, std::string propValue);  
   /// This method replay a given algorithm
   virtual bool replayAlgorithm(std::string algName);
 

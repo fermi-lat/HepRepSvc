@@ -18,6 +18,8 @@ class ISvcAdapter
  public:
   /// used to step to the next event 
   virtual bool nextEvent(int) = 0;
+  /// used to go back to the previous event 
+  virtual bool previousEvent(int) = 0;
   /// return a list of sources names to be used by FluxSvc
   virtual std::string getSources() = 0;
   /// set the source to be used by FluxSvc
