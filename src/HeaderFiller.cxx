@@ -14,7 +14,7 @@
 void HeaderFiller::buildTypes()
 {
   m_builder->addType("","Header","Event Header Tree","");
-
+  m_builder->addAttValue("DrawAs","Text","");
   m_builder->addAttDef("EventID","The event identifier","Physics","");
 }
 
@@ -37,6 +37,9 @@ void HeaderFiller::fillInstances (std::vector<std::string>& typesList)
      sName << evtRun << "-" << evtEvent; 
 
      m_builder->addAttValue("EventID",sName.str(),"");
+     m_builder->addAttValue("Text","ID: " + sName.str(),"");
+     m_builder->addAttValue("HPos","0.05","");
+     m_builder->addAttValue("VPos","0.1","");     
    }  
 
 }
