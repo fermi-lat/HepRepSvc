@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: riccardo  Thu May 20 01:13:47 PDT 2004
+HepRepSvc/HepRepSvc
+
+Modified Files:
+	IRegistry.h ISvcAdapter.h mainpage.h 
+Log Message:
+Fixed some bugs and added support for a new bootstrap during the Corba connection. Added back also
+support for transmitting to a client the sources list and let the client ask to use a particular
+source.
+
+    *
+------------------------------------------------------------
 User: usher  Fri May 14 17:25:03 PDT 2004
 HepRepSvc/cmt
 
