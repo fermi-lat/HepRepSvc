@@ -1,5 +1,17 @@
 ------------------------------------------------------------
 User: usher  Fri Oct  1 12:46:47 PDT 2004
+HepRepSvc/src/Tracker
+
+Modified Files:
+	CandTrackFiller.cxx ClusterFiller.cxx FitTrackFiller.cxx 
+Added Files:
+	TrackFiller.cxx TrackFiller.h 
+Log Message:
+Add new filler class to draw TkrTrack/TkrTrackHit objects
+Also update cluster filler to reflect changes to TkrCluster class
+    *
+------------------------------------------------------------
+User: usher  Fri Oct  1 12:46:47 PDT 2004
 HepRepSvc/src
 
 Modified Files:
