@@ -1,5 +1,5 @@
-#ifndef TKRRECONFILLER_H
-#define TKRRECONFILLER_H
+#ifndef CLUSTERFILLER_H
+#define CLUSTERFILLER_H
 #include <vector>
 #include <string>
 
@@ -10,39 +10,36 @@ class IDataProviderSvc;
 class IParticlePropertySvc;
 
 /** 
- *  @class TkrReconFiller
+ *  @class ClusterFiller
  *
  *  @brief 
  *
  *  @author R.Giannitrapani
  */
 
-class TkrReconFiller: public IFiller{
+class ClusterFiller: public IFiller{
   
  public:
-  TkrReconFiller(IGlastDetSvc* gsvc,
+  ClusterFiller(IGlastDetSvc* gsvc,
                  IDataProviderSvc* dpsvc,
                  IParticlePropertySvc* ppsvc);
-
-  virtual ~TkrReconFiller();
   
   /// This method init the type tree
   virtual void buildTypes ();
   /// This method fill the instance tree, using the string vector to decide
   /// which subinstances to fill
   virtual void fillInstances (std::vector<std::string>&);
-  /// This method to initialize the builder for the sub fillers
-  virtual void setBuilder(IBuilder* b);
 
   bool hasType(std::vector<std::string>& list, std::string type); 
 
  private:
-  IGlastDetSvc* m_gdsvc;
-  IDataProviderSvc* m_dpsvc;
-  IParticlePropertySvc* m_ppsvc;
+    IGlastDetSvc* m_gdsvc;
+    IDataProviderSvc* m_dpsvc;
+    IParticlePropertySvc* m_ppsvc;
 
-  std::vector<IFiller*> fillVector;
-
+    double m_siStripPitch; 
+    double m_towerPitch;
+    double m_siThickness;
 };
 
-#endif //TKRRECONFILLER_H
+#endif //ClusterFILLER_H
