@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: lsrea  Fri Jul 16 10:27:14 PDT 2004
+HepRepSvc/src/Tracker
+
+Modified Files:
+	ClusterFiller.cxx 
+Log Message:
+Add position to cluster attributes
+
+    *
+------------------------------------------------------------
 User: riccardo  Wed Jul 14 02:39:13 PDT 2004
 HepRepSvc/src
 
