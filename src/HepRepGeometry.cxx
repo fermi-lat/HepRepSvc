@@ -1,5 +1,5 @@
 // File and Version Information:
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepGeometry.cxx,v 1.7 2004/08/25 08:03:07 riccardo Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepGeometry.cxx,v 1.8 2004/09/22 16:45:49 riccardo Exp $
 //
 // Author(s):
 //      R.Giannitrapani
@@ -189,9 +189,9 @@ HepRepGeometry::pushShape(ShapeType s, const UintVector& idvec,
   else
     return AbortSubtree;
 
-//  if (m_actualDepth == m_depth)
-//    return AbortSubtree;      
-//  else 
+  if ((m_typesList.size() == 0) && (m_actualDepth == m_depth))
+    return AbortSubtree;      
+  else 
     return More;
 }
 
