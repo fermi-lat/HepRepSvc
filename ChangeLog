@@ -1,5 +1,17 @@
 ------------------------------------------------------------
 User: riccardo  Wed Sep 22 09:45:49 PDT 2004
+HepRepSvc/src/Tracker
+
+Modified Files:
+	CandTrackFiller.cxx ClusterFiller.cxx FitTrackFiller.cxx 
+	VertexFiller.cxx 
+Log Message:
+Migration to the new HepRep2 stuff; more rationality in the fillers; fixed some errors in fillers; new command
+support to Replay algorithms on the fly
+
+    *
+------------------------------------------------------------
+User: riccardo  Wed Sep 22 09:45:49 PDT 2004
 HepRepSvc/src
 
 Modified Files:
