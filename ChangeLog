@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: riccardo  Wed Jul 21 08:31:29 PDT 2004
+HepRepSvc/src
+
+Modified Files:
+	HepRepGeometry.cxx HepRepSvc.cxx 
+Log Message:
+Commited some small changes; added some description information to volume types for the geometry and commenting out
+a not used piece of code in the HepRepSvc endEvent method.
+
+    *
+------------------------------------------------------------
 User: riccardo  Tue Jul 20 08:13:43 PDT 2004
 HepRepSvc/doc
 
