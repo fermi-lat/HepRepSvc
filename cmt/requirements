@@ -15,10 +15,14 @@ private
 apply_pattern package_headers
 apply_pattern package_Cshlibflags
 
-library HepRepSvc *.cxx \
- Dll/*.cxx\
- xml/*.cxx\
- ${HepRepSvc_headers}
+macro source "*.cxx" WIN32 "*.h *.cxx"
+
+library HepRepSvc $(HepRepSvc_headers) \
+         *.cxx \
+        -s=Dll $(source)\
+        -s=Tracker $(source)\
+        -s=xml $(source)
+ 
 
 # test program, using local joboptions
 public 
