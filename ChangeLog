@@ -1,4 +1,17 @@
 ------------------------------------------------------------
+User: riccardo  Wed Jul 21 14:44:08 PDT 2004
+HepRepSvc/src
+
+Modified Files:
+	CalReconFiller.h ReconFiller.cxx 
+Added Files:
+	AcdReconFiller.cxx AcdReconFiller.h 
+Log Message:
+Added a first version of the ACD recon filler.
+
+
+    *
+------------------------------------------------------------
 User: riccardo  Wed Jul 21 08:31:29 PDT 2004
 HepRepSvc/src
 
