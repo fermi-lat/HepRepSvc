@@ -1,6 +1,7 @@
-//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.2 2003/07/07 08:29:55 riccardo Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.3 2003/07/17 22:26:13 riccardo Exp $
 /*
  * v0r1     20-09-02 RG Inital release of the package
  * v0r2     07-07-03 RG Complete refactoring of HepRepSvc	
  * v0r3     17-07-03 RG Fixed compilation problems
+ * v0r5     04-06-03 RG Fixed all the OmniOrb compatibility problems
 */
