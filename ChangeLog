@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: riccardo  Tue Jan 11 02:26:18 PST 2005
+HepRepSvc/src
+
+Modified Files:
+	HepRepSvc.cxx HepRepSvc.h SvcAdapter.cxx SvcAdapter.h 
+Log Message:
+Imported changes from the EM branch to support for back button in FRED.
+
+    *
+------------------------------------------------------------
 User: riccardo  Tue Jan 11 02:15:44 PST 2005
 HepRepSvc/src
 
