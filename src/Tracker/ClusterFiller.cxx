@@ -76,7 +76,7 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
 
         if (pClusters)
         {
-            int    nHits      = pClusters->nHits();
+            int    nHits      = pClusters->size();
 
             m_builder->addInstance("TkrRecon","TkrClusterCol");
 
@@ -85,7 +85,7 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
             if (hasType(typesList,"Recon/TkrRecon/TkrClusterCol/TkrCluster"))
               while(nHits--)
               {
-                Event::TkrCluster* pCluster = pClusters->getHit(nHits);
+                Event::TkrCluster* pCluster = (*pClusters)[nHits];
                 Point              clusPos  = pCluster->position();
 
                 double x    = clusPos.x();
@@ -98,12 +98,12 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
                 double yToT = y - dy;
                 double ToT  = pCluster->ToT() / 64.;       // So, max ToT = 4 mm
 
-                int    view   = pCluster->v();
+                int    view   = pCluster->getTkrId().getView();
 
                 m_builder->addInstance("TkrClusterCol","TkrCluster");
 
                 m_builder->addAttValue("ID",          pCluster->id(),"");
-                m_builder->addAttValue("Plane",       pCluster->plane(),"");
+                m_builder->addAttValue("Plane",       (int)pCluster->getTkrId().getPlane(),"");
                 m_builder->addAttValue("Tower",       pCluster->tower(),"");
                 m_builder->addAttValue("View",        view,"");
                 m_builder->addAttValue("First Strip", pCluster->firstStrip(),"");
@@ -121,7 +121,7 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
                 m_builder->addAttValue("ToT",         (float)(pCluster->ToT()),"");
 
                 //Draw the width of the cluster
-                if (pCluster->v() == Event::TkrCluster::Y)
+                if (pCluster->getTkrId().getView() == idents::TkrId::eMeasureY)
                 {
                   dy   = 0.5 * pCluster->size() * m_siStripPitch;
                   dx   = 0.5 * m_towerPitch;

@@ -94,8 +94,8 @@ void CandTrackFiller::fillInstances (std::vector<std::string>& typesList)
                     if (curLayer == lastLayer)
                     {
                         // Set the point to draw to
-                        if (candHit->View() == Event::TkrCluster::X) x1.setX(xCur.x());
-                        else                                         x1.setY(xCur.y());
+                        if (candHit->View() == idents::TkrId::eMeasureX) x1.setX(xCur.x());
+                        else                                             x1.setY(xCur.y());
                         x1.setZ(0.5*(x1.z()+xCur.z()));
 
                         // Draw a line between the two points
@@ -106,8 +106,8 @@ void CandTrackFiller::fillInstances (std::vector<std::string>& typesList)
                     else
                     {
                         // Set the point to draw to
-                        if (candHit->View() == Event::TkrCluster::X) x1.setX(xCur.x());
-                        else                                         x1.setY(xCur.y());
+                        if (candHit->View() == idents::TkrId::eMeasureX) x1.setX(xCur.x());
+                        else                                             x1.setY(xCur.y());
                         x1.setZ(xCur.z());
 
                         lastLayer = curLayer;

@@ -162,7 +162,7 @@ void FitTrackFiller::fillInstances (std::vector<std::string>& typesList)
 		                double x0, y0, z0, xl, xr, yl, yr;
 		                double delta= plane.getDeltaChiSq(typ)*10.; //Scale factor! We're in mm now!
 
-		                if(prj == Event::TkrCluster::X)
+                        if(prj == idents::TkrId::eMeasureX)
                         {
 			                x0 = plane.getHit(typ).getPar().getXPosition();
 			                y0 = plane.getHit(fit).getPar().getYPosition(); 
