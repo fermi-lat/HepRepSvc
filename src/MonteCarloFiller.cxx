@@ -19,6 +19,7 @@
 
 #include <algorithm>
 
+// This method build the types for the HepRep
 void MonteCarloFiller::buildTypes()
 {
   m_builder->addType("","MC","Monte Carlo Tree","");
@@ -53,6 +54,7 @@ void MonteCarloFiller::buildTypes()
 }
 
 
+// This method fill the instance tree Event/MC with the actual TDS content
 void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
 {
   m_builder->addInstance("","MC");
@@ -60,12 +62,11 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
   if (hasType(typesList,"PosHitCol") ||
       hasType(typesList,"PosHitSteps"))
     {
-      m_builder->addInstance("MC","PosHitCol");
-
       SmartDataPtr<Event::McPositionHitVector>
         posHits(m_dpsvc, "/Event/MC/PositionHitsCol");
       if(posHits!=0)
         {
+          m_builder->addInstance("MC","PosHitCol");
           for(Event::McPositionHitVector::const_iterator ihit=posHits->begin();
               ihit != posHits->end(); ihit++)
             {
@@ -171,15 +172,14 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
     }
   
   if (hasType(typesList,"Particle"))
-    {
-      m_builder->addInstance("MC","ParticleCol");      
-      
+    {      
       // If there are trajectories in the TDS, we use them
       SmartDataPtr<Event::McTrajectoryList> 
         mcTraj(m_dpsvc, "/Event/MC/TrajectoryCol");
       
       if (mcTraj !=0)
         {
+          m_builder->addInstance("MC","ParticleCol");      
           m_builder->setSubinstancesNumber("ParticleCol", mcTraj->size());
           for(Event::McTrajectoryList::const_iterator traj=mcTraj->begin(); 
               traj != mcTraj->end(); traj++) {
