@@ -38,7 +38,9 @@ class ISvcAdapter
   virtual bool setAlgProperty(std::string, std::string, std::string) = 0;
   /// This method replay a given algorithm
   virtual bool replayAlgorithm(std::string algName) = 0;
-
+  /// This method return a dir with a FRED installation, if set so in the
+  /// jobOptions file; otherwise it returns (by default) an empty string
+  virtual std::string getStartFred() = 0; 
 };
 
 #endif //ISVCADAPTER_H

@@ -108,3 +108,10 @@ void SvcAdapter::shutDown()
 {
   m_hrsvc->getAppMgrUI()->finalize();
 }
+
+// Get the optional FRED directory
+std::string SvcAdapter::getStartFred()
+{
+  return m_hrsvc->getStartFred();
+} 
+

@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.h,v 1.7.2.1 2005/01/11 10:15:44 riccardo Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.h,v 1.8 2005/01/11 10:26:18 riccardo Exp $
 // 
 //  Original author: R.Giannitrapani
 
@@ -92,6 +92,10 @@ class HepRepSvc : virtual public Service,
 
   /// This method change the property of a given algorithm
   bool setAlgProperty(std::string algName, std::string propName, std::string propValue);
+ 
+  /// This method return a dir with a FRED installation, if set so in the
+  /// jobOptions file; otherwise it returns (by default) an empty string
+  std::string getStartFred(){return m_startFred;}; 
   
 protected: 
     
@@ -110,6 +114,11 @@ private:
     /// Method invoked at the end of every event
     void endEvent();
 
+    /// A string containing a FRED dir installation; if empty, the optional
+    /// server will not try to start a FRED instance to connect to the server.
+    /// If not empty, the server can use this string to launch FRED and attach
+    /// it to the server itself.
+    std::string m_startFred;
     /// A property to be used to set the saving of XML HepRep files to
     /// true or false by setting the name of a streamer; by default it
     /// is a null string, so autostream is disabled
