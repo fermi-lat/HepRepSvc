@@ -10,7 +10,6 @@
 
 #include "Event/TopLevel/EventModel.h"
 #include "Event/Recon/TkrRecon/TkrVertex.h"
-//#include "Event/Recon/TkrRecon/TkrFitTrackBase.h"
 
 #include "idents/VolumeIdentifier.h"
 #include "CLHEP/Geometry/Transform3D.h"
@@ -43,10 +42,13 @@ void VertexFiller::buildTypes()
     m_builder->addType("GammaVtxCol","GammaVtx","Reconstructed Gamma Vertex","");
     m_builder->addAttValue("DrawAs","Line","");
     m_builder->addAttValue("Color","yellow","");
-    m_builder->addAttDef("E","Energy reconstructed","Physics","MeV");
-    m_builder->addAttDef("Q","Quality","Physics","");
-    m_builder->addAttDef("ConvLayer","Layer of conversion","Physics","");
-    m_builder->addAttDef("Tower","Tower of conversion","Physics","");
+    m_builder->addAttDef("Hit Status","Hit Status Bits","Physics","");
+    m_builder->addAttDef("Energy","Energy reconstructed","Physics","MeV");
+    m_builder->addAttDef("ChiSquare","ChiSquare of fit", "Physics", "");
+    m_builder->addAttDef("Quality","Quality","Physics","");
+    m_builder->addAttDef("ArcLen1","Arclen of track 1", "Physics", "mm");
+    m_builder->addAttDef("ArcLen2","Arclen of track 2", "Physics", "mm");
+    m_builder->addAttDef("DOCA", "Distance of Closest Approach", "Physics", "mm");
 }
 
 
@@ -71,15 +73,24 @@ void VertexFiller::fillInstances (std::vector<std::string>& typesList)
 	            const Event::TkrVertex& pVertex = **iter;
 	      
 	            Point endPoint = Point(pVertex.getPosition()) 
-		                       - 1000.*pVertex.getDirection();
+		                       - 10000.*pVertex.getDirection();
 
 
                 m_builder->addAttValue("Color",color,"");
                 m_builder->addAttValue("LineWidth", (float)lineWidth, "");
-	            m_builder->addAttValue("Q", (float)(pVertex.getQuality()), "");
-	            m_builder->addAttValue("E", (float)(pVertex.getEnergy()), "");
-	            m_builder->addAttValue("ConvLayer", (pVertex.getLayer()), "");
-	            m_builder->addAttValue("Tower", (pVertex.getTower()), "");
+	            m_builder->addAttValue("Energy",    (float)(pVertex.getEnergy()), "");
+                m_builder->addAttValue("ChiSquare", (float)(pVertex.getChiSquare()), "");
+	            m_builder->addAttValue("Quality",   (float)(pVertex.getQuality()), "");
+                m_builder->addAttValue("ArcLen1",   (float)(pVertex.getTkr1ArcLen()), "");
+                m_builder->addAttValue("ArcLen2",   (float)(pVertex.getTkr2ArcLen()), "");
+                m_builder->addAttValue("DOCA",      (float)(pVertex.getDOCA()), "");
+                    
+                //Build string for status bits
+                std::stringstream outString;
+                unsigned int      statBits = pVertex.getStatusBits();
+                outString.setf(std::ios::hex);
+                outString << std::hex << statBits;
+                m_builder->addAttValue("Hit Status",outString.str(),"");
 
 	            double sx = pVertex.getPosition().x();
                 double sy = pVertex.getPosition().y();
@@ -106,8 +117,6 @@ bool VertexFiller::hasType(std::vector<std::string>& list, std::string type)
     if (list.size() == 0) return 1;
 
     std::vector<std::string>::const_iterator i; 
-
-    //for(unsigned int j=0; j< list.size(); j++) std::cout << list[j] << std::endl;
     
     i = std::find(list.begin(),list.end(),type);
     if(i == list.end()) return 0;
