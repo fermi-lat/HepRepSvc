@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: usher  Fri Oct  1 12:46:47 PDT 2004
+HepRepSvc
+
+Modified Files:
+	.cvsignore 
+Log Message:
+Add new filler class to draw TkrTrack/TkrTrackHit objects
+Also update cluster filler to reflect changes to TkrCluster class
+    *
+------------------------------------------------------------
 User: riccardo  Wed Sep 29 03:41:55 PDT 2004
 HepRepSvc/doc
 
