@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: riccardo  Mon Jul 19 00:27:16 PDT 2004
+HepRepSvc/src
+
+Modified Files:
+	HepRepSvc.cxx HepRepSvc.h SvcAdapter.cxx SvcAdapter.h 
+Log Message:
+Lot of changes to deal with bad event request from the client.
+
+    *
+------------------------------------------------------------
+User: riccardo  Mon Jul 19 00:27:16 PDT 2004
 HepRepSvc/HepRepSvc
 
 Modified Files:
