@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.6 2004/05/25 09:39:17 riccardo Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.7 2004/05/31 15:13:44 riccardo Exp $
 // 
 //  Original author: R.Giannitrapani
 //
@@ -20,6 +20,8 @@
 
 #include "FluxSvc/IFluxSvc.h"
 #include "FluxSvc/IFlux.h"
+
+#include "RootIo/IRootIoSvc.h"
 
 #include "Event/TopLevel/Event.h"
 #include "GaudiKernel/SvcFactory.h"
@@ -112,18 +114,23 @@ StatusCode HepRepSvc::initialize ()
       log << MSG::ERROR << "Could not find EventDataSvc" << endreq;
       return status;
     }
-
+        
     // get the Flux Service    
     IService* theSvc;
     StatusCode sc = serviceLocator()->getService( "FluxSvc", theSvc, true );
     if ( sc.isSuccess() ) {
       sc = theSvc->queryInterface(IFluxSvc::interfaceID(), (void**)&m_fluxSvc);
-    }
-    if( sc.isFailure() ) {
-        log << MSG::ERROR << "Could not find FluxSvc, or wrong interface ID" << endreq;
-        return sc;
-    }
+    }     
+    else m_fluxSvc = 0;
 
+    sc = serviceLocator()->getService( "RootIoSvc", theSvc, true );
+    if ( sc.isSuccess() ) {
+      sc = theSvc->queryInterface(IRootIoSvc::interfaceID(), (void**)&m_rootIoSvc);
+    }
+    else m_rootIoSvc = 0;
+     
+    
+    
     // use the incident service to register begin, end events
     IIncidentSvc* incsvc = 0;
     status = service ("IncidentSvc", incsvc, true);
@@ -274,6 +281,22 @@ void HepRepSvc::addStreamer(std::string name, IStreamer* s)
   m_streamers[name] = s;
 }
 
+
+// Return valid commands accepted by this server
+std::string HepRepSvc::getCommands()
+{
+  std::stringstream sNames;
+  sNames << "next,commands";  
+  
+  if (m_fluxSvc)
+    sNames << ",fluxes,source";
+  
+  if (m_rootIoSvc)
+    sNames << ",eventId";
+  
+  return sNames.str();     
+}
+
 // This method return the list of sources
 std::string HepRepSvc::getSources(){
   std::stringstream sNames;
@@ -294,6 +317,14 @@ std::string HepRepSvc::getSources(){
       sNames << '\0';
 
   return sNames.str();
+}
+
+// This method set the Event ID to a pair Run/Event
+bool HepRepSvc::setEventId(int run, int event)
+{
+  // Make sure Index is set to -1
+  m_rootIoSvc->setIndex(-1);
+  return m_rootIoSvc->setRunEventPair(std::pair<int, int>(run, event));
 }
 
 // This method set the actual source

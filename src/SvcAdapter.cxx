@@ -55,6 +55,16 @@ bool SvcAdapter::nextEvent(int i)
 	else return true;
 }
 
+bool SvcAdapter::setEventId(int run, int event)
+{
+  return m_hrsvc->setEventId(run, event);
+}
+
+std::string SvcAdapter::getCommands()
+{
+  return m_hrsvc->getCommands();
+}
+
 std::string SvcAdapter::getSources()
 {  
   return m_hrsvc->getSources();

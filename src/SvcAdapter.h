@@ -20,10 +20,14 @@ class SvcAdapter: public ISvcAdapter
  public:
   SvcAdapter(HepRepSvc* h):m_hrsvc(h){};
   virtual bool nextEvent(int);
-  std::string getSources();
+  virtual std::string getSources();
   virtual void setSource(std::string);
 	/// stop the GAUDI job
 	virtual void shutDown();
+  /// sent the valid setEvent command accepted by this server
+  virtual std::string getCommands(); 
+  /// This method set the Event ID to a pair Run/Event
+  virtual bool setEventId(int run, int event);
  private:
   HepRepSvc* m_hrsvc;
 };
