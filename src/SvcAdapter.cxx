@@ -60,6 +60,11 @@ bool SvcAdapter::setEventId(int run, int event)
   return m_hrsvc->setEventId(run, event);
 }
 
+bool SvcAdapter::setEventIndex(int index)
+{
+  return m_hrsvc->setEventIndex(index);
+}
+
 std::string SvcAdapter::getCommands()
 {
   return m_hrsvc->getCommands();

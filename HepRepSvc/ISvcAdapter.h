@@ -28,6 +28,8 @@ class ISvcAdapter
   virtual std::string getCommands() = 0;  
   /// This method set the Event ID to a pair Run/Event
   virtual bool setEventId(int run, int event) =  0;
+  /// This method set the Event index
+  virtual bool setEventIndex(int index) = 0;
 
 };
 
