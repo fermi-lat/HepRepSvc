@@ -1,4 +1,4 @@
-//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.10 2004/12/16 19:31:15 usher Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.11 2004/12/27 16:31:59 lsrea Exp $
 /*
  * v0r1     20-09-02 RG Inital release of the package
  * v0r2     07-07-03 RG Complete refactoring of HepRepSvc	
@@ -11,4 +11,5 @@
  * v0r8     29-09-04 RG Lot of changes to support full name Type and new commands
  * v0r9     16-12-04 TU Change over to using new Tracker TDS classes
  * v0r10p1  27-12-04 LR remove TkrCluster id from fillers
+ * v0r11    11-01-05 RG imported changes in EM branch to support back button in FRED
 */
