@@ -11,6 +11,8 @@
 #include "Event/TopLevel/EventModel.h"
 #include "Event/Recon/CalRecon/CalXtalRecData.h"
 #include "Event/Recon/CalRecon/CalCluster.h"
+#include "Event/RelTable/RelTable.h"
+#include "Event/Recon/CalRecon/CalMIPs.h"
 #include "Event/Recon/CalRecon/CalRecon.h"
 
 
@@ -127,6 +129,16 @@ void CalReconFiller::buildTypes()
     m_builder->addType("Cluster", "ClusterDir", "Cal Cluster Direction","");
     m_builder->addAttValue("DrawAs","Line","");
     m_builder->addAttValue("Color","green","");
+
+    m_builder->addType("CalRecon","CalMIPsCol","Cal MIPs Collection","");
+    m_builder->addType("CalMIPsCol", "CalMIPs", "Cal MIPs", "");
+    m_builder->addAttDef("ChiSquare","ChiSquare","Physics"," ");
+    m_builder->addAttValue("DrawAs","Line","");
+    m_builder->addAttValue("Color", "red","");
+    m_builder->addType("CalMIPs", "Xtal", "Crystal reconstruction", "");
+    m_builder->addAttDef("E","Energy reconstructed","Physics","MeV");
+    m_builder->addAttValue("DrawAs","Prism","");
+    m_builder->addAttValue("Color","blue","");
 }
 
 
@@ -232,24 +244,22 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
 
         // if pointer is not zero, start drawing
         if(cls){
-            int numClusters = cls->num();
+            int numClusters = cls->size();
 
-            for (int ic=0; ic<numClusters; ic++) {
+            for (int ic=0; ic<numClusters; ic++) 
+            {
                 m_builder->addInstance("ClusterCol", "Cluster");  
 
                 // get pointer to the cluster 
-                Event::CalCluster* cl = cls->getCluster(ic); 
+                Event::CalCluster* cl = (*cls)[ic]; 
 
-                // get vector of layer energies
-                const std::vector<double>& eneLayer = cl->getEneLayer();
+                // Specific vector of layer data
+                Event::CalClusterLayerDataVec& lyrDataVec = (*cl);
 
                 // get total energy in the calorimeter: energySum is not filled when reading from Root!
                 //      double energy_sum = cl->getEnergySum();
                 float energy_sum = 0.;
-                for (int j=0; j<8; j++) { energy_sum += eneLayer[j];}
-
-                // get layer positions
-                const std::vector<Vector>& posLayer = cl->getPosLayer();
+                for (int j=0; j<8; j++) { energy_sum += lyrDataVec[j].getEnergy();}
 
                 // draw only if there is some energy in the calorimeter        
                 if(energy_sum > 0){
@@ -267,10 +277,10 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
 
                         // if energy in this layer is not zero - draw blue cross at
                         // the average reconstructed position for this layer
-                        if (eneLayer[l]>0){            
-                            double x=(posLayer[l]).x();
-                            double y=(posLayer[l]).y();
-                            double z=(posLayer[l]).z();
+                        if (lyrDataVec[l].getEnergy() > 0) {            
+                            double x=lyrDataVec[l].getPosition().x();
+                            double y=lyrDataVec[l].getPosition().y();
+                            double z=lyrDataVec[l].getPosition().z();
                             m_builder->addPoint(x,y,z);            
                         }
                     }
@@ -303,6 +313,97 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
 
     }
 
+    if (hasType(typesList,"Recon/CalRecon/CalMIPsCol"))
+    {      
+        m_builder->addInstance("CalRecon","CalMIPsCol");    
+
+        //  get pointer to the CalMIPs collection
+        Event::CalMIPsCol* calMIPsCol = SmartDataPtr<Event::CalMIPsCol>(m_dpsvc, EventModel::CalRecon::CalMIPsCol);
+
+        // if pointer is not zero, start drawing
+        if(calMIPsCol)
+        {
+            // Retrieve the CalMIPs to CalXtalRecData relational table
+            SmartDataPtr<Event::CalXtalMIPsTabList> CalXtalMipsTable(m_dpsvc, EventModel::CalRecon::CalXtalMIPsTab);
+            Event::CalXtalMIPsTab* CalXtalMIPsTab = new Event::CalXtalMIPsTab(CalXtalMipsTable);
+
+            int numMIPs = calMIPsCol->size();
+
+            for(Event::CalMIPsColItr mipIter = calMIPsCol->begin(); mipIter != calMIPsCol->end(); mipIter++)
+            {
+                Event::CalMIPs* calMIPs = *mipIter;
+
+                m_builder->addInstance("CalMIPsCol", "CalMIPs");  
+
+                // extract starting point and angles
+                double xStart   = calMIPs->getx();
+                double yStart   = calMIPs->gety();
+                double zStart   = calMIPs->getz();
+
+                double thetaRad = 3.14159 * calMIPs->getTheta() / 180.;
+                double phiRad   = 3.14159 * calMIPs->getPhi() / 180.;
+
+                double ux       =      sin(thetaRad);
+                double uy       = ux * sin(phiRad);
+                double uz       =      cos(thetaRad);
+
+                ux *= cos(phiRad);
+
+                // Add the starting point to the display
+                m_builder->addPoint(xStart, yStart, zStart);
+
+                // Update the point
+                double delta = calMIPs->getArcLen();
+                xStart += delta * ux;
+                yStart += delta * uy;
+                zStart += delta * uz;
+
+                // Add the endpoint
+                m_builder->addPoint(xStart, yStart, zStart);
+
+                // Retrieve list of xTals related to this mip
+                std::vector<Event::CalXtalMIPsRel*> xTalMipsVec = CalXtalMIPsTab->getRelBySecond(calMIPs);
+                std::vector<Event::CalXtalMIPsRel*>::iterator xTalMipsVecItr;
+
+                // Draw these crystals
+                for(xTalMipsVecItr = xTalMipsVec.begin(); xTalMipsVecItr != xTalMipsVec.end(); xTalMipsVecItr++)
+                {
+                    Event::CalXtalMIPsRel* xTalMipsRel = *xTalMipsVecItr;
+
+                    Event::CalXtalRecData* xTalData = xTalMipsRel->getFirst();
+
+                    // get reconstructed energy in the crystal
+                    double eneXtal = xTalData->getEnergy();
+
+                    m_builder->addInstance("CalMIPs", "Xtal");    
+                    m_builder->addAttValue("E", (float)eneXtal, "");
+
+                    // get the vector of reconstructed position
+                    HepVector3D pXtal = xTalData->getPosition();
+
+                    // get reconstructed coordinates
+                    double x = pXtal.x();
+                    double y = pXtal.y();
+                    double z = pXtal.z();
+
+                    // calculate the half size of the box, 
+                    // taking the 90% of crystal half height
+                    // as the size corresponding to the maximum energy
+                    //double s = 0.45*m_xtalHeight*eneXtal/emax;
+                    double s = 0.5*m_xtalHeight;
+
+                    m_builder->addPoint(x+s,y+s,z+s);
+                    m_builder->addPoint(x-s,y+s,z+s);
+                    m_builder->addPoint(x-s,y-s,z+s);
+                    m_builder->addPoint(x+s,y-s,z+s);
+                    m_builder->addPoint(x+s,y+s,z-s);
+                    m_builder->addPoint(x-s,y+s,z-s);
+                    m_builder->addPoint(x-s,y-s,z-s);
+                    m_builder->addPoint(x+s,y-s,z-s);
+                }
+            }
+        }
+    }
 }
 
 bool CalReconFiller::hasType(std::vector<std::string>& list, std::string type) 
@@ -316,4 +417,5 @@ bool CalReconFiller::hasType(std::vector<std::string>& list, std::string type)
     else return 1;
 
 }
+
 
