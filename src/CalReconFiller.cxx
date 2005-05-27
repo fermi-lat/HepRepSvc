@@ -12,7 +12,7 @@
 #include "Event/Recon/CalRecon/CalXtalRecData.h"
 #include "Event/Recon/CalRecon/CalCluster.h"
 #include "Event/RelTable/RelTable.h"
-#include "Event/Recon/CalRecon/CalMIPs.h"
+//#include "Event/Recon/CalRecon/CalMIPs.h" // Remove temporarily
 #include "Event/Recon/CalRecon/CalRecon.h"
 
 
@@ -312,7 +312,7 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
         }
 
     }
-
+/*  --- Remove temporarily
     if (hasType(typesList,"Recon/CalRecon/CalMIPsCol"))
     {      
         m_builder->addInstance("CalRecon","CalMIPsCol");    
@@ -404,6 +404,7 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
             }
         }
     }
+    */
 }
 
 bool CalReconFiller::hasType(std::vector<std::string>& list, std::string type) 
