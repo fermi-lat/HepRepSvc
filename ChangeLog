@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: usher  Fri May 27 07:59:02 PDT 2005
+HepRepSvc/src
+
+Modified Files:
+	CalReconFiller.cxx 
+Log Message:
+Temporarily comment out MIP display until new code in place
+    *
+------------------------------------------------------------
 User: usher  Thu May 26 15:05:11 PDT 2005
 HepRepSvc/src
 
