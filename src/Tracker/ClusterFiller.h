@@ -40,6 +40,10 @@ class ClusterFiller: public IFiller{
     double m_siStripPitch; 
     double m_stripLength;
     double m_siThickness;
+    double m_siWaferSide;
+    double m_siWaferActiveSide;
+    double m_ssdGap;
+    int    m_nWaferAcross;
 };
 
 #endif //ClusterFILLER_H

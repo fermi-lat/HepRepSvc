@@ -21,6 +21,11 @@
 
 #include <algorithm>
 
+namespace {
+    float _markerSize = 25.0;
+    float _markerWidth = 2.0;
+    bool  _scalingMarker  = true;
+}
 
 // Constructor
 ClusterFiller::ClusterFiller(IGlastDetSvc* gsvc,
@@ -28,22 +33,18 @@ ClusterFiller::ClusterFiller(IGlastDetSvc* gsvc,
                              IParticlePropertySvc* ppsvc):
 m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc)
 {
-    double siWaferActiveSide;
     int    ladderNStrips;
-    double siWaferSide;
-    double ssdGap;
-    int    nWaferAcross;
 
-    gsvc->getNumericConstByName("SiWaferActiveSide", &siWaferActiveSide);
+    gsvc->getNumericConstByName("SiWaferActiveSide", &m_siWaferActiveSide);
     gsvc->getNumericConstByName("stripPerWafer",     &ladderNStrips);
     gsvc->getNumericConstByName("SiThick",           &m_siThickness);
-    gsvc->getNumericConstByName("SiWaferSide",       &siWaferSide);
-    gsvc->getNumericConstByName("ssdGap",            &ssdGap);
-    gsvc->getNumericConstByName("nWaferAcross",     &nWaferAcross);
+    gsvc->getNumericConstByName("SiWaferSide",       &m_siWaferSide);
+    gsvc->getNumericConstByName("ssdGap",            &m_ssdGap);
+    gsvc->getNumericConstByName("nWaferAcross",     &m_nWaferAcross);
 
-    m_stripLength = nWaferAcross*siWaferSide + (nWaferAcross-1)*ssdGap;
+    m_stripLength = m_nWaferAcross*m_siWaferSide + (m_nWaferAcross-1)*m_ssdGap;
 
-    m_siStripPitch = siWaferActiveSide / ladderNStrips;
+    m_siStripPitch = m_siWaferActiveSide / ladderNStrips;
 }
 
 
@@ -54,11 +55,10 @@ void ClusterFiller::buildTypes()
         "Reconstructed Cluster collections","");
 
     m_builder->addType("TkrClusterCol","TkrCluster","Reconstructed Cluster","");
+    m_builder->addType("TkrCluster", "Strip", "Strip", "");
+    m_builder->addType("Strip", "ActiveStrip", "Active Part of Strip", "");
     m_builder->addAttValue("DrawAs","Prism","");
-    //m_builder->addAttValue("DrawAs","Line","");
-    //m_builder->addAttValue("MarkName","Cross","");
     m_builder->addAttValue("Color","green","");
-    //m_builder->addAttDef("ID","Cluster ID","Physics","");
     m_builder->addAttDef("Tower","Cluster Tower #","Physics","");
     m_builder->addAttDef("Plane","Cluster Plane #","Physics","");
     m_builder->addAttDef("View","Cluster View","Physics","");
@@ -72,14 +72,20 @@ void ClusterFiller::buildTypes()
     m_builder->addAttValue("DrawAs","Line","");
     m_builder->addAttValue("Color","red","");
 
-    // Tracy hates the fixed-size marker, try again!
     m_builder->addType("TkrCluster", "ClusterMarker", " ", "");
-    m_builder->addAttValue("DrawAs", "Line", "");
     m_builder->addAttValue("Color", "green", "");
-    //m_builder->addAttValue("MarkerName", "Cross", "");
-    //m_builder->addAttValue("MarkerSize", "1", "");
+    if(_scalingMarker) {
+        // Tracy hates the fixed-size marker, try again!
+        m_builder->addType("ClusterMarker", "MarkerArm", " ", "");
+        m_builder->addAttValue("DrawAs", "Line", "");
+        m_builder->addAttValue("LineWidth", _markerWidth, "");
+    } else {
+        //Here's the real marker 
+        m_builder->addAttValue("DrawAs", "Point", "");
+        m_builder->addAttValue("MarkerName", "Cross", "");
+        m_builder->addAttValue("MarkerSize", "1", "");
+    }
 }
-
 
 // This method fill the instance tree Event with the actual TDS content
 void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
@@ -98,25 +104,40 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
     if (!hasType(typesList,"Recon/TkrRecon/TkrClusterCol/TkrCluster")) return;
     
     double markerOffset = m_siStripPitch;
-    double markerSize   = 5.0*m_siStripPitch;
+    double markerSize   = _markerSize*m_siStripPitch;
+
+    double halfLength   = 0.5 * (m_stripLength);
+
     while(nHits--)
     {
         Event::TkrCluster* pCluster = (*pClusters)[nHits];
         Point              clusPos  = pCluster->position();
 
+        double halfWidth = 0.5 * pCluster->size() * m_siStripPitch;
         double x    = clusPos.x();
         double y    = clusPos.y();
         double z    = clusPos.z();
-        double dx   = 0.5 * pCluster->size() * m_siStripPitch;
-        double dy   = 0.5 * (m_stripLength);  // One day we will fix this...
         double dz   = 0.5 * m_siThickness;
+
+        double dx   = halfWidth;
+        double dy   = halfLength;
+      
         double xToT = x;
         double yToT = y - dy - markerOffset;
         double deltaY = 0.0;
         double deltaX = markerSize;
-        double ToT  = pCluster->getRawToT() / 64.;       // So, max ToT = 4 mm
 
         int    view   = pCluster->getTkrId().getView();
+        if (view == idents::TkrId::eMeasureY) {
+            dy   = 0.5 * pCluster->size() * m_siStripPitch;
+            dx   = 0.5 * m_stripLength;
+            xToT = x - dx - markerOffset;
+            yToT = y;
+            deltaY = markerSize;
+            deltaX = 0.0;
+        }
+
+        double ToT  = pCluster->getRawToT() / 64.;       // So, max ToT = 4 mm
 
         m_builder->addInstance("TkrClusterCol","TkrCluster");
 
@@ -139,34 +160,47 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
         m_builder->addAttValue("Mips",           (float)(pCluster->getMips()),"");
 
         //Draw the width of the cluster
-        if (pCluster->getTkrId().getView() == idents::TkrId::eMeasureY)
-        {
-            dy   = 0.5 * pCluster->size() * m_siStripPitch;
-            dx   = 0.5 * m_stripLength;
-            xToT = x - dx - markerOffset;
-            yToT = y;
-            deltaY = markerSize;
-            deltaX = 0.0;
-
-        }
 
         //Now draw the hit strips
-        m_builder->addPoint(x+dx,y+dy,z+dz);
-        m_builder->addPoint(x-dx,y+dy,z+dz);
-        m_builder->addPoint(x-dx,y-dy,z+dz);
-        m_builder->addPoint(x+dx,y-dy,z+dz);
-        m_builder->addPoint(x+dx,y+dy,z-dz);
-        m_builder->addPoint(x-dx,y+dy,z-dz);
-        m_builder->addPoint(x-dx,y-dy,z-dz);
-        m_builder->addPoint(x+dx,y-dy,z-dz);
+        m_builder->addInstance("TkrCluster", "Strip");
+        double waferPitch = m_siWaferSide + m_ssdGap;
+        double offset = -0.5*(m_nWaferAcross-1)*waferPitch;
+        for (int wafer=0;wafer<4; ++wafer) {
+            m_builder->addInstance("Strip", "ActiveStrip");
+            double delta = offset + wafer*waferPitch;
+            x  = clusPos.x();
+            y  = clusPos.y() + delta;
+            dx = halfWidth;
+            dy = 0.5*m_siWaferActiveSide;
+            if (view == idents::TkrId::eMeasureY) {
+                x = clusPos.x() + delta;
+                y = clusPos.y();
+                std::swap(dx, dy);
+            }
+            m_builder->addPoint(x+dx,y+dy,z+dz);
+            m_builder->addPoint(x-dx,y+dy,z+dz);
+            m_builder->addPoint(x-dx,y-dy,z+dz);
+            m_builder->addPoint(x+dx,y-dy,z+dz);
+            m_builder->addPoint(x+dx,y+dy,z-dz);
+            m_builder->addPoint(x-dx,y+dy,z-dz);
+            m_builder->addPoint(x-dx,y-dy,z-dz);
+            m_builder->addPoint(x+dx,y-dy,z-dz);
+        }
 
-        // make the cross in the measured view
-        m_builder->addInstance("TkrCluster", "ClusterMarker");
-        m_builder->addPoint(xToT+deltaX, yToT+deltaY, z+markerSize);
-        m_builder->addPoint(xToT-deltaX, yToT-deltaY, z-markerSize);  
-        m_builder->addInstance("TkrCluster", "ClusterMarker");
-        m_builder->addPoint(xToT-deltaX, yToT-deltaY, z+markerSize);
-        m_builder->addPoint(xToT+deltaX, yToT+deltaY, z-markerSize);
+        if(_scalingMarker) {
+            // make the cross in the measured view
+            m_builder->addInstance("TkrCluster", "ClusterMarker");
+            m_builder->addInstance("ClusterMarker", "MarkerArm");
+            m_builder->addPoint(xToT+deltaX, yToT+deltaY, z+markerSize);
+            m_builder->addPoint(xToT-deltaX, yToT-deltaY, z-markerSize);  
+            m_builder->addInstance("ClusterMarker", "MarkerArm");
+            m_builder->addPoint(xToT-deltaX, yToT-deltaY, z+markerSize);
+            m_builder->addPoint(xToT+deltaX, yToT+deltaY, z-markerSize);
+        } else {
+            // Here's the code for the real marker
+            m_builder->addInstance("TkrCluster", "ClusterMarker");
+            m_builder->addPoint(xToT, yToT, z);       
+        }
 
         //Time over threshold add here
         if (hasType(typesList,
