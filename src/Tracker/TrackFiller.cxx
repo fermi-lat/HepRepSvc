@@ -46,13 +46,19 @@ void TrackFiller::buildTypes()
     m_builder->addAttDef("Energy","Fit Track Energy","Physics","MeV");
     m_builder->addAttDef("Quality","Fit Track Quality","Physics","");
     m_builder->addAttDef("# Hits","Number of Hits on Track","Physics","");
-    m_builder->addAttDef("Chi-Square(filter)","Fit Track Filtered Chi-Square","Physics","");
-    m_builder->addAttDef("Chi-Square(smooth)","Fit Track Smoothed Chi-Square","Physics","");
-    m_builder->addAttDef("# Deg of Free","Number of degrees of freedom in Chi-Square","Physics","");
+    m_builder->addAttDef("Chi-Square(filter)","Fit Track Filtered Chi-Square",
+        "Physics","");
+    m_builder->addAttDef("Chi-Square(smooth)","Fit Track Smoothed Chi-Square",
+        "Physics","");
+    m_builder->addAttDef("# Deg of Free","Number of degrees of freedom in Chi-Square",
+        "Physics","");
     m_builder->addAttDef("RMS resid","RMS Residual of track hits","Physics","");
-    m_builder->addAttDef("Tkr-Cal RadLens","Fit Track Smoothed Chi-Square","Physics","");
-    m_builder->addAttDef("Kalman Theta MS","Fit Track Smoothed Chi-Square","Physics","");
-    m_builder->addAttDef("Kalman Energy","Fit Track Smoothed Chi-Square","Physics","");
+    m_builder->addAttDef("Tkr-Cal RadLens","Fit Track Smoothed Chi-Square",
+        "Physics","");
+    m_builder->addAttDef("Kalman Theta MS","Fit Track Smoothed Chi-Square",
+        "Physics","");
+    m_builder->addAttDef("Kalman Energy","Fit Track Smoothed Chi-Square",
+        "Physics","");
     m_builder->addAttDef("Start Position","Track start position","Physics","");
     m_builder->addAttDef("Start Direction","Track start direction","Physics","");
 
@@ -70,8 +76,10 @@ void TrackFiller::buildTypes()
     m_builder->addAttDef("Filter Slope","Filter Fit Slope","Phyiscs","");
     m_builder->addAttDef("Smooth Position","Smooth Fit Position","Physics","");
     m_builder->addAttDef("Smooth Slope","Smooth Fit Slope","Phyiscs","");
-    m_builder->addAttDef("ChiSquareFilter","Filter Chi Square Contribution","Physics","");
-    m_builder->addAttDef("ChiSquareSmooth","Smoother Chi Square Contribution","Physics","");
+    m_builder->addAttDef("ChiSquareFilter","Filter Chi Square Contribution",
+        "Physics","");
+    m_builder->addAttDef("ChiSquareSmooth","Smoother Chi Square Contribution",
+        "Physics","");
 }
 
 
@@ -81,7 +89,8 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
     if (hasType(typesList,"Recon/TkrRecon/Tracks/Track"))
     { 
         Event::TkrTrackCol* pTracks = 
-            SmartDataPtr<Event::TkrTrackCol>(m_dpsvc,EventModel::TkrRecon::TkrTrackCol);
+            SmartDataPtr<Event::TkrTrackCol>(m_dpsvc,
+            EventModel::TkrRecon::TkrTrackCol);
 
         //Now see if we can do the drawing
         if (pTracks)
@@ -123,8 +132,10 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
                     m_builder->addAttValue("Tkr-Cal RadLens",    (float)(track.getTkrCalRadlen()),     "");
                     m_builder->addAttValue("Kalman Theta MS",    (float)(track.getKalThetaMS()),       "");
                     m_builder->addAttValue("Kalman Energy",      (float)(track.getKalEnergy()),        "");
-                    m_builder->addAttValue("Start Position",     getPositionString(track.getInitialPosition()), "");
-                    m_builder->addAttValue("Start Direction",    getDirectionString(track.getInitialDirection()), "");
+                    m_builder->addAttValue("Start Position",     
+                        getPositionString(track.getInitialPosition()), "");
+                    m_builder->addAttValue("Start Direction",    
+                        getDirectionString(track.getInitialDirection()), "");
 
                     //Build strings for status bits
                     unsigned int statBits = track.getStatusBits();
@@ -133,12 +144,31 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
                     std::stringstream outString;
                     m_builder->addAttValue("Status High",getBits(statBits, 31, 16),"");
                     //first loop through to draw the track
-                    for(Event::TkrTrackHitVecItr hitIter = track.begin(); hitIter < track.end(); hitIter++)
+                    Event::TkrTrackHitVecItr hitIter = track.begin();
+                    Event::TkrTrackHitVecItr lastHit  = --track.end();
+                    for(; hitIter!=lastHit; hitIter++)
                     {
                         Event::TkrTrackHit& plane = **hitIter;
                         Point planePos = plane.getPoint(fit);
-
                         m_builder->addPoint(planePos.x(),planePos.y(),planePos.z());
+                        //if(hitIter!=track.begin()) {
+                        //    Point* startPoint = new Point(planePos);
+                        //    startPos.push_back(startPoint);
+                        //}
+
+                        Vector planeDir = plane.getDirection(fit);
+                        Event::TkrTrackHit& nextPlane = **(hitIter+1);
+                        Point nextPos = nextPlane.getPoint(fit);
+                        double deltaZ = planePos.z() - nextPos.z();
+                        double dist = fabs(deltaZ/planeDir.z());
+                        Point nextPoint = planePos + dist*planeDir;
+                        m_builder->addPoint(nextPoint.x(),nextPoint.y(),nextPoint.z());
+
+                        //nextPoint -= 0.6*planeDir/fabs(planeDir.z());
+                        //Point* endPoint = new Point(nextPoint);
+                        //endPos.push_back(endPoint);
+                        //int size = endPos.size();
+                        //m_builder->addPoint(nextPoint.x(),nextPoint.y(),nextPoint.z());
                     }
 
                     //Second loop through to draw the hits
@@ -176,7 +206,8 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
                         }       
                         m_builder->addPoint(xl,yl,z0);
                         m_builder->addPoint(xr,yr,z0);
-                        m_builder->addAttValue("Hit Volume", getTkrIdString(plane.getTkrId()), "");
+                        m_builder->addAttValue("Hit Volume", 
+                            getTkrIdString(plane.getTkrId()), "");
 
                         //Build string for the measuring view
                         std::stringstream hitView("No valid hit found");
@@ -184,8 +215,11 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
 
                         if (plane.getStatusBits() & Event::TkrTrackHit::HITONFIT)
                         {
-                            if (plane.getTkrId().getView() == idents::TkrId::eMeasureX) hitView << "This is an X measuring plane";
-                            else                                                        hitView << "This is a Y measuring plane";
+                            if (plane.getTkrId().getView() == idents::TkrId::eMeasureX) { 
+                                hitView << "This is an X measuring plane";
+                            } else {                                                     
+                                hitView << "This is a Y measuring plane";
+                            }
                             //clusterId = -1; //plane.getClusterPtr()->id();
                         }
 
@@ -194,13 +228,20 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
                         m_builder->addAttValue("Energy",(float)(plane.getEnergy()),"");
                         m_builder->addAttValue("RadLen",(float)(plane.getRadLen()),"");
                         m_builder->addAttValue("ActDist",(float)(plane.getActiveDist()),"");
-                        m_builder->addAttValue("ChiSquareFilter",(float)(plane.getChiSquareFilter()),"");
-                        m_builder->addAttValue("ChiSquareSmooth",(float)(plane.getChiSquareSmooth()),"");
-                        m_builder->addAttValue("Measured",getPositionString(plane.getPoint(Event::TkrTrackHit::MEASURED)),"");
-                        m_builder->addAttValue("Filter Position", getPositionString(plane.getPoint(Event::TkrTrackHit::FILTERED)),"");
-                        m_builder->addAttValue("Filter Slope",    getSlopeString(plane.getTrackParams(Event::TkrTrackHit::FILTERED)),"");
-                        m_builder->addAttValue("Smooth Position", getPositionString(plane.getPoint(Event::TkrTrackHit::SMOOTHED)),"");
-                        m_builder->addAttValue("Smooth Slope",    getSlopeString(plane.getTrackParams(Event::TkrTrackHit::SMOOTHED)),"");
+                        m_builder->addAttValue("ChiSquareFilter",
+                            (float)(plane.getChiSquareFilter()),"");
+                        m_builder->addAttValue("ChiSquareSmooth",
+                            (float)(plane.getChiSquareSmooth()),"");
+                        m_builder->addAttValue("Measured",
+                            getPositionString(plane.getPoint(Event::TkrTrackHit::MEASURED)),"");
+                        m_builder->addAttValue("Filter Position", 
+                            getPositionString(plane.getPoint(Event::TkrTrackHit::FILTERED)),"");
+                        m_builder->addAttValue("Filter Slope",    
+                            getSlopeString(plane.getTrackParams(Event::TkrTrackHit::FILTERED)),"");
+                        m_builder->addAttValue("Smooth Position", 
+                            getPositionString(plane.getPoint(Event::TkrTrackHit::SMOOTHED)),"");
+                        m_builder->addAttValue("Smooth Slope",    
+                            getSlopeString(plane.getTrackParams(Event::TkrTrackHit::SMOOTHED)),"");
 
                         //Build string for status bits
                         unsigned int      statBits = plane.getStatusBits();
