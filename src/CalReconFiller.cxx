@@ -12,7 +12,7 @@
 #include "Event/Recon/CalRecon/CalXtalRecData.h"
 #include "Event/Recon/CalRecon/CalCluster.h"
 #include "Event/RelTable/RelTable.h"
-//#include "Event/Recon/CalRecon/CalMIPs.h" // Remove temporarily
+#include "Event/Recon/CalRecon/CalMipClasses.h" 
 #include "Event/Recon/CalRecon/CalRecon.h"
 
 
@@ -130,12 +130,12 @@ void CalReconFiller::buildTypes()
     m_builder->addAttValue("DrawAs","Line","");
     m_builder->addAttValue("Color","green","");
 
-    m_builder->addType("CalRecon","CalMIPsCol","Cal MIPs Collection","");
-    m_builder->addType("CalMIPsCol", "CalMIPs", "Cal MIPs", "");
+    m_builder->addType("CalRecon","CalMipTrackCol","Cal Mip Track Collection","");
+    m_builder->addType("CalMipTrackCol", "CalMipTrack", "Cal Mip Tracks", "");
     m_builder->addAttDef("ChiSquare","ChiSquare","Physics"," ");
     m_builder->addAttValue("DrawAs","Line","");
     m_builder->addAttValue("Color", "red","");
-    m_builder->addType("CalMIPs", "Xtal", "Crystal reconstruction", "");
+    m_builder->addType("CalMipTrack", "Xtal", "Crystal reconstruction", "");
     m_builder->addAttDef("E","Energy reconstructed","Physics","MeV");
     m_builder->addAttValue("DrawAs","Prism","");
     m_builder->addAttValue("Color","blue","");
@@ -312,74 +312,64 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
         }
 
     }
-/*  --- Remove temporarily
-    if (hasType(typesList,"Recon/CalRecon/CalMIPsCol"))
+
+    if (hasType(typesList,"Recon/CalRecon/CalMipTrackCol"))
     {      
-        m_builder->addInstance("CalRecon","CalMIPsCol");    
+        m_builder->addInstance("CalRecon","CalMipTrackCol");    
 
         //  get pointer to the CalMIPs collection
-        Event::CalMIPsCol* calMIPsCol = SmartDataPtr<Event::CalMIPsCol>(m_dpsvc, EventModel::CalRecon::CalMIPsCol);
+        Event::CalMipTrackCol* CalMipTrackCol = SmartDataPtr<Event::CalMipTrackCol>(m_dpsvc, EventModel::CalRecon::CalMipTrackCol);
 
         // if pointer is not zero, start drawing
-        if(calMIPsCol)
+        if(CalMipTrackCol)
         {
             // Retrieve the CalMIPs to CalXtalRecData relational table
-            SmartDataPtr<Event::CalXtalMIPsTabList> CalXtalMipsTable(m_dpsvc, EventModel::CalRecon::CalXtalMIPsTab);
-            Event::CalXtalMIPsTab* CalXtalMIPsTab = new Event::CalXtalMIPsTab(CalXtalMipsTable);
+            //SmartDataPtr<Event::CalXtalMIPsTabList> CalXtalMipsTable(m_dpsvc, EventModel::CalRecon::CalXtalMIPsTab);
+            //Event::CalXtalMIPsTab* CalXtalMIPsTab = new Event::CalXtalMIPsTab(CalXtalMipsTable);
 
-            int numMIPs = calMIPsCol->size();
+            int numMIPs = CalMipTrackCol->size();
 
-            for(Event::CalMIPsColItr mipIter = calMIPsCol->begin(); mipIter != calMIPsCol->end(); mipIter++)
+            for(Event::CalMipTrackColItr mipIter = CalMipTrackCol->begin(); mipIter != CalMipTrackCol->end(); mipIter++)
             {
-                Event::CalMIPs* calMIPs = *mipIter;
+                Event::CalMipTrack* calMipTrack = *mipIter;
 
-                m_builder->addInstance("CalMIPsCol", "CalMIPs");  
+                m_builder->addInstance("CalMipTrackCol", "CalMipTrack");  
 
-                // extract starting point and angles
-                double xStart   = calMIPs->getx();
-                double yStart   = calMIPs->gety();
-                double zStart   = calMIPs->getz();
+                // Position and direction
+                Point  mipPos   = calMipTrack->getPoint();
+                Vector mipDir   = calMipTrack->getDir();
 
-                double thetaRad = 3.14159 * calMIPs->getTheta() / 180.;
-                double phiRad   = 3.14159 * calMIPs->getPhi() / 180.;
-
-                double ux       =      sin(thetaRad);
-                double uy       = ux * sin(phiRad);
-                double uz       =      cos(thetaRad);
-
-                ux *= cos(phiRad);
-
-                // Add the starting point to the display
-                m_builder->addPoint(xStart, yStart, zStart);
+                // Number of crystals
+                int    numXtals = calMipTrack->size();
 
                 // Update the point
-                double delta = calMIPs->getArcLen();
-                xStart += delta * ux;
-                yStart += delta * uy;
-                zStart += delta * uz;
+                double delta  = 2 * numXtals * m_xtalHeight;
+                Point  topPos = mipPos + delta * mipDir;
+
+                // Bottom point
+                mipPos -= delta * mipDir;
+
+                // Add the starting point to the display
+                m_builder->addPoint(mipPos.x(), mipPos.y(), mipPos.z());
 
                 // Add the endpoint
-                m_builder->addPoint(xStart, yStart, zStart);
-
-                // Retrieve list of xTals related to this mip
-                std::vector<Event::CalXtalMIPsRel*> xTalMipsVec = CalXtalMIPsTab->getRelBySecond(calMIPs);
-                std::vector<Event::CalXtalMIPsRel*>::iterator xTalMipsVecItr;
+                m_builder->addPoint(topPos.x(), topPos.y(), topPos.z());
 
                 // Draw these crystals
-                for(xTalMipsVecItr = xTalMipsVec.begin(); xTalMipsVecItr != xTalMipsVec.end(); xTalMipsVecItr++)
+                for(Event::CalMipXtalVec::iterator xTalIter  = calMipTrack->begin(); 
+                                                   xTalIter != calMipTrack->end(); 
+                                                   xTalIter++)
                 {
-                    Event::CalXtalMIPsRel* xTalMipsRel = *xTalMipsVecItr;
-
-                    Event::CalXtalRecData* xTalData = xTalMipsRel->getFirst();
+                    Event::CalMipXtal& xTal = *xTalIter;
 
                     // get reconstructed energy in the crystal
-                    double eneXtal = xTalData->getEnergy();
+                    double eneXtal = xTal.getXtal()->getEnergy();
 
-                    m_builder->addInstance("CalMIPs", "Xtal");    
+                    m_builder->addInstance("CalMipTrack", "Xtal");    
                     m_builder->addAttValue("E", (float)eneXtal, "");
 
                     // get the vector of reconstructed position
-                    HepVector3D pXtal = xTalData->getPosition();
+                    HepVector3D pXtal = xTal.getXtal()->getPosition();
 
                     // get reconstructed coordinates
                     double x = pXtal.x();
@@ -404,7 +394,6 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
             }
         }
     }
-    */
 }
 
 bool CalReconFiller::hasType(std::vector<std::string>& list, std::string type) 
