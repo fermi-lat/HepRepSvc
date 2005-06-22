@@ -1,4 +1,12 @@
 ------------------------------------------------------------
+User: usher  Wed Jun 22 14:37:30 PDT 2005
+HepRepSvc/src/Tracker
+
+Added Files:
+	TkrEventParams.cxx TkrEventParamsFiller.h 
+Log Message:
+    *
+------------------------------------------------------------
 User: usher  Wed Jun 22 14:37:29 PDT 2005
 HepRepSvc/src
 
