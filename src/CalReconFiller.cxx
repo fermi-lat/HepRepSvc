@@ -339,21 +339,80 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
                 Point  mipPos   = calMipTrack->getPoint();
                 Vector mipDir   = calMipTrack->getDir();
 
-                // Number of crystals
-                int    numXtals = calMipTrack->size();
+//                 // Number of crystals
+//                 int    numXtals = calMipTrack->size();
 
-                // Update the point
-                double delta  = 2 * numXtals * m_xtalHeight;
-                Point  topPos = mipPos + delta * mipDir;
+// 		// Update the point
+//  		double delta  = 2 * numXtals * m_xtalHeight;
+//  		Point  topPos = mipPos + delta * mipDir;
+		
+// 		// Bottom point
+// 		mipPos -= delta * mipDir;
 
-                // Bottom point
-                mipPos -= delta * mipDir;
+//                  // Add the starting point to the display
+//                  m_builder->addPoint(mipPos.x(), mipPos.y(), mipPos.z());
+
+//                  // Add the endpoint
+//                  m_builder->addPoint(topPos.x(), topPos.y(), topPos.z());
+
+
+// 	      //projection of this hit on track
+// 	      Point Hp=C+((Hit[hid].P-C)*dir)*dir;
+// 	      for (int ihh=ih+1; ihh<tr[itr].nh; ihh++)
+// 		{
+// 		  int hidd=tr[itr].hid[ihh];
+// 		  //projection of this hit on track
+// 		  Point HHp=C+((Hit[hidd].P-C)*dir)*dir;
+// 		  //vv=Hit[hid].P-Hit[hidd].P;
+// 		  vv=HHp-Hp;
+// 		  double d=sqrt(vv*vv);
+// 		  if (d>tr[itr].length)
+// 		    {
+// 		      tr[itr].length=d;
+// 		      tr[itr].H1=Hp;
+// 		      tr[itr].H2=HHp;
+// 		    }
+
+		Point startPos;
+		Point endPos;
+		double dmax=-1.;
+                // Find start and end of track
+                for(Event::CalMipXtalVec::iterator xTalIter1  = calMipTrack->begin(); 
+                                                   xTalIter1 != calMipTrack->end(); 
+                                                   xTalIter1++)
+                {
+                    Event::CalMipXtal& xTal1 = *xTalIter1;
+                    // get the vector of reconstructed position
+                    HepVector3D pXtal1 = xTal1.getXtal()->getPosition();
+		    Point H1=xTal1.getXtal()->getPosition();
+		    // projection on the track
+		    Point P1=mipPos+((H1-mipPos)*mipDir)*mipDir;
+ 		    for(Event::CalMipXtalVec::iterator xTalIter2  = calMipTrack->begin(); 
+ 			xTalIter2 != calMipTrack->end(); 
+ 			xTalIter2++)
+ 		      {
+ 			Event::CalMipXtal& xTal2 = *xTalIter2;
+			// get the vector of reconstructed position
+ 			HepVector3D pXtal2 = xTal2.getXtal()->getPosition();
+			Point H2=xTal2.getXtal()->getPosition();
+			// projection on the track
+			Point P2=mipPos+((H2-mipPos)*mipDir)*mipDir;			
+			Vector vv=P2-P1;
+			double dist=sqrt(vv*vv);
+			if (dist>dmax)
+			  {
+			    startPos=P1;
+			    endPos=P2;
+			    dmax=dist;
+			  }
+		      }
+                }
 
                 // Add the starting point to the display
-                m_builder->addPoint(mipPos.x(), mipPos.y(), mipPos.z());
+                m_builder->addPoint(startPos.x(), startPos.y(), startPos.z());
 
                 // Add the endpoint
-                m_builder->addPoint(topPos.x(), topPos.y(), topPos.z());
+                m_builder->addPoint(endPos.x(), endPos.y(), endPos.z());
 
                 // Draw these crystals
                 for(Event::CalMipXtalVec::iterator xTalIter  = calMipTrack->begin(); 
