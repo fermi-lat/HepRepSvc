@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: usher  Wed Jul 13 17:09:10 PDT 2005
+HepRepSvc/src
+
+Modified Files:
+	CalReconFiller.cxx 
+Log Message:
+Add energy output for clusters, rescale Crystal display according to Leon formula
+    *
+------------------------------------------------------------
 User: piron  Wed Jul  6 09:04:06 PDT 2005
 HepRepSvc/src
 
