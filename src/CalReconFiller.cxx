@@ -15,7 +15,6 @@
 #include "Event/Recon/CalRecon/CalMipClasses.h" 
 #include "Event/Recon/CalRecon/CalRecon.h"
 
-
 #include "idents/VolumeIdentifier.h"
 #include "CLHEP/Geometry/Transform3D.h"
 #include "CLHEP/Geometry/Vector3D.h"
@@ -33,7 +32,9 @@ CalReconFiller::CalReconFiller(IGlastDetSvc* gsvc,
 m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc)
 {
 
-    double xtalHeight; 
+    double xtalHeight;
+    double xtalWidth;
+    double xtalLength;
     int nLayers;
     int eLATTowers;
     int eTowerCAL;
@@ -64,6 +65,37 @@ m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc)
     {
     } 
 
+    if(!m_gdsvc->getNumericConstByName(std::string("CsIWidth"),&xtalWidth)) 
+    {
+    } 
+
+    if(!m_gdsvc->getNumericConstByName(std::string("CsILength"),&xtalLength)) 
+    {
+    } 
+
+    if(!m_gdsvc->getNumericConstByName(std::string("xNum"),&m_xNum)) 
+    {
+    } 
+
+    if(!m_gdsvc->getNumericConstByName(std::string("yNum"),&m_yNum)) 
+    {
+    } 
+
+    if(!m_gdsvc->getNumericConstByName(std::string("eTowerCAL"),&m_eTowerCAL)) 
+    {
+    } 
+
+    if(!m_gdsvc->getNumericConstByName(std::string("eLATTowers"),&m_eLATTowers)) 
+    {
+    } 
+
+    if(!m_gdsvc->getNumericConstByName(std::string("eXtal"),&m_eXtal)) 
+    {
+    } 
+
+    if(!m_gdsvc->getNumericConstByName(std::string("nCsISeg"),&m_nCsISeg)) 
+    {
+    } 
 
     int layer=0;
     idents::VolumeIdentifier topLayerId;
@@ -98,10 +130,11 @@ m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc)
     Hep3Vector vecBottom = transfBottom.getTranslation();
 
 
-    m_calZtop = vecTop.z();
-    m_calZbottom = vecBottom.z();
-    m_xtalHeight = xtalHeight;
-
+    m_calZtop        = vecTop.z();
+    m_calZbottom     = vecBottom.z();
+    m_xtalHalfHeight = 0.5 * xtalHeight;
+    m_xtalHalfWidth  = 0.5 * xtalWidth;
+    m_xtalHalfLength = 0.5 * xtalLength;
 }
 
 
@@ -115,10 +148,20 @@ void CalReconFiller::buildTypes()
     m_builder->addAttDef("E","Energy reconstructed","Physics","MeV");
     m_builder->addAttValue("DrawAs","Prism","");
     m_builder->addAttValue("Color","red","");
+    m_builder->addType("XtalCol", "XtalLog", "Crystal Log", "");
+    m_builder->addAttValue("DrawAs","Prism","");
+    m_builder->addAttValue("Color","white","");
 
     m_builder->addType("CalRecon","ClusterCol","Cal Cluster Collection","");
     m_builder->addType("ClusterCol", "Cluster", "Cal Cluster", "");
     m_builder->addAttDef("E","Cluster Energy","Physics","MeV");
+    m_builder->addAttDef("rmsTrans","Transverse Moment","Physics","MeV");
+    m_builder->addAttDef("rmsLong","Sum Longitudinal Moment","Physics","MeV");
+    m_builder->addAttDef("LongAsym","Long Moment Asymmetry","Physics","MeV");
+    //m_builder->addAttDef("numTotXtal","Num Xtals","Physics","MeV");
+    m_builder->addAttDef("numTruncXtal","Num Truncated Xtals","Physics","MeV");
+    m_builder->addAttDef("Centroid","Cluster Centroid","Physics","");
+    m_builder->addAttDef("Axis","Cluster Axis","Physics","");
     m_builder->addAttValue("DrawAs","Point","");
     m_builder->addAttValue("Color","green","");
     m_builder->addType("Cluster", "ClusterLayers", "Cal Cluster Layers center","");
@@ -196,9 +239,9 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
                             // get reconstructed energy in the crystal
                             double eneXtal = recData->getEnergy();
 
-
                             // draw only crystals containing more than 1% of maximum energy
-                            if((eneXtal>0.01*emax) && (hasType(typesList, "Recon/CalRecon/XtalCol/Xtal"))){
+                            if((eneXtal>0.01*emax) && (hasType(typesList, "Recon/CalRecon/XtalCol/Xtal")))
+                            {
                                 m_builder->addInstance("XtalCol", "Xtal");    
                                 m_builder->addAttValue("E", (float)eneXtal, "");
 
@@ -215,7 +258,7 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
                                 // taking the 90% of crystal half height
                                 // as the size corresponding to the maximum energy
                                 //double s = 0.45*m_xtalHeight*eneXtal/emax;
-                                double s = 0.45*m_xtalHeight*pow(eneXtal/emax,0.333);
+                                double s = 2. * 0.45*m_xtalHalfHeight*pow(eneXtal/emax,0.333);
 
                                 m_builder->addPoint(x+s,y+s,z+s);
                                 m_builder->addPoint(x-s,y+s,z+s);
@@ -226,6 +269,75 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
                                 m_builder->addPoint(x-s,y-s,z-s);
                                 m_builder->addPoint(x+s,y-s,z-s);
 
+                                // Draw the faint outline of the entire log
+                                m_builder->addInstance("XtalCol", "XtalLog");    
+
+                                // Get the volume identifier
+                                const idents::CalXtalId xtalId = recData->getPackedId();
+    
+                                // unpack crystal identification into tower, layer and column number
+                                int layer = xtalId.getLayer();
+                                int tower = xtalId.getTower();
+                                int col   = xtalId.getColumn();
+
+                                // create Volume Identifier for segment 0 of this crystal
+                                idents::VolumeIdentifier segm0Id;
+                                segm0Id.append(m_eLATTowers);
+                                segm0Id.append(tower/m_xNum);
+                                segm0Id.append(tower%m_xNum);
+                                segm0Id.append(m_eTowerCAL);
+                                segm0Id.append(layer);
+                                segm0Id.append(layer%2); 
+                                segm0Id.append(col);
+                                segm0Id.append(m_eXtal);
+                                segm0Id.append(0);
+
+                                HepTransform3D transf;
+
+                                //get 3D transformation for segment 0 of this crystal
+                                m_gdsvc->getTransform3DByID(segm0Id,&transf);
+                                //get position of the center of the segment 0
+                                Hep3Vector vect0 = transf.getTranslation();
+
+                                // create Volume Identifier for the last segment of this crystal
+                                idents::VolumeIdentifier segm11Id;
+                                // copy all fields from segm0Id, except segment number
+                                for(int ifield = 0; ifield < fSegment; ifield++)
+                                        segm11Id.append(segm0Id[ifield]);
+                                segm11Id.append(m_nCsISeg-1); // set segment number for the last segment
+  
+                                //get 3D transformation for the last segment of this crystal
+                                m_gdsvc->getTransform3DByID(segm11Id,&transf);
+                                //get position of the center of the last segment
+                                Hep3Vector vect1 = transf.getTranslation();
+
+                                // Crystal center is what we want
+                                Hep3Vector xtalCtr = 0.5 * (vect0 + vect1);
+
+                                // Start drawing this side of the log. 
+                                // How we do this depends on if x or y 
+                                if (layer % 2 == 1) // y face is constant
+                                {
+                                    m_builder->addPoint(xtalCtr.x() - m_xtalHalfWidth, xtalCtr.y() - m_xtalHalfLength, xtalCtr.z() + m_xtalHalfHeight);
+                                    m_builder->addPoint(xtalCtr.x() + m_xtalHalfWidth, xtalCtr.y() - m_xtalHalfLength, xtalCtr.z() + m_xtalHalfHeight);
+                                    m_builder->addPoint(xtalCtr.x() + m_xtalHalfWidth, xtalCtr.y() - m_xtalHalfLength, xtalCtr.z() - m_xtalHalfHeight);
+                                    m_builder->addPoint(xtalCtr.x() - m_xtalHalfWidth, xtalCtr.y() - m_xtalHalfLength, xtalCtr.z() - m_xtalHalfHeight);
+                                    m_builder->addPoint(xtalCtr.x() - m_xtalHalfWidth, xtalCtr.y() + m_xtalHalfLength, xtalCtr.z() + m_xtalHalfHeight);
+                                    m_builder->addPoint(xtalCtr.x() + m_xtalHalfWidth, xtalCtr.y() + m_xtalHalfLength, xtalCtr.z() + m_xtalHalfHeight);
+                                    m_builder->addPoint(xtalCtr.x() + m_xtalHalfWidth, xtalCtr.y() + m_xtalHalfLength, xtalCtr.z() - m_xtalHalfHeight);
+                                    m_builder->addPoint(xtalCtr.x() - m_xtalHalfWidth, xtalCtr.y() + m_xtalHalfLength, xtalCtr.z() - m_xtalHalfHeight);
+                                }
+                                else // x face is constant
+                                {
+                                    m_builder->addPoint(xtalCtr.x() - m_xtalHalfLength, xtalCtr.y() - m_xtalHalfWidth, xtalCtr.z() + m_xtalHalfHeight);
+                                    m_builder->addPoint(xtalCtr.x() - m_xtalHalfLength, xtalCtr.y() + m_xtalHalfWidth, xtalCtr.z() + m_xtalHalfHeight);
+                                    m_builder->addPoint(xtalCtr.x() - m_xtalHalfLength, xtalCtr.y() + m_xtalHalfWidth, xtalCtr.z() - m_xtalHalfHeight);
+                                    m_builder->addPoint(xtalCtr.x() - m_xtalHalfLength, xtalCtr.y() - m_xtalHalfWidth, xtalCtr.z() - m_xtalHalfHeight);
+                                    m_builder->addPoint(xtalCtr.x() + m_xtalHalfLength, xtalCtr.y() - m_xtalHalfWidth, xtalCtr.z() + m_xtalHalfHeight);
+                                    m_builder->addPoint(xtalCtr.x() + m_xtalHalfLength, xtalCtr.y() + m_xtalHalfWidth, xtalCtr.z() + m_xtalHalfHeight);
+                                    m_builder->addPoint(xtalCtr.x() + m_xtalHalfLength, xtalCtr.y() + m_xtalHalfWidth, xtalCtr.z() - m_xtalHalfHeight);
+                                    m_builder->addPoint(xtalCtr.x() + m_xtalHalfLength, xtalCtr.y() - m_xtalHalfWidth, xtalCtr.z() - m_xtalHalfHeight);
+                                }
                             }
                         }
                 }
@@ -258,15 +370,26 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
                 Event::CalClusterLayerDataVec& lyrDataVec = (*cl);
 
                 // get total energy in the calorimeter: energySum is not filled when reading from Root!
-                //      double energy_sum = cl->getEnergySum();
-                //float energy_sum = 0.;
-                //for (int j=0; j<8; j++) { energy_sum += lyrDataVec[j].getEnergy();}
                 double clusEnergy = cl->getCalParams().getEnergy();
 
                 m_builder->addAttValue("E", (float)clusEnergy, "");
 
                 // draw only if there is some energy in the calorimeter        
-                if(clusEnergy > 0){
+                if(clusEnergy > 0)
+                {
+                    // Fill in the other output values 
+                    double rmsLong = cl->getRmsLong();
+                    double rmsTran = cl->getRmsTrans();
+                    double longAsy = cl->getRmsLongAsym();
+                    int    nTrunc  = cl->getNumTruncXtals();
+
+                    m_builder->addAttValue("rmsTrans",     (float)rmsTran, "");
+                    m_builder->addAttValue("rmsLong",      (float)rmsLong, "");
+                    m_builder->addAttValue("LongAsym",     (float)longAsy, "");
+                    //m_builder->addAttValue("numTotXtal",   cl->size(),     "");
+                    m_builder->addAttValue("numTruncXtal", nTrunc,         "");
+                    m_builder->addAttValue("Centroid",     getPositionString(cl->getCalParams().getCentroid()), "");
+                    m_builder->addAttValue("Axis",         getDirectionString(cl->getCalParams().getAxis()), "");
 
                     // Draw the cluster center
                     double x = (cl->getPosition()).x();
@@ -296,10 +419,10 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
                     double dirZ = (cl->getDirection()).z();
 
                     // non display for non-physical or horizontal direction
-                    if(dirZ >= -1. && dirZ != 0.){
+                    if(dirZ >= -1. && dirZ != 0.)
+                    {
                         // Draw the cluster direction
                         m_builder->addInstance("Cluster", "ClusterDir");    
-
 
                         // calculate x and y coordinates for the beginning and the end
                         // of line in the top and bottom calorimeter layers
@@ -442,8 +565,8 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
                     // calculate the half size of the box, 
                     // taking the 90% of crystal half height
                     // as the size corresponding to the maximum energy
-                    //double s = 0.45*m_xtalHeight*eneXtal/emax;
-                    double s = 0.5*m_xtalHeight;
+                    //double s = 0.45*m_xtalHalfHeight*eneXtal/emax;
+                    double s = m_xtalHalfHeight;
 
                     m_builder->addPoint(x+s,y+s,z+s);
                     m_builder->addPoint(x-s,y+s,z+s);
@@ -471,4 +594,26 @@ bool CalReconFiller::hasType(std::vector<std::string>& list, std::string type)
 
 }
 
+
+std::string CalReconFiller::getTripleString(int precis, double x, double y, double z)
+{
+    std::stringstream triple;
+    triple.setf(std::ios::fixed);
+    triple.precision(precis);
+    triple << " (" << x << "," << y << "," << z << ")";
+
+    return triple.str();
+}
+
+std::string CalReconFiller::getPositionString(const Point& position)
+{
+    int precis = 3;
+    return getTripleString(precis, position.x(), position.y(), position.z());
+}
+
+std::string CalReconFiller::getDirectionString(const Vector& direction)
+{
+    int precis = 5;
+    return getTripleString(precis, direction.x(), direction.y(), direction.z());
+}
 
