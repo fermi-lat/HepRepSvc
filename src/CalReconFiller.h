@@ -8,6 +8,8 @@
 class IGlastDetSvc;
 class IDataProviderSvc;
 class IParticlePropertySvc;
+class Point;
+class Vector;
 
 /** 
  *  @class CalReconFiller
@@ -35,18 +37,50 @@ class CalReconFiller: public IFiller{
   bool hasType(std::vector<std::string>& list, std::string type); 
 
  private:
+  std::string getTripleString(int precis, double x, double y, double z);
+  std::string getPositionString(const Point& position);
+  std::string getDirectionString(const Vector& position);
+
   IGlastDetSvc* m_gdsvc;
   IDataProviderSvc* m_dpsvc;
   IParticlePropertySvc* m_ppsvc;
 
-  /// crystal height
-  float m_xtalHeight;
+  /// enums stolen from CalUtil/CalDefs.h (not in "uses" path)
+
+  /** Volume ID field identifiers.  shouldn't be here, but there is no
+      global def as far as i can tell.
+  */
+  enum {fLATObjects, fTowerY, fTowerX, fTowerObjects, fLayer,
+        fMeasure, fCALXtal,fCellCmp, fSegment};
+
+  /// crystal half height
+  float m_xtalHalfHeight;
+
+  /// crystal half width
+  float m_xtalHalfWidth;
+
+  /// crystal half length
+  float m_xtalHalfLength;
 
   /// Z position of top calorimeter layer
   float m_calZtop;
   
   /// Z position of bottom calorimeter layer
   float m_calZbottom;
+  //-- XML GEOMETRY CONSTANTS --//
+  
+  /// number of x towers
+  int m_xNum;    
+  /// number of y towers
+  int m_yNum;    
+  /// the value of fTowerObject field, defining calorimeter module 
+  int m_eTowerCAL;
+  /// the value of fLATObjects field, defining LAT towers 
+  int m_eLATTowers; 
+  /// the value of fCellCmp field defining CsI crystal
+  int m_eXtal;      
+  /// number of geometric segments per Xtal
+  int m_nCsISeg;    
 };
 
 #endif //CALRECONFILLER_H
