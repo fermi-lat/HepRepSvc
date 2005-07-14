@@ -1,31 +1,4 @@
 ------------------------------------------------------------
-User: usher  Thu Jul 14 15:54:16 PDT 2005
-HepRepSvc/cmt
-
-Modified Files:
-	requirements 
-Log Message:
-Preparing to tag v0r14p1
-    *
-------------------------------------------------------------
-User: usher  Thu Jul 14 15:52:05 PDT 2005
-HepRepSvc/src
-
-Modified Files:
-	CalReconFiller.cxx CalReconFiller.h 
-Log Message:
-Improvements to Cal Display: Draw boxes for entire xtals for those that are hit, add text output to cluster display
-    *
-------------------------------------------------------------
-User: usher  Wed Jul 13 17:09:10 PDT 2005
-HepRepSvc/src
-
-Modified Files:
-	CalReconFiller.cxx 
-Log Message:
-Add energy output for clusters, rescale Crystal display according to Leon formula
-    *
-------------------------------------------------------------
 User: piron  Wed Jul  6 09:04:06 PDT 2005
 HepRepSvc/src
 
