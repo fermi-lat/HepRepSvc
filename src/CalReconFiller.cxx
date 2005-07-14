@@ -214,7 +214,8 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
                                 // calculate the half size of the box, 
                                 // taking the 90% of crystal half height
                                 // as the size corresponding to the maximum energy
-                                double s = 0.45*m_xtalHeight*eneXtal/emax;
+                                //double s = 0.45*m_xtalHeight*eneXtal/emax;
+                                double s = 0.45*m_xtalHeight*pow(eneXtal/emax,0.333);
 
                                 m_builder->addPoint(x+s,y+s,z+s);
                                 m_builder->addPoint(x-s,y+s,z+s);
@@ -258,11 +259,14 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
 
                 // get total energy in the calorimeter: energySum is not filled when reading from Root!
                 //      double energy_sum = cl->getEnergySum();
-                float energy_sum = 0.;
-                for (int j=0; j<8; j++) { energy_sum += lyrDataVec[j].getEnergy();}
+                //float energy_sum = 0.;
+                //for (int j=0; j<8; j++) { energy_sum += lyrDataVec[j].getEnergy();}
+                double clusEnergy = cl->getCalParams().getEnergy();
+
+                m_builder->addAttValue("E", (float)clusEnergy, "");
 
                 // draw only if there is some energy in the calorimeter        
-                if(energy_sum > 0){
+                if(clusEnergy > 0){
 
                     // Draw the cluster center
                     double x = (cl->getPosition()).x();
