@@ -1,4 +1,4 @@
-//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.19 2005/06/15 23:22:58 lsrea Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.20 2005/06/23 20:14:02 usher Exp $
 /*
  * v0r1     20-09-02 RG Inital release of the package
  * v0r2     07-07-03 RG Complete refactoring of HepRepSvc	
@@ -21,4 +21,5 @@
  * v0r13p1  15-06-05 LR TrackFiller: closer to old-style track picture
                         ClusterFiller: re-org, and divide bars into 4 wafers
  * v0r14p0  23-06-05 TU Modifications for new CalRecon TDS
+ * v0r14p1  Bastille TU Updates to Cal Display - draw entire hit xtal, add text to Clusters
 */
