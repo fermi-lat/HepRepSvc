@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: golpa  Fri Jul 15 16:06:07 PDT 2005
+HepRepSvc/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+Added author line
+    *
+------------------------------------------------------------
 TAG
 Tag name: v0r14p1, operation: add
 Package: HepRepSvc
