@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: lsrea  Tue Aug  9 13:34:30 PDT 2005
+HepRepSvc/src/Tracker
+
+Modified Files:
+	ClusterFiller.cxx TrackFiller.cxx 
+Log Message:
+Add a bit of info to the clusters and track hits
+
+    *
+------------------------------------------------------------
+User: lsrea  Tue Aug  9 13:34:30 PDT 2005
 HepRepSvc/doc
 
 Modified Files:
