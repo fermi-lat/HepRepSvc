@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: lsrea  Tue Aug  9 13:34:30 PDT 2005
+HepRepSvc/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+Add a bit of info to the clusters and track hits
+
+    *
+------------------------------------------------------------
 User: golpa  Fri Jul 15 16:06:07 PDT 2005
 HepRepSvc/cmt
 
