@@ -63,6 +63,7 @@ void TrackFiller::buildTypes()
     m_builder->addAttDef("Start Direction","Track start direction","Physics","");
 
     m_builder->addType("Track","TkrTrackHit", "Track Hits", "");
+    m_builder->addAttDef("Sequence #", "Sequence of Hit on Track", "Physics", "");
     m_builder->addAttDef("Hit Volume","Volume containing this hit","Physics","");
     m_builder->addAttDef("Hit Status Low","Hit Low Status Bits","Physics","");
     m_builder->addAttDef("Hit Status High","Hit High Status Bits","Physics","");
@@ -146,7 +147,7 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
                     //first loop through to draw the track
                     Event::TkrTrackHitVecItr hitIter = track.begin();
                     Event::TkrTrackHitVecItr lastHit  = --track.end();
-                    for(; hitIter!=lastHit; hitIter++)
+                    for(; hitIter!=lastHit; ++hitIter)
                     {
                         Event::TkrTrackHit& plane = **hitIter;
                         Point planePos = plane.getPoint(fit);
@@ -172,7 +173,10 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
                     }
 
                     //Second loop through to draw the hits
-                    for(Event::TkrTrackHitVecItr hitIter = track.begin(); hitIter < track.end(); hitIter++)
+                    hitIter = track.begin();
+                    lastHit  = --track.end();
+                    int hit = 0;
+                    for(hitIter=track.begin(); hitIter!=track.end(); ++hitIter, ++hit)
                     {
                         m_builder->addInstance("Track","TkrTrackHit");
                         m_builder->addAttValue("LineWidth", (float)trackWid, "");
@@ -206,6 +210,7 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
                         }       
                         m_builder->addPoint(xl,yl,z0);
                         m_builder->addPoint(xr,yr,z0);
+                        m_builder->addAttValue("Sequence #", hit, "");
                         m_builder->addAttValue("Hit Volume", 
                             getTkrIdString(plane.getTkrId()), "");
 
