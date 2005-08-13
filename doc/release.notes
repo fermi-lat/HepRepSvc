@@ -1,4 +1,4 @@
-//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.22 2005/08/09 20:34:30 lsrea Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.23 2005/08/13 18:16:31 lsrea Exp $
 /*
  * v0r1     20-09-02 RG Inital release of the package
  * v0r2     07-07-03 RG Complete refactoring of HepRepSvc	
@@ -23,4 +23,4 @@
  * v0r14p0  23-06-05 TU Modifications for new CalRecon TDS
  * v0r14p1  Bastille TU Updates to Cal Display - draw entire hit xtal, add text to Clusters
  * v0r14p2  09-08-05 LR Add some info to clusters and track hits
- * v0r14p3  11-08-05 LR Change the color of the TkrEventParams axis
+ * v0r14p3  13-08-05 LR Change the color of the TkrEventParams axis
