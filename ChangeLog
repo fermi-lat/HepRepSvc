@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: lsrea  Sat Aug 13 11:16:31 PDT 2005
+HepRepSvc/src/Tracker
+
+Modified Files:
+	TkrEventParams.cxx 
+Log Message:
+Prepare for tag v0r14p3... change color of TkrEvtParams axis
+
+    *
+------------------------------------------------------------
+User: lsrea  Sat Aug 13 11:16:31 PDT 2005
 HepRepSvc/doc
 
 Modified Files:
