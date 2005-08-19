@@ -29,7 +29,8 @@ class HepRepGeometry : public IGeometry
               std::string name,
               std::string material,
               const DoubleVector& params,
-              VolumeType type);
+              VolumeType type,
+              SenseType sense);
   
   virtual void popShape();
 

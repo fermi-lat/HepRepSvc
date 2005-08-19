@@ -1,5 +1,5 @@
 // File and Version Information:
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepGeometry.cxx,v 1.8 2004/09/22 16:45:49 riccardo Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepGeometry.cxx,v 1.9 2005/02/15 10:00:24 riccardo Exp $
 //
 // Author(s):
 //      R.Giannitrapani
@@ -32,7 +32,8 @@ HepRepGeometry::~HepRepGeometry()
 IGeometry::VisitorRet 
 HepRepGeometry::pushShape(ShapeType s, const UintVector& idvec, 
                       std::string name, std::string material, 
-                      const DoubleVector& params, VolumeType type)
+                      const DoubleVector& params, VolumeType type,
+                      SenseType sense)
 {
   if(m_hrMode == "type")
     {
@@ -70,7 +71,9 @@ HepRepGeometry::pushShape(ShapeType s, const UintVector& idvec,
             m_builder->addAttValue("Layer","Geometry","");
           }
 
-          m_builder->addAttDef("Volume type","The kind of volume (simple, composition, stack or sensitive)","Physics","");
+          //          m_builder->addAttDef("Volume type","The kind of volume (simple, composition, stack or sensitive)","Physics","");
+          m_builder->addAttDef("Volume type","The kind of volume (simple, composition or stack)","Physics","");
+          m_builder->addAttDef("Sensitivity","One of Nonsensitive, intSensitive, or posSensitive","Physics","");
           m_builder->addAttDef("Material","The material name of the volume","Physics","");
           m_builder->addAttDef("Shape","At the moment this can be just a Box","Physics","");
 
@@ -83,12 +86,6 @@ HepRepGeometry::pushShape(ShapeType s, const UintVector& idvec,
             {
             case Simple:
               m_builder->addAttValue("Volume type","Simple","");
-              break;
-            case posSensitive:
-              m_builder->addAttValue("Volume type","posSensitive","");
-              break;
-            case intSensitive:
-              m_builder->addAttValue("Volume type","intSensitive","");
               break;
             case Composite: 
               m_builder->addAttValue("Volume type","Composite","");
@@ -103,7 +100,18 @@ HepRepGeometry::pushShape(ShapeType s, const UintVector& idvec,
               m_builder->addAttValue("Volume type","Zstack","");
               break;
             }  
-          
+          switch(sense) {
+            case posSensitive:
+              m_builder->addAttValue("Sensitivity","posSensitive","");
+              break;
+            case intSensitive:
+              m_builder->addAttValue("Sensitivity","intSensitive","");
+              break;
+            case Nonsensitive:
+              m_builder->addAttValue("Sensitivity","Nonsensitive","");
+              break;
+          }
+
           switch(s)
             {
             case Box:
@@ -160,7 +168,8 @@ HepRepGeometry::pushShape(ShapeType s, const UintVector& idvec,
 
 //          if ((((type == Simple) || (type == posSensitive) || (type == intSensitive)) 
 //                && (m_actualDepth < m_depth)) || (m_actualDepth == m_depth)) 
-          if ((type == Simple) || (type == posSensitive) || (type == intSensitive))
+//          if ((type == Simple) || (type == posSensitive) || (type == intSensitive))
+          if (type == Simple)
           {
 
             v.setX(dx); v.setY(dy); v.setZ(dz); v1 = (atr*v);
