@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: lsrea  Tue Aug 23 22:44:12 PDT 2005
+HepRepSvc/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+Display more info for TkrTrackHits without clusters
+Prepare for tag v0r14p5
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v0r14p4, operation: add
 Package: HepRepSvc
