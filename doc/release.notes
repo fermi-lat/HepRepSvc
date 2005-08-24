@@ -1,4 +1,4 @@
-//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.24 2005/08/13 18:16:58 lsrea Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.25 2005/08/19 19:27:40 jrb Exp $
 /*
  * v0r1     20-09-02 RG Inital release of the package
  * v0r2     07-07-03 RG Complete refactoring of HepRepSvc	
@@ -24,4 +24,5 @@
  * v0r14p1  Bastille TU Updates to Cal Display - draw entire hit xtal, add text to Clusters
  * v0r14p2  09-08-05 LR Add some info to clusters and track hits
  * v0r14p3  13-08-05 LR Change the color of the TkrEventParams axis
- * v0r14p4  19-08-05 jb Changes for compatibility with modified IGeometry interface
+ * v0r14p4  19-08-05 jb Changes for compatibility with modified IGeometry interface 
+ * v0r14p5  23-08-05 LR Display info for TkrTrackHits without clusters
