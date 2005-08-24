@@ -1,5 +1,16 @@
 ------------------------------------------------------------
 User: lsrea  Tue Aug 23 22:44:12 PDT 2005
+HepRepSvc/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+Display more info for TkrTrackHits without clusters
+Prepare for tag v0r14p5
+
+    *
+------------------------------------------------------------
+User: lsrea  Tue Aug 23 22:44:12 PDT 2005
 HepRepSvc/cmt
 
 Modified Files:
