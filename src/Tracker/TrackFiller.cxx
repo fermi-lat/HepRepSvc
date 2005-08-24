@@ -183,8 +183,6 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
 
                         Event::TkrTrackHit& plane = **hitIter;
 
-                        if (!(plane.getStatusBits() & Event::TkrTrackHit::HITONFIT)) continue;
-
                         double x0, y0, z0, xl, xr, yl, yr;
                         double delta= 10. * plane.getChiSquareSmooth(); //Scale factor! We're in mm now!
 
@@ -218,7 +216,8 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
                         std::stringstream hitView("No valid hit found");
                         //int clusterId = -1;
 
-                        if (plane.getStatusBits() & Event::TkrTrackHit::HITONFIT)
+                        bool hitOnFit = ((plane.getStatusBits() & Event::TkrTrackHit::HITONFIT)!=0);
+                        if(hitOnFit) 
                         {
                             if (plane.getTkrId().getView() == idents::TkrId::eMeasureX) { 
                                 hitView << "This is an X measuring plane";
@@ -233,10 +232,12 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
                         m_builder->addAttValue("Energy",(float)(plane.getEnergy()),"");
                         m_builder->addAttValue("RadLen",(float)(plane.getRadLen()),"");
                         m_builder->addAttValue("ActDist",(float)(plane.getActiveDist()),"");
-                        m_builder->addAttValue("ChiSquareFilter",
-                            (float)(plane.getChiSquareFilter()),"");
-                        m_builder->addAttValue("ChiSquareSmooth",
-                            (float)(plane.getChiSquareSmooth()),"");
+                        if (hitOnFit) {
+                            m_builder->addAttValue("ChiSquareFilter",
+                                (float)(plane.getChiSquareFilter()),"");
+                            m_builder->addAttValue("ChiSquareSmooth",
+                                (float)(plane.getChiSquareSmooth()),"");
+                        }
                         m_builder->addAttValue("Measured",
                             getPositionString(plane.getPoint(Event::TkrTrackHit::MEASURED)),"");
                         m_builder->addAttValue("Filter Position", 
