@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: lsrea  Fri Sep  2 19:09:08 PDT 2005
+HepRepSvc/src/Tracker
+
+Modified Files:
+	ClusterFiller.cxx ClusterFiller.h 
+Log Message:
+New code to display truncated regions
+
+    *
+------------------------------------------------------------
+User: lsrea  Fri Sep  2 19:09:08 PDT 2005
 HepRepSvc/doc
 
 Modified Files:
