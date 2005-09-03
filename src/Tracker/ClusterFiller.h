@@ -33,6 +33,7 @@ class ClusterFiller: public IFiller{
   bool hasType(std::vector<std::string>& list, std::string type); 
 
  private:
+    void drawPrism(double x, double y, double z, double dx, double dy, double dz);
     IGlastDetSvc* m_gdsvc;
     IDataProviderSvc* m_dpsvc;
     IParticlePropertySvc* m_ppsvc;
@@ -44,6 +45,10 @@ class ClusterFiller: public IFiller{
     double m_siWaferActiveSide;
     double m_ssdGap;
     int    m_nWaferAcross;
+    int    m_numXTowers;
+    int    m_numYTowers;
+    double m_towerPitch;
+    double m_activeWidth;
 };
 
 #endif //ClusterFILLER_H

@@ -10,6 +10,7 @@
 
 #include "Event/TopLevel/EventModel.h"
 #include "Event/Recon/TkrRecon/TkrVertex.h"
+#include "Event/Recon/TkrRecon/TkrTruncationInfo.h"
 
 #include "idents/VolumeIdentifier.h"
 #include "CLHEP/Geometry/Transform3D.h"
@@ -34,19 +35,24 @@ ClusterFiller::ClusterFiller(IGlastDetSvc* gsvc,
 m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc)
 {
     int    ladderNStrips;
+    double ladderGap;
 
     gsvc->getNumericConstByName("SiWaferActiveSide", &m_siWaferActiveSide);
     gsvc->getNumericConstByName("stripPerWafer",     &ladderNStrips);
     gsvc->getNumericConstByName("SiThick",           &m_siThickness);
     gsvc->getNumericConstByName("SiWaferSide",       &m_siWaferSide);
     gsvc->getNumericConstByName("ssdGap",            &m_ssdGap);
-    gsvc->getNumericConstByName("nWaferAcross",     &m_nWaferAcross);
+    gsvc->getNumericConstByName("ladderGap",         &ladderGap);
+    gsvc->getNumericConstByName("nWaferAcross",      &m_nWaferAcross);
+    gsvc->getNumericConstByName("xNum",              &m_numXTowers);
+    gsvc->getNumericConstByName("yNum",              &m_numYTowers);
+    gsvc->getNumericConstByName("towerPitch",        &m_towerPitch);
 
-    m_stripLength = m_nWaferAcross*m_siWaferSide + (m_nWaferAcross-1)*m_ssdGap;
-
+    double deadWidth = m_siWaferSide - m_siWaferActiveSide;
+    m_stripLength = m_nWaferAcross*m_siWaferSide + (m_nWaferAcross-1)*m_ssdGap - deadWidth;
+    m_activeWidth = m_nWaferAcross*m_siWaferSide + (m_nWaferAcross-1)*ladderGap - deadWidth;
     m_siStripPitch = m_siWaferActiveSide / ladderNStrips;
 }
-
 
 // This method build the types for the HepRep
 void ClusterFiller::buildTypes()
@@ -87,6 +93,11 @@ void ClusterFiller::buildTypes()
         m_builder->addAttValue("MarkerName", "Cross", "");
         m_builder->addAttValue("MarkerSize", "1", "");
     }
+    //add in truncation ranges... these block out the truncated portions of the plane
+    m_builder->addType("TkrRecon", "TruncationMap", "map of TruncationRanges", "");
+    m_builder->addType("TruncationMap", "PlaneInfo", "Plane Info", "");
+    m_builder->addAttValue("DrawAs", "Prism","");
+    m_builder->addAttValue("Color", "gray", "");
 }
 
 // This method fill the instance tree Event with the actual TDS content
@@ -182,14 +193,7 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
                     y = clusPos.y();
                     std::swap(dx, dy);
                 }
-                m_builder->addPoint(x+dx,y+dy,z+dz);
-                m_builder->addPoint(x-dx,y+dy,z+dz);
-                m_builder->addPoint(x-dx,y-dy,z+dz);
-                m_builder->addPoint(x+dx,y-dy,z+dz);
-                m_builder->addPoint(x+dx,y+dy,z-dz);
-                m_builder->addPoint(x-dx,y+dy,z-dz);
-                m_builder->addPoint(x-dx,y-dy,z-dz);
-                m_builder->addPoint(x+dx,y-dy,z-dz);
+                drawPrism(x, y, z, dx, dy, dz);
             }
 
             if(_scalingMarker) {
@@ -217,8 +221,107 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
             }
         }       
     }
+    // display truncated regions, if any
+    SmartDataPtr<Event::TkrTruncationInfo> truncInfo( m_dpsvc, EventModel::TkrRecon::TkrTruncationInfo );
+    if (truncInfo!=0 && truncInfo->isTruncated()) {
+        Event::TkrTruncationInfo::TkrTruncationMap*  truncMap = truncInfo->getTruncationMap();
+        Event::TkrTruncationInfo::TkrTruncationMap::const_iterator iter = truncMap->begin();
+        m_builder->addInstance("TkrRecon", "TruncationMap");
+
+        for(; iter!=truncMap->end(); ++iter) {
+            Event::TkrTruncatedPlane trunc = iter->second;
+            const int status   = trunc.getStatus();
+            if (status==0) continue;
+            const intVector& numStrips = trunc.getStripCount();
+            const intVector& stripNumber = trunc.getStripNumber();
+            const floatVector& localX = trunc.getLocalX();
+            Event::SortId id = iter->first;
+            int tower = id.getTower();
+            int tray  = id.getTray();
+            int face  = id.getFace();
+            int view  = id.getView();
+
+            /* ====>
+            std::cout 
+                << "Tower/Tray/face " <<tower << "/" << tray << "/" << face 
+                << ", status " << status 
+                << ", #Strips " << numStrips[0] << "/" << numStrips[1]
+                << ", # " << stripNumber[0]  << "/" << stripNumber[1] 
+                << "/" << stripNumber[2]
+                << ", X " << localX[0]  << "/" << localX[1]
+                << "/" << localX[2]
+                << std::endl;
+            */
+            
+
+            // need x,y limits and z-coordinate
+
+            double z = trunc.getPlaneZ();
+            double dz = 0.5*m_siThickness;
+            idents::TowerId towerId(tower);
+            int xTower = towerId.ix();
+            int yTower = towerId.iy();
+            double offsetX = m_towerPitch*(xTower-0.5*(m_numXTowers-1));
+            double offsetY = m_towerPitch*(yTower-0.5*(m_numYTowers-1));
+
+            double xLow  = localX[3];
+            double xHigh = localX[3];
+            if((status&Event::TkrTruncatedPlane::END0SET)>0) xLow  = localX[0];
+            if((status&Event::TkrTruncatedPlane::RC1SET)>0) xHigh = localX[1];
+            if((status&Event::TkrTruncatedPlane::CC1SET)>0 && numStrips[1]==0) xHigh = localX[2];
+
+            double x, y, dx, dy;
+
+            if(xHigh>xLow) {
+                double x  = 0.5*(xLow+xHigh);
+                double dx = 0.5*(xHigh-xLow);
+                double y  = 0.0;
+                double dy = 0.5*m_stripLength;
+                if(view==idents::TkrId::eMeasureY){
+                    std::swap(x,y);
+                    std::swap(dx, dy);
+                }
+                x += offsetX;
+                y += offsetY;
+
+                m_builder->addInstance("TruncationMap", "PlaneInfo");
+                drawPrism(x, y, z, dx, dy, dz);
+            }
+            if((status&Event::TkrTruncatedPlane::CC1SET)>0 && numStrips[1]>0){
+                xLow  = localX[2];
+                xHigh = 0.5*m_activeWidth;
+                x  = 0.5*(xLow+xHigh);
+                dx = 0.5*(xHigh-xLow);
+                y  = 0.0;
+                dy = 0.5*m_stripLength;
+                if(view==idents::TkrId::eMeasureY){
+                    std::swap(x,y);
+                    std::swap(dx, dy);
+                }
+                x += offsetX;
+                y += offsetY;
+
+                m_builder->addInstance("TruncationMap", "PlaneInfo");
+                drawPrism(x, y, z, dx, dy, dz);
+            }
+        }
+    }
 }
 
+void ClusterFiller::drawPrism(double x, double y, double z, 
+                                double dx, double dy, double dz)
+{
+    m_builder->addPoint(x+dx,y+dy,z+dz);
+    m_builder->addPoint(x-dx,y+dy,z+dz);
+    m_builder->addPoint(x-dx,y-dy,z+dz);
+    m_builder->addPoint(x+dx,y-dy,z+dz);
+    m_builder->addPoint(x+dx,y+dy,z-dz);
+    m_builder->addPoint(x-dx,y+dy,z-dz);
+    m_builder->addPoint(x-dx,y-dy,z-dz);
+    m_builder->addPoint(x+dx,y-dy,z-dz);
+    return;
+
+}
 
 bool ClusterFiller::hasType(std::vector<std::string>& list, std::string type) 
 {
