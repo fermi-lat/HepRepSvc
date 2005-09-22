@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: lsrea  Thu Sep 22 11:55:32 PDT 2005
+HepRepSvc/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+Bullet-proof TrackFiller for bad TkrId's, prepare for tag
+
+    *
+------------------------------------------------------------
+User: lsrea  Thu Sep 22 11:55:32 PDT 2005
 HepRepSvc/cmt
 
 Modified Files:
