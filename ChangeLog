@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: lsrea  Thu Sep 22 11:55:32 PDT 2005
+HepRepSvc/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+Bullet-proof TrackFiller for bad TkrId's, prepare for tag
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v0r14p6, operation: add
 Package: HepRepSvc
