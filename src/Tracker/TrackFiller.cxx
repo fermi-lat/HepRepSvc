@@ -120,8 +120,10 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
 
                     m_builder->addAttValue("TrackId",            trackId++, "");
                     m_builder->addAttValue("LineWidth",          (float)trackWid, "");
+                    idents::TkrId id = track[0]->getTkrId();
+                    std::string str = getTkrIdString(id);
 
-                    m_builder->addAttValue("Start Volume",       getTkrIdString(track[0]->getTkrId()), "");
+                    m_builder->addAttValue("Start Volume",       str, "");
                     m_builder->addAttValue("Quality",            (float)(track.getQuality()),          "");
                     m_builder->addAttValue("Energy",             (float)(track.getInitialEnergy()),    "");
                     m_builder->addAttValue("# Hits",             (int)(track.size()),                  "");
@@ -184,30 +186,31 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
                         Event::TkrTrackHit& plane = **hitIter;
 
                         double x0, y0, z0, xl, xr, yl, yr;
-                        double delta= 10. * plane.getChiSquareSmooth(); //Scale factor! We're in mm now!
-
-                        if (plane.getTkrId().getView() == idents::TkrId::eMeasureX)
-                        {
-                            x0 = plane.getTrackParams(typ).getxPosition();
-                            y0 = plane.getTrackParams(fit).getyPosition(); 
-                            z0 = plane.getZPlane()+0.1;
-                            xl = x0-0.5*delta;
-                            xr = x0+0.5*delta;
-                            yl = y0;
-                            yr = y0;
-                        } 
-                        else 
-                        {
-                            x0 = plane.getTrackParams(fit).getxPosition();
-                            y0 = plane.getTrackParams(typ).getyPosition(); 
-                            z0 = plane.getZPlane()+0.1;
-                            xl = x0;
-                            xr = x0;
-                            yl = y0-0.5*delta;
-                            yr = y0+0.5*delta;
-                        }       
-                        m_builder->addPoint(xl,yl,z0);
-                        m_builder->addPoint(xr,yr,z0);
+                        idents::TkrId tkrId = plane.getTkrId();
+                        x0 = plane.getTrackParams(typ).getxPosition();
+                        y0 = plane.getTrackParams(fit).getyPosition(); 
+                        z0 = plane.getZPlane()+0.1;
+                        if (tkrId.hasView()) {
+                            double delta= 10. * plane.getChiSquareSmooth(); //Scale factor! We're in mm now!
+                            if (plane.getTkrId().getView() == idents::TkrId::eMeasureX)
+                            {
+                                xl = x0-0.5*delta;
+                                xr = x0+0.5*delta;
+                                yl = y0;
+                                yr = y0;
+                            } 
+                            else 
+                            {
+                                xl = x0;
+                                xr = x0;
+                                yl = y0-0.5*delta;
+                                yr = y0+0.5*delta;
+                            }       
+                            m_builder->addPoint(xl,yl,z0);
+                            m_builder->addPoint(xr,yr,z0);
+                        } else {
+                            m_builder->addPoint(x0, y0, z0);
+                        }
                         m_builder->addAttValue("Sequence #", hit, "");
                         m_builder->addAttValue("Hit Volume", 
                             getTkrIdString(plane.getTkrId()), "");
@@ -277,6 +280,10 @@ std::string TrackFiller::getTkrIdString(const idents::TkrId& tkrId)
 {
     std::stringstream tkrIdStream;
     //tkrIdStream.setf(std::ios::fixed);
+
+    if(!tkrId.hasTowerX() || !tkrId.hasTowerY() || !tkrId.hasTray() || !tkrId.hasBotTop()) {
+        return "TkrId not valid";
+    }
 
     int tower   = 4 * tkrId.getTowerX() + tkrId.getTowerY();
     int trayNum = tkrId.getTray();
