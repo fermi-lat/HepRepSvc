@@ -50,6 +50,7 @@ void MonteCarloFiller::buildTypes()
     m_builder->addAttDef("Eo","Final energy","Physics","MeV");
     m_builder->addAttDef("Proc","Process name","Physics","");
     m_builder->addAttDef("Charge","Electrical Charge (pos, neg, neutral)","Physics","");
+    m_builder->addAttDef("NumDaughters", "# of Daughteres", "Physics", "");
 
     m_builder->addAttValue("DrawAs","Line","");
 }
@@ -223,7 +224,7 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
 
                     m_builder->addAttValue("Proc",part->getProcess(),"");
 
-                    m_builder->addAttValue("PDG",hepid,"");
+                    m_builder->addAttValue("PDG", hepid,"");
                     m_builder->addAttValue("Name",name,"");
 
                     if (ppty)
@@ -266,13 +267,15 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
                     m_builder->addAttValue("Eo",(float)out.e()-(float)out.m(),"");
 
                     m_builder->addAttValue("Proc",(*part)->getProcess(),"");
-
-                    m_builder->addAttValue("PDG",hepid,"");                  
+                  
+                    m_builder->addAttValue("PDG", hepid,"");                  
 
                     HepPoint3D start = (*part)->initialPosition();
                     HepPoint3D end = (*part)->finalPosition();
 
                     if(ppty) setCharge(ppty->charge());
+                    int numDaughters = (int)(*part)->daughterList().size();
+                    m_builder->addAttValue("NumDaughters", numDaughters, "");
 
                     m_builder->addPoint(start.x(),start.y(),start.z());
                     m_builder->addPoint(end.x(),end.y(),end.z());
