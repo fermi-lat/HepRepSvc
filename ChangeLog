@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: riccardo  Thu Dec  8 09:08:45 PST 2005
+HepRepSvc/src
+
+Modified Files:
+	HepRepGeometry.cxx 
+Log Message:
+Fixed a bug in rotations of volumes in the geometry filler.
+
+
+    *
+------------------------------------------------------------
 User: lsrea  Thu Dec  8 08:15:01 PST 2005
 HepRepSvc/src
 
