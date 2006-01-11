@@ -10,6 +10,7 @@
 
 #include "Event/TopLevel/EventModel.h"
 #include "Event/Recon/AcdRecon/AcdRecon.h"
+#include "Event/Digi/AcdDigi.h"
 
 #include "idents/VolumeIdentifier.h"
 #include "CLHEP/Geometry/Transform3D.h"
@@ -34,6 +35,13 @@ AcdReconFiller::AcdReconFiller(IGlastDetSvc* gsvc,
 void AcdReconFiller::buildTypes()
 {
   m_builder->addType("Recon","AcdRecon","AcdRecon Tree","");
+  
+  m_builder->addType("AcdRecon", "HitCol", "Hit Collection", "");
+  m_builder->addType("HitCol", "AcdHit","","");
+  m_builder->addAttDef("Id","ID of the ACD Detector","","");
+  m_builder->addAttValue("DrawAs","Prism","");
+  m_builder->addType("AcdHit", "PMT_A","","");
+  m_builder->addType("AcdHit", "PMT_B", "", "");
 
   m_builder->addType("AcdRecon","DocaCol","Doca Collection","");  
   m_builder->addType("DocaCol","DocaTile","","");
@@ -50,7 +58,105 @@ void AcdReconFiller::fillInstances (std::vector<std::string>& typesList)
     return;
   
   m_builder->addInstance("Recon","AcdRecon");
-  
+
+
+  if (hasType(typesList, "Recon/AcdRecon/HitCol/AcdHit"))
+  {
+
+    SmartDataPtr<Event::AcdDigiCol> acdDigiCol(m_dpsvc, EventModel::Digi::AcdDigiCol);
+    if (acdDigiCol) {
+        m_builder->addInstance("AcdRecon","HitCol");    
+        m_builder->setSubinstancesNumber("HitCol", acdDigiCol->size());
+        Event::AcdDigiCol::const_iterator acdDigiIt;
+        for (acdDigiIt = acdDigiCol->begin(); acdDigiIt != acdDigiCol->end(); acdDigiIt++) {
+            m_builder->addInstance("HitCol","AcdHit");  
+            idents::AcdId id = (*acdDigiIt)->getId();
+            m_builder->addAttValue("Id", (float)id.id(), "");
+
+            // Redraw the ACD detector in color depending upon level of threshold
+            if (id.tile() && !id.na()) {
+            if ( (*acdDigiIt)->getCno(Event::AcdDigi::A) || (*acdDigiIt)->getCno(Event::AcdDigi::B) )
+                m_builder->addAttValue("Color","orange","");
+            else if ((*acdDigiIt)->getHitMapBit(Event::AcdDigi::A) || (*acdDigiIt)->getHitMapBit(Event::AcdDigi::B))
+                m_builder->addAttValue("Color","red","");
+            else if ((*acdDigiIt)->getAcceptMapBit(Event::AcdDigi::A) || (*acdDigiIt)->getAcceptMapBit(Event::AcdDigi::B))
+                m_builder->addAttValue("Color","purple","");
+
+            HepTransform3D global;
+            idents::VolumeIdentifier volid = id.volId();
+            m_gdsvc->getTransform3DByID(volid, &global);
+
+            std::string shape;
+            std::vector<double> params;
+
+            m_gdsvc->getShapeByID(volid, &shape, &params); 
+
+            double dx = params[0]/2;
+            double dy = params[1]/2;
+            double dz = params[2]/2;
+
+            HepPoint3D temp;
+
+            temp = global*HepPoint3D(dx,dy,dz);
+            m_builder->addPoint(temp.x(),temp.y(),temp.z());
+            temp = global*HepPoint3D(-dx,dy,dz);
+            m_builder->addPoint(temp.x(),temp.y(),temp.z());
+            temp = global*HepPoint3D(-dx,-dy,dz);
+            m_builder->addPoint(temp.x(),temp.y(),temp.z());
+            temp = global*HepPoint3D(dx,-dy,dz);
+            m_builder->addPoint(temp.x(),temp.y(),temp.z());
+            temp = global*HepPoint3D(dx,dy,-dz);
+            m_builder->addPoint(temp.x(),temp.y(),temp.z());
+            temp = global*HepPoint3D(-dx,dy,-dz);
+            m_builder->addPoint(temp.x(),temp.y(),temp.z());
+            temp = global*HepPoint3D(-dx,-dy,-dz);
+            m_builder->addPoint(temp.x(),temp.y(),temp.z());
+            temp = global*HepPoint3D(dx,-dy,-dz);
+            m_builder->addPoint(temp.x(),temp.y(),temp.z());
+            }
+
+
+            // Fill in attributes of the two PMTs
+            m_builder->addInstance("AcdHit", "PMT_A");
+            m_builder->addAttValue("PHA",(*acdDigiIt)->getPulseHeight(Event::AcdDigi::A),"");
+            
+            if ((*acdDigiIt)->getAcceptMapBit(Event::AcdDigi::A) == true) 
+                m_builder->addAttValue("AcceptBit","true","");
+            else
+                m_builder->addAttValue("AcceptBit","false","");
+
+            if ((*acdDigiIt)->getHitMapBit(Event::AcdDigi::A) == true) 
+                m_builder->addAttValue("HitMapBit","true","");
+            else 
+                m_builder->addAttValue("HitMapBit","false","");
+
+            if ((*acdDigiIt)->getCno(Event::AcdDigi::A) == true) 
+                m_builder->addAttValue("CNO","true","");
+            else
+                m_builder->addAttValue("CNO","false","");
+
+            m_builder->addInstance("AcdHit", "PMT_B");
+            m_builder->addAttValue("PHA_B",(*acdDigiIt)->getPulseHeight(Event::AcdDigi::B),"");
+            if ((*acdDigiIt)->getAcceptMapBit(Event::AcdDigi::B) == true) 
+                m_builder->addAttValue("AcceptBit","true","");
+            else
+                m_builder->addAttValue("AcceptBit","false","");
+
+            if ((*acdDigiIt)->getHitMapBit(Event::AcdDigi::B) == true) 
+                m_builder->addAttValue("HitMapBit","true","");
+            else 
+                m_builder->addAttValue("HitMapBit","false","");
+
+            if ((*acdDigiIt)->getCno(Event::AcdDigi::B) == true) 
+                m_builder->addAttValue("CNO","true","");
+            else
+                m_builder->addAttValue("CNO","false","");
+
+        }
+    }
+  }
+
+
   if (hasType(typesList,"Recon/AcdRecon/DocaCol/DocaTile"))
     {      
 
@@ -91,6 +197,7 @@ void AcdReconFiller::fillInstances (std::vector<std::string>& typesList)
         }
       }      
     }
+
 }
       
 
