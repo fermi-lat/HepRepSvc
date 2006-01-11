@@ -29,6 +29,8 @@ void MonteCarloFiller::buildTypes()
 
     m_builder->addType("PosHitCol","PosHit","Position Hit","");
     m_builder->addAttDef("E","Energy deposited","Physics","MeV");
+    m_builder->addAttDef("VolId", "Volume Identifier","Geometry","");
+    m_builder->addAttDef("Pos", "Global Position Hit","Physics","");
     m_builder->addAttValue("DrawAs","Prism","");
     m_builder->addAttValue("Color","red","");
 
@@ -82,6 +84,14 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
                         m_builder->addInstance("PosHitCol","PosHit");
                         m_builder->addAttValue("E",
                             (float)(*ihit)->depositedEnergy(),"");
+                        m_builder->addAttValue("VolId", id.name(),"");
+
+                        const HepPoint3D pos = (*ihit)->globalEntryPoint();
+                        std::stringstream posStr("");
+                        posStr << "(" << pos.x() << "," << pos.y() << "," << pos.z() << ")";
+                        m_builder->addAttValue("Pos", posStr.str(), "");
+
+                        if (id[0] == 1) m_builder->addAttValue("Color","yellow","");   
 
                         std::string shape;
                         std::vector<double> params;

@@ -1,4 +1,4 @@
-//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.28 2005/09/22 18:55:32 lsrea Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.29 2005/12/08 17:09:49 riccardo Exp $
 /*
  * v0r1     20-09-02 RG Inital release of the package
  * v0r2     07-07-03 RG Complete refactoring of HepRepSvc	
@@ -29,3 +29,6 @@
  * v0r14p6  02-09-05 LR Display truncated-hit info if available 
  * v0r14p7  22-09-05 LR Bullet-proof TrackFiller for bad TkrId's
  * v0r15    08-12-05 RG Corrected a very bad bug in rotations of volumes in the geometry filler
+ * v0r16    11-01-06 HK Update to ACD representation, using new colors
+                        depending on discriminator settings.  Also update
+                        McPosHit to include volId and global entry position.
