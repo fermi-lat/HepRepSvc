@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: heather  Wed Jan 11 14:28:43 PST 2006
+HepRepSvc/src
+
+Modified Files:
+	AcdReconFiller.cxx MonteCarloFiller.cxx 
+Log Message:
+add ACD updates to HEAD
+    *
+------------------------------------------------------------
 TAG
 Tag name: v0r14p7gr0, operation: add
 Package: HepRepSvc
