@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: lsrea  Wed Jan 18 12:50:47 PST 2006
+HepRepSvc/src/Tracker
+
+Modified Files:
+	TrackFiller.cxx 
+Log Message:
+Fixed tower decoding... this affected display only!
+
+    *
+------------------------------------------------------------
 User: usher  Tue Jan 17 16:09:12 PST 2006
 HepRepSvc/src/Tracker
 
