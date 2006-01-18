@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: usher  Tue Jan 17 16:09:12 PST 2006
+HepRepSvc/src/Tracker
+
+Modified Files:
+	TkrEventParams.cxx 
+Log Message:
+add more output to the event axis plot
+    *
+------------------------------------------------------------
 User: heather  Wed Jan 11 14:30:04 PST 2006
 HepRepSvc/cmt
 
