@@ -1,4 +1,4 @@
-//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.29 2005/12/08 17:09:49 riccardo Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.30 2006/01/11 22:29:47 heather Exp $
 /*
  * v0r1     20-09-02 RG Inital release of the package
  * v0r2     07-07-03 RG Complete refactoring of HepRepSvc	
@@ -32,3 +32,4 @@
  * v0r16    11-01-06 HK Update to ACD representation, using new colors
                         depending on discriminator settings.  Also update
                         McPosHit to include volId and global entry position.
+ * v0r16p1  18-01-06 LR Fixed decoding of tower in TrackFiller
