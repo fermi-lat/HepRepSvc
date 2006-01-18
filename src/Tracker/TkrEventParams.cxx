@@ -41,6 +41,14 @@ void TkrEventParamsFiller::buildTypes()
     m_builder->addAttDef("Status Bits", "Status Bits","Physics","");
     m_builder->addAttDef("Position","Track position","Physics","");
     m_builder->addAttDef("Direction","Track direction","Physics","");
+    m_builder->addAttDef("Energy","Event Energy","Physics","MeV");
+    m_builder->addAttDef("NumBiLayerHits","Number Bilayers Hit","Physics","#");
+    m_builder->addAttDef("NumIterations","Number Iterations","Physics","#");
+    m_builder->addAttDef("NumHitsTotal","Number Hits Total","Physics","#");
+    m_builder->addAttDef("NumDropped","Number Dropped Hits","Physics","#");
+    m_builder->addAttDef("ChiSquare","Moments ChiSquare","Physics","#");
+    m_builder->addAttDef("TransRms","Scaled Transvers Moment","Physics","#");
+    m_builder->addAttDef("LongRmsAve","Average Longitudinal Moment","Physics","#");
 }
 
 
@@ -61,8 +69,16 @@ void TkrEventParamsFiller::fillInstances (std::vector<std::string>& typesList)
             
             m_builder->addAttValue("LineWidth", (float)lineWidth, "");
 
-            m_builder->addAttValue("Position",  getPositionString(tkrEventParams->getEventPosition()), "");
-            m_builder->addAttValue("Direction", getDirectionString(tkrEventParams->getEventAxis()), "");
+            m_builder->addAttValue("Position",       getPositionString(tkrEventParams->getEventPosition()), "");
+            m_builder->addAttValue("Direction",      getDirectionString(tkrEventParams->getEventAxis()), "");
+            m_builder->addAttValue("Energy",         (float)tkrEventParams->getEventEnergy(), "");
+            m_builder->addAttValue("NumBiLayerHits", tkrEventParams->getNumBiLayers(), "");
+            m_builder->addAttValue("NumIterations",  tkrEventParams->getNumIterations(), "");
+            m_builder->addAttValue("NumHitsTotal",   tkrEventParams->getNumHitsTotal(), "");
+            m_builder->addAttValue("NumDropped",     tkrEventParams->getNumDropped(), "");
+            m_builder->addAttValue("ChiSquare",      (float)tkrEventParams->getChiSquare(), "");
+            m_builder->addAttValue("TransRms",       (float)tkrEventParams->getTransRms(), "");
+            m_builder->addAttValue("LongRmsAve",     (float)tkrEventParams->getLongRmsAve(), "");
 
             //Build strings for status bits
             unsigned int statBits = tkrEventParams->getStatusBits();
