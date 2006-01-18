@@ -285,7 +285,10 @@ std::string TrackFiller::getTkrIdString(const idents::TkrId& tkrId)
         return "TkrId not valid";
     }
 
-    int tower   = 4 * tkrId.getTowerX() + tkrId.getTowerY();
+    //int tower   = 4 * tkrId.getTowerX() + tkrId.getTowerY();
+    int xTower = tkrId.getTowerX();
+    int yTower = tkrId.getTowerY();
+    int tower = idents::TowerId(xTower, yTower).id();
     int trayNum = tkrId.getTray();
 
     tkrIdStream << " Tower " << tower << ", tray " << trayNum;
