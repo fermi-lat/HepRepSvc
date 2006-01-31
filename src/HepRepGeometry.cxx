@@ -1,5 +1,5 @@
 // File and Version Information:
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepGeometry.cxx,v 1.9 2005/02/15 10:00:24 riccardo Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepGeometry.cxx,v 1.10 2005/08/19 19:18:11 jrb Exp $
 //
 // Author(s):
 //      R.Giannitrapani
@@ -12,6 +12,14 @@
 #include "CLHEP/Vector/ThreeVector.h"
 #include "CLHEP/Geometry/Transform3D.h"
 
+// TU: Hacks for CLHEP 1.9.2.2 and beyond
+#ifndef HepPoint3D
+typedef HepGeom::Point3D<double> HepPoint3D;
+#endif
+#ifndef HepVector3D
+typedef HepGeom::Vector3D<double> HepVector3D;
+#endif
+
 #include <iomanip>
 #include <algorithm>
 
@@ -20,7 +28,7 @@ HepRepGeometry::HepRepGeometry(unsigned int depth, std::string mode):
 {
   m_actualDepth = 0;
   m_builder = 0;
-  HepTransform3D start;
+  HepGeom::Transform3D start;
   m_actualTransform.push_back(start);
 }
 
@@ -136,10 +144,10 @@ HepRepGeometry::pushShape(ShapeType s, const UintVector& idvec,
       double x=params[0], y=params[1], z=params[2];
       double rx=params[3], ry=params[4], rz=params[5];  
 
-      HepRotation rot(rx*M_PI/180, ry*M_PI/180, rz*M_PI/180);
-      Hep3Vector t(x, y, z);  
-      HepTransform3D tr(rot,t);
-      HepTransform3D atr = (m_actualTransform.back())*tr;
+      CLHEP::HepRotation rot(rx*M_PI/180, ry*M_PI/180, rz*M_PI/180);
+      CLHEP::Hep3Vector t(x, y, z);  
+      HepGeom::Transform3D tr(rot,t);
+      HepGeom::Transform3D atr = (m_actualTransform.back())*tr;
 
       std::string father;
       if (m_actualInstance.size() == 0)

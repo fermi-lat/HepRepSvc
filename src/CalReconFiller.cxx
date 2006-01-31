@@ -21,6 +21,11 @@
 
 #include "CLHEP/Vector/LorentzVector.h"
 
+// TU: Hacks for CLHEP 1.9.2.2 and beyond
+#ifndef HepVector3D
+typedef HepGeom::Vector3D<double> HepVector3D;
+#endif
+
 #include "idents/VolumeIdentifier.h"
 
 #include <algorithm>
@@ -109,9 +114,9 @@ m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc)
     topLayerId.append(eXtal);
     topLayerId.append(0);
 
-    HepTransform3D transfTop;
+    HepGeom::Transform3D transfTop;
     m_gdsvc->getTransform3DByID(topLayerId,&transfTop);
-    Hep3Vector vecTop = transfTop.getTranslation();
+    CLHEP::Hep3Vector vecTop = transfTop.getTranslation();
 
     layer=nLayers-1;
     idents::VolumeIdentifier bottomLayerId;
@@ -127,7 +132,7 @@ m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc)
 
     HepTransform3D transfBottom;
     m_gdsvc->getTransform3DByID(bottomLayerId,&transfBottom);
-    Hep3Vector vecBottom = transfBottom.getTranslation();
+    CLHEP::Hep3Vector vecBottom = transfBottom.getTranslation();
 
 
     m_calZtop        = vecTop.z();
@@ -297,7 +302,7 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
                                 //get 3D transformation for segment 0 of this crystal
                                 m_gdsvc->getTransform3DByID(segm0Id,&transf);
                                 //get position of the center of the segment 0
-                                Hep3Vector vect0 = transf.getTranslation();
+                                CLHEP::Hep3Vector vect0 = transf.getTranslation();
 
                                 // create Volume Identifier for the last segment of this crystal
                                 idents::VolumeIdentifier segm11Id;
@@ -309,10 +314,10 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
                                 //get 3D transformation for the last segment of this crystal
                                 m_gdsvc->getTransform3DByID(segm11Id,&transf);
                                 //get position of the center of the last segment
-                                Hep3Vector vect1 = transf.getTranslation();
+                                CLHEP::Hep3Vector vect1 = transf.getTranslation();
 
                                 // Crystal center is what we want
-                                Hep3Vector xtalCtr = 0.5 * (vect0 + vect1);
+                                CLHEP::Hep3Vector xtalCtr = 0.5 * (vect0 + vect1);
 
                                 // Start drawing this side of the log. 
                                 // How we do this depends on if x or y 
