@@ -5,6 +5,9 @@
 
 #include "HepRepSvc/IFiller.h"
 
+#include "geometry/Point.h"
+
+
 class IGlastDetSvc;
 class IDataProviderSvc;
 class IParticlePropertySvc;
@@ -40,6 +43,12 @@ class MonteCarloFiller: public IFiller{
 	/// A method that return true if list contain type
 	/// TODO STL already has this
   bool hasType(std::vector<std::string>& list, std::string type); 
+
+  std::string getTripleString(int precis, double x, double y, double z);
+  std::string getBits(unsigned int statBits, int highBit, int lowBit);
+  std::string getPositionString(const Point& position);
+  std::string getDirectionString(const Vector& position);
+
 
  private:
   IGlastDetSvc* m_gdsvc;
