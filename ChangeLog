@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: lsrea  Thu Feb  9 08:36:58 PST 2006
+HepRepSvc/src
+
+Modified Files:
+	MonteCarloFiller.cxx MonteCarloFiller.h 
+Log Message:
+Beef up MC info
+
+    *
+------------------------------------------------------------
 User: lsrea  Thu Feb  9 08:36:57 PST 2006
 HepRepSvc/doc
 
