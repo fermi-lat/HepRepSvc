@@ -9,6 +9,7 @@
 #include "GaudiKernel/SmartDataPtr.h"
 
 #include "CLHEP/Vector/LorentzVector.h"
+#include "CLHEP/Geometry/Vector3D.h"
 
 #include "idents/VolumeIdentifier.h"
 
@@ -16,6 +17,7 @@
 #include "Event/MonteCarlo/McParticle.h"
 #include "Event/MonteCarlo/McPositionHit.h"
 #include "Event/MonteCarlo/McIntegratingHit.h"
+
 
 #include <algorithm>
 
@@ -48,8 +50,12 @@ void MonteCarloFiller::buildTypes()
     m_builder->addType("ParticleCol","Particle","An mc particle","");
     m_builder->addAttDef("Name","The name of the particle","Physics","");
     m_builder->addAttDef("PDG","The PDG code of the particle","Physics","");
+    m_builder->addAttDef("Status", "MC Status Bits","Physics","");
     m_builder->addAttDef("Ei","Initial energy","Physics","MeV");
     m_builder->addAttDef("Eo","Final energy","Physics","MeV");
+    m_builder->addAttDef("Initial Position","Initial position","Physics","");
+    m_builder->addAttDef("Final Position","Final position","Physics","");
+    m_builder->addAttDef("Direction","Initial direction","Physics","");
     m_builder->addAttDef("Proc","Process name","Physics","");
     m_builder->addAttDef("Charge","Electrical Charge (pos, neg, neutral)","Physics","");
     m_builder->addAttDef("NumDaughters", "# of Daughteres", "Physics", "");
@@ -273,15 +279,32 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
                     HepLorentzVector in = (*part)->initialFourMomentum();
                     HepLorentzVector out = (*part)->finalFourMomentum();
 
+                    Vector inDir(in.x(), in.y(), in.z());
+                    double mag = inDir.mag();
+                    if(mag>0.0) inDir /= inDir.mag();
+
                     m_builder->addAttValue("Ei",(float)in.e()-(float)in.m(),"");
                     m_builder->addAttValue("Eo",(float)out.e()-(float)out.m(),"");
+
+                    HepPoint3D start = (*part)->initialPosition();
+                    HepPoint3D end   = (*part)->finalPosition();
+                    Point iniPos(start.x(), start.y(), start.z());
+                    Point finPos(end.x(), end.y(), end.z());
+                    m_builder->addAttValue("Initial Position", getPositionString(iniPos),"");
+                    m_builder->addAttValue("Final Position", getPositionString(finPos),"");
+                    m_builder->addAttValue("Direction", getDirectionString(inDir),"");
 
                     m_builder->addAttValue("Proc",(*part)->getProcess(),"");
                   
                     m_builder->addAttValue("PDG", hepid,"");                  
 
-                    HepPoint3D start = (*part)->initialPosition();
-                    HepPoint3D end = (*part)->finalPosition();
+                    //Build strings for status bits
+                    unsigned int statBits = (*part)->statusFlags();
+                    m_builder->addAttValue("Status Low",getBits(statBits, 15, 0),"");
+
+
+                    //HepPoint3D start = (*part)->initialPosition();
+                    //HepPoint3D end = (*part)->finalPosition();
 
                     if(ppty) setCharge(ppty->charge());
                     int numDaughters = (int)(*part)->daughterList().size();
@@ -325,6 +348,38 @@ bool MonteCarloFiller::hasType(std::vector<std::string>& list, std::string type)
     i = std::find(list.begin(),list.end(),type);
     if(i == list.end()) return 0;
     else return 1;
+}
 
+std::string MonteCarloFiller::getTripleString(int precis, double x, double y, double z)
+{
+    std::stringstream triple;
+    triple.setf(std::ios::fixed);
+    triple.precision(precis);
+    triple << " (" << x << "," << y << "," << z << ")";
+
+    return triple.str();
+}
+
+std::string MonteCarloFiller::getPositionString(const Point& position)
+{
+    int precis = 3;
+    return getTripleString(precis, position.x(), position.y(), position.z());
+}
+
+std::string MonteCarloFiller::getDirectionString(const Vector& direction)
+{
+    int precis = 5;
+    return getTripleString(precis, direction.x(), direction.y(), direction.z());
+}
+
+std::string MonteCarloFiller::getBits(unsigned int statBits, int highBit, int lowBit)
+{                    
+    std::stringstream outString;
+    int bit;
+    for (bit=highBit; bit>=lowBit; --bit) {
+        outString << (statBits>>(bit)&1) ;
+        if (bit%4==0) outString << " ";
+    }
+    return outString.str();
 }
 
