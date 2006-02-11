@@ -32,6 +32,8 @@ class ISvcAdapter
   virtual bool setEventId(int run, int event) =  0;
   /// This method set the Event index
   virtual bool setEventIndex(int index) = 0;
+  /// This method sets the ROOT files for input
+  virtual bool openFile(const char* mc, const char* digi, const char* rec) = 0;
   /// This method return the Event ID as a pair Run/Event
   virtual std::string getEventId() = 0;  
   /// Set the property of an algorithm to a given value
