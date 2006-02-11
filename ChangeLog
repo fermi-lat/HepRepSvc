@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: heather  Sat Feb 11 00:21:12 PST 2006
+HepRepSvc/HepRepSvc
+
+Modified Files:
+      Tag: DC2
+	ISvcAdapter.h 
+Log Message:
+branch setting of ROOT input files
+    *
+------------------------------------------------------------
 User: heather  Sat Feb 11 00:20:55 PST 2006
 HepRepSvc/src
 
