@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.14 2005/01/11 10:26:18 riccardo Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.15 2005/03/08 13:57:55 riccardo Exp $
 // 
 //  Original author: R.Giannitrapani
 //
@@ -455,7 +455,7 @@ bool HepRepSvc::replayAlgorithm(std::string algName)
 }
 
 /// Query interface
-StatusCode HepRepSvc::queryInterface(const IID& riid, void** ppvInterface)  {
+StatusCode HepRepSvc::queryInterface(const InterfaceID& riid, void** ppvInterface)  {
     if ( IID_IHepRepSvc.versionMatch(riid) )  {
         *ppvInterface = (IHepRepSvc*)this;
     }

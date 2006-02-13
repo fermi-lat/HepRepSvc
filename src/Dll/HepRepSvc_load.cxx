@@ -9,20 +9,31 @@
 //               of the library.. 
 //
 //====================================================================
-#include "GaudiKernel/ICnvFactory.h"
-#include "GaudiKernel/ISvcFactory.h"
-#include "GaudiKernel/IAlgFactory.h"
 
 
-#define DLL_DECL_SERVICE(x)    extern const ISvcFactory& x##Factory; x##Factory.addRef();
-#define DLL_DECL_CONVERTER(x)  extern const ICnvFactory& x##Factory; x##Factory.addRef();
-#define DLL_DECL_ALGORITHM(x)  extern const IAlgFactory& x##Factory; x##Factory.addRef();
+#include "GaudiKernel/DeclareFactoryEntries.h"
 
 
-void HepRepSvc_load() {
-    DLL_DECL_SERVICE( HepRepSvc );
+DECLARE_FACTORY_ENTRIES(HepRepSvc) 
+{
+    DECLARE_SERVICE( HepRepSvc   );
 }
 
-extern "C" void HepRepSvc_loadRef() {
-    HepRepSvc_load();
-}
+
+//#include "GaudiKernel/ICnvFactory.h"
+//#include "GaudiKernel/ISvcFactory.h"
+//#include "GaudiKernel/IAlgFactory.h"
+
+
+//#define DLL_DECL_SERVICE(x)    extern const ISvcFactory& x##Factory; x##Factory.addRef();
+//#define DLL_DECL_CONVERTER(x)  extern const ICnvFactory& x##Factory; x##Factory.addRef();
+//#define DLL_DECL_ALGORITHM(x)  extern const IAlgFactory& x##Factory; x##Factory.addRef();
+
+
+//void HepRepSvc_load() {
+//    DLL_DECL_SERVICE( HepRepSvc );
+//}
+
+//extern "C" void HepRepSvc_loadRef() {
+//    HepRepSvc_load();
+//}

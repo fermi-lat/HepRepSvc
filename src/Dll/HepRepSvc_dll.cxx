@@ -12,26 +12,31 @@
 //
 //====================================================================
 
+
+#include "GaudiKernel/LoadFactoryEntries.h"
+LOAD_FACTORY_ENTRIES(HepRepSvc)
+
+
 // DllMain entry point
-#include "GaudiKernel/DllMain.icpp"
-
-void GaudiDll::initialize(void* /* hinstDLL */ )    {
-}
-
-void GaudiDll::finalize(void* /* hinstDLL */ )      {
-}
-
-extern void HepRepSvc_load();
-
-#include "GaudiKernel/FactoryTable.h"
-
-extern "C" FactoryTable::EntryList* getFactoryEntries() {
-    static bool first = true;
-    if ( first ) {
-        HepRepSvc_load();
-        first = false;
-    }
-    return FactoryTable::instance()->getEntries();
-} 
+//#include "GaudiKernel/DllMain.icpp"
+//
+//void GaudiDll::initialize(void* /* hinstDLL */ )    {
+//}
+//
+//void GaudiDll::finalize(void* /* hinstDLL */ )      {
+//}
+//
+//extern void HepRepSvc_load();
+//
+//#include "GaudiKernel/FactoryTable.h"
+//
+//extern "C" FactoryTable::EntryList* getFactoryEntries() {
+//    static bool first = true;
+//    if ( first ) {
+//        HepRepSvc_load();
+//        first = false;
+//    }
+//    return FactoryTable::instance()->getEntries();
+//} 
 
 
