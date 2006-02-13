@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: usher  Mon Feb 13 14:31:47 PST 2006
+HepRepSvc/src/Dll
+
+Modified Files:
+      Tag: GR-v7r3p20-newext
+	HepRepSvc_dll.cxx HepRepSvc_load.cxx 
+Log Message:
+    *
+------------------------------------------------------------
 TAG
 Tag name: v0r16p2dc0, operation: add
 Package: HepRepSvc
