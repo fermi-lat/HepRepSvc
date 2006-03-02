@@ -1,5 +1,5 @@
 // File and Version Information:
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepGeometry.cxx,v 1.11 2005/12/08 16:15:01 lsrea Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepGeometry.cxx,v 1.12 2005/12/08 17:08:45 riccardo Exp $
 //
 // Author(s):
 //      R.Giannitrapani
@@ -118,6 +118,14 @@ HepRepGeometry::pushShape(ShapeType s, const UintVector& idvec,
               m_builder->addAttValue("DrawAs","Prism","");
               m_builder->addAttValue("Shape","Box","");
               break;
+            case Tube:
+              m_builder->addAttValue("DrawAs","Prism","");
+              m_builder->addAttValue("Shape","Tube","");
+              break;                            
+            case Sphere:
+              m_builder->addAttValue("DrawAs","Point","");
+              m_builder->addAttValue("Shape","Sphere","");
+              break;              
             }
         }
       else
@@ -195,7 +203,76 @@ HepRepGeometry::pushShape(ShapeType s, const UintVector& idvec,
             v.setX(dx); v.setY(-dy); v.setZ(-dz); v1 = atr*v;
             m_builder->addPoint(v1.x(), v1.y(), v1.z());              
           }
-        }
+        } // End of Box case
+        else if (s == Tube)
+        {
+          double dz = params[6]/2;
+          double rin = params[7];
+          double rout = params[8];
+
+          HepPoint3D v;
+          HepPoint3D v1;
+
+          unsigned int n = 20;
+          double angle;
+          
+          if (type == Simple)
+          {
+            for(unsigned int i=0; i<n; i++)
+            {
+              angle = 2*M_PI*((double)i/n);
+              v.setX(rout*sin(angle)); v.setY(rout*cos(angle)); v.setZ(-dz); v1 = (atr*v);           
+              m_builder->addPoint(v1.x(), v1.y(), v1.z());
+            }
+            for(unsigned int i=0; i<n; i++)
+            {
+              angle = 2*M_PI*((double)i/n);
+              v.setX(rout*sin(angle)); v.setY(rout*cos(angle)); v.setZ(dz); v1 = (atr*v);           
+              m_builder->addPoint(v1.x(), v1.y(), v1.z());
+            }            
+          }
+        } // End of Tube case          
+        else if (s == Sphere)            
+        {
+          double rin = params[6];
+          double rout = params[7];
+          double phimin = params[8];
+          double phimax = params[9];
+          double thetamin = params[10];
+          double thetamax = params[11];
+
+          HepPoint3D v;
+          HepPoint3D v1;
+
+          unsigned int m = 10;
+          unsigned int n = 20;
+          double anglet, anglep;
+          
+          if (type == Simple)
+          {
+            for(unsigned int j=0; j<m+1; j++)
+            {
+              for(unsigned int i=0; i<n+1; i++)
+              {
+                anglet = thetamin + (thetamax-thetamin)*((double)j/m);
+                anglep = phimin + (phimax-phimin)*((double)i/n);
+
+                v.setX(rin*sin(anglet)*cos(anglep)); 
+                v.setY(rin*sin(anglet)*sin(anglep)); 
+                v.setZ(rin*cos(anglet)); 
+                v1 = (atr*v);
+                m_builder->addPoint(v1.x(), v1.y(), v1.z());
+
+                v.setX(rout*sin(anglet)*cos(anglep)); 
+                v.setY(rout*sin(anglet)*sin(anglep)); 
+                v.setZ(rout*cos(anglet)); 
+                v1 = (atr*v);
+                m_builder->addPoint(v1.x(), v1.y(), v1.z());
+              }
+            }
+          }
+        }// End of Sphere case
+
       }            
       m_actualTransform.push_back(atr);
     }
