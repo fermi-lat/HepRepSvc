@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: riccardo  Thu Mar  2 10:40:38 PST 2006
+HepRepSvc/src
+
+Modified Files:
+	HepRepGeometry.cxx 
+Log Message:
+Added initial support for Tubes (as full prism) and Sphere (as collection of points).
+
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v0r14cl1, operation: add
 Package: HepRepSvc
