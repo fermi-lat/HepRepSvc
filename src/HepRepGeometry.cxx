@@ -1,5 +1,5 @@
 // File and Version Information:
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepGeometry.cxx,v 1.13 2006/03/02 18:40:38 riccardo Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepGeometry.cxx,v 1.14 2006/03/21 01:24:09 usher Exp $
 //
 // Author(s):
 //      R.Giannitrapani
@@ -158,8 +158,8 @@ HepRepGeometry::pushShape(ShapeType s, const UintVector& idvec,
       rot.rotateZ(rz*M_PI/180);
 
       CLHEP::Hep3Vector t(x, y, z);  
-      HepGeom::HepTransform3D tr(rot,t);
-      HepGeom::HepTransform3D atr = (m_actualTransform.back())*tr;
+      HepGeom::Transform3D tr(rot,t);
+      HepGeom::Transform3D atr = (m_actualTransform.back())*tr;
 
       std::string father;
       if (m_actualInstance.size() == 0)
