@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.h,v 1.8 2005/01/11 10:26:18 riccardo Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.h,v 1.9 2005/03/08 13:57:55 riccardo Exp $
 // 
 //  Original author: R.Giannitrapani
 
@@ -45,7 +45,7 @@ class HepRepSvc : virtual public Service,
   virtual StatusCode finalize ();
   
   /// Query interface
-  virtual StatusCode queryInterface( const IID& riid, void** ppvUnknown );
+  virtual StatusCode queryInterface( const InterfaceID& riid, void** ppvUnknown );
 
   /// for the IRunnable interfce
   virtual StatusCode run();

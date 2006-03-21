@@ -9,7 +9,7 @@
 #include "GaudiKernel/SmartDataPtr.h"
 
 #include "CLHEP/Vector/LorentzVector.h"
-#include "CLHEP/Geometry/Vector3D.h"
+#include "CLHEP/Geometry/Transform3D.h"
 
 #include "idents/VolumeIdentifier.h"
 
@@ -83,7 +83,7 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
             for(Event::McPositionHitVector::const_iterator ihit=posHits->begin();
                 ihit != posHits->end(); ihit++){
                     {
-                        HepTransform3D global;
+                        HepGeom::Transform3D global;
                         idents::VolumeIdentifier id = (*ihit)->volumeID();
                         m_gdsvc->getTransform3DByID(id, &global);
 
@@ -232,8 +232,8 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
                     else
                         name = "Unknown"; 
 
-                    HepLorentzVector in = part->initialFourMomentum();
-                    HepLorentzVector out = part->finalFourMomentum();
+                    CLHEP::HepLorentzVector in = part->initialFourMomentum();
+                    CLHEP::HepLorentzVector out = part->finalFourMomentum();
 
                     m_builder->addAttValue("Ei",(float)in.e()-(float)in.m(),"");
                     m_builder->addAttValue("Eo",(float)out.e()-(float)out.m(),"");
@@ -248,8 +248,8 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
                 }
                 else  setCharge((*traj)->getCharge());               
 
-                std::vector<Hep3Vector> points = (*traj)->getPoints();
-                std::vector<Hep3Vector>::const_iterator pit;
+                std::vector<CLHEP::Hep3Vector> points = (*traj)->getPoints();
+                std::vector<CLHEP::Hep3Vector>::const_iterator pit;
 
                 for(pit = points.begin(); pit != points.end(); pit++) 
                 {                
@@ -276,8 +276,8 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
                     if (ppty) m_builder->addAttValue("Name",ppty->particle(),"");
                     else      m_builder->addAttValue("Name","Unknown","");
 
-                    HepLorentzVector in = (*part)->initialFourMomentum();
-                    HepLorentzVector out = (*part)->finalFourMomentum();
+                    CLHEP::HepLorentzVector in = (*part)->initialFourMomentum();
+                    CLHEP::HepLorentzVector out = (*part)->finalFourMomentum();
 
                     Vector inDir(in.x(), in.y(), in.z());
                     double mag = inDir.mag();

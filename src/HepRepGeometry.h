@@ -6,7 +6,7 @@
 
 
 class IBuilder;
-class HepTransform3D;
+namespace HepGeom {class Transform3D;}
 
 /** 
  *  @class HepRepGeometry
@@ -53,7 +53,7 @@ class HepRepGeometry : public IGeometry
 
   std::vector<std::string> m_types;
 
-  std::vector<HepTransform3D> m_actualTransform;
+  std::vector<HepGeom::Transform3D> m_actualTransform;
 
   unsigned int m_depth;
   unsigned int m_actualDepth;
