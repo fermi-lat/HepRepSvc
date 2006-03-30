@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.h,v 1.9 2005/03/08 13:57:55 riccardo Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.h,v 1.9.8.1 2006/02/11 08:20:55 heather Exp $
 // 
 //  Original author: R.Giannitrapani
 
@@ -80,6 +80,9 @@ class HepRepSvc : virtual public Service,
   
   /// This method set the Event ID to a pair Run/Event
   bool setEventId(int run, int event);
+
+  /// This method sets the ROOT files to use as input
+  bool openFile(const char* mc, const char *digi, const char *rec);
 
   /// This method get the Event ID as a pair Run/Event
   std::string getEventId();
