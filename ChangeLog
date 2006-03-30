@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: heather  Thu Mar 30 13:07:13 PST 2006
+HepRepSvc/HepRepSvc
+
+Modified Files:
+	ISvcAdapter.h 
+Log Message:
+merge DC2 branch prepare for tag
+    *
+------------------------------------------------------------
 TAG
 Tag name: v0r17, operation: add
 Package: HepRepSvc
