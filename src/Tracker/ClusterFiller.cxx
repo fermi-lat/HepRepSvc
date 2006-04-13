@@ -181,7 +181,7 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
             m_builder->addInstance("TkrCluster", "Strip");
             double waferPitch = m_siWaferSide + m_ssdGap;
             double offset = -0.5*(m_nWaferAcross-1)*waferPitch;
-            for (int wafer=0;wafer<4; ++wafer) {
+            for (int wafer=0;wafer<m_nWaferAcross; ++wafer) {
                 m_builder->addInstance("Strip", "ActiveStrip");
                 double delta = offset + wafer*waferPitch;
                 x  = clusPos.x();
