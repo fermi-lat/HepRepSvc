@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: lsrea  Thu Apr 13 11:28:42 PDT 2006
+HepRepSvc/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+Remove a hardwired "4", replace with m_nWaferAcross
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v0r18, operation: add
 Package: HepRepSvc
