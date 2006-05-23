@@ -1,5 +1,14 @@
 ------------------------------------------------------------
 User: heather  Mon May 22 23:16:26 PDT 2006
+HepRepSvc/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+load EventDataSvc if it isn't already - apparently not automatic anymore
+    *
+------------------------------------------------------------
+User: heather  Mon May 22 23:16:26 PDT 2006
 HepRepSvc/cmt
 
 Modified Files:
