@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: lsrea  Thu Jul 13 05:04:48 PDT 2006
+HepRepSvc/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+Fixed a bug which caused BT events not to display when there were ACD hits.
+Not sure why vanilla jO file didn't have the same problem (maybe it did!)
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v0r18p2, operation: add
 Package: HepRepSvc
