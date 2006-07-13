@@ -1,5 +1,16 @@
 ------------------------------------------------------------
 User: lsrea  Thu Jul 13 05:04:48 PDT 2006
+HepRepSvc/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+Fixed a bug which caused BT events not to display when there were ACD hits.
+Not sure why vanilla jO file didn't have the same problem (maybe it did!)
+
+    *
+------------------------------------------------------------
+User: lsrea  Thu Jul 13 05:04:48 PDT 2006
 HepRepSvc/cmt
 
 Modified Files:
