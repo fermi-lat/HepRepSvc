@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: lsrea  Sun Oct 15 12:37:45 PDT 2006
+HepRepSvc/src
+
+Modified Files:
+	HepRepSvc.cxx HepRepSvc.h ReconFiller.cxx ReconFiller.h 
+	TkrReconFiller.cxx TkrReconFiller.h 
+Log Message:
+Display TkrDigis if TkrClusters are not available
+
+    *
+------------------------------------------------------------
 User: lsrea  Sun Oct 15 12:37:44 PDT 2006
 HepRepSvc/doc
 
