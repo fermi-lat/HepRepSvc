@@ -9,6 +9,7 @@
 #include "GaudiKernel/IParticlePropertySvc.h"
 #include "GaudiKernel/ParticleProperty.h"
 #include "GlastSvc/GlastDetSvc/IGlastDetSvc.h"
+#include "TkrUtil/ITkrGeometrySvc.h"
 #include "GaudiKernel/SmartDataPtr.h"
 
 #include "CLHEP/Vector/LorentzVector.h"
@@ -18,13 +19,14 @@
 #include <algorithm>
 
 ReconFiller::ReconFiller(IGlastDetSvc* gsvc,
+                         ITkrGeometrySvc* tgsvc,
                          IDataProviderSvc* dpsvc,
                          IParticlePropertySvc* ppsvc):
-  m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc)
+  m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc), m_tgsvc(tgsvc)
 {
   AcdReconFiller* acdRecon = new AcdReconFiller(m_gdsvc, m_dpsvc, m_ppsvc);
   CalReconFiller* calRecon = new CalReconFiller(m_gdsvc, m_dpsvc, m_ppsvc);
-  TkrReconFiller* tkrRecon = new TkrReconFiller(m_gdsvc, m_dpsvc, m_ppsvc);
+  TkrReconFiller* tkrRecon = new TkrReconFiller(m_gdsvc, m_tgsvc, m_dpsvc, m_ppsvc);
   m_subFillers.push_back(acdRecon);
   m_subFillers.push_back(calRecon);
   m_subFillers.push_back(tkrRecon);

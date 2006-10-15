@@ -1,4 +1,4 @@
-//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.36 2006/05/23 06:16:26 heather Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.37 2006/07/13 12:04:48 lsrea Exp $
 /*
  * v0r1     20-09-02 RG Inital release of the package
  * v0r2     07-07-03 RG Complete refactoring of HepRepSvc	
@@ -39,3 +39,4 @@
  * v0r18p1  13-04-06 LSR remove hardwired "4", requested by Brian
  * v0r18p2  22-05-06 HMK Load EventDataSvc if it isn't already
  * v0r18p3  13-07-06 LSR Fixed a bug in AcdReconFiller. Seems to display all the events now!
+ * v0r18p5  15-10-06 LSR Display the digis if the clusters are not present

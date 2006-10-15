@@ -29,13 +29,14 @@
 
 // Constructor
 TkrReconFiller::TkrReconFiller(IGlastDetSvc* gsvc,
+                               ITkrGeometrySvc* tgsvc,
                                IDataProviderSvc* dpsvc,
                                IParticlePropertySvc* ppsvc):
-  m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc)
+  m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc), m_tgsvc(tgsvc)
 {
     fillVector.clear();
 
-    fillVector.push_back(new ClusterFiller(gsvc,dpsvc,ppsvc));
+    fillVector.push_back(new ClusterFiller(gsvc, tgsvc, dpsvc,ppsvc));
     fillVector.push_back(new TrackFiller(gsvc,dpsvc,ppsvc));
     fillVector.push_back(new VertexFiller(gsvc,dpsvc,ppsvc));
     fillVector.push_back(new TkrEventParamsFiller(gsvc,dpsvc,ppsvc));
