@@ -6,6 +6,7 @@
 #include "HepRepSvc/IFiller.h"
 
 class IGlastDetSvc;
+class ITkrGeometrySvc;
 class IDataProviderSvc;
 class IParticlePropertySvc;
 
@@ -21,6 +22,7 @@ class ClusterFiller: public IFiller{
   
  public:
   ClusterFiller(IGlastDetSvc* gsvc,
+                 ITkrGeometrySvc* tgsvc,
                  IDataProviderSvc* dpsvc,
                  IParticlePropertySvc* ppsvc);
   
@@ -35,6 +37,7 @@ class ClusterFiller: public IFiller{
  private:
     void drawPrism(double x, double y, double z, double dx, double dy, double dz);
     IGlastDetSvc* m_gdsvc;
+    ITkrGeometrySvc* m_tgsvc;
     IDataProviderSvc* m_dpsvc;
     IParticlePropertySvc* m_ppsvc;
 

@@ -6,6 +6,7 @@
 #include "HepRepSvc/IFiller.h"
 
 class IGlastDetSvc;
+class ITkrGeometrySvc;
 class IDataProviderSvc;
 class IParticlePropertySvc;
 
@@ -21,6 +22,7 @@ class TkrReconFiller: public IFiller{
   
  public:
   TkrReconFiller(IGlastDetSvc* gsvc,
+                 ITkrGeometrySvc* tgsvc,
                  IDataProviderSvc* dpsvc,
                  IParticlePropertySvc* ppsvc);
 
@@ -38,6 +40,7 @@ class TkrReconFiller: public IFiller{
 
  private:
   IGlastDetSvc* m_gdsvc;
+  ITkrGeometrySvc* m_tgsvc;
   IDataProviderSvc* m_dpsvc;
   IParticlePropertySvc* m_ppsvc;
 

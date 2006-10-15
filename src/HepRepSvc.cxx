@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.17 2006/03/30 21:07:13 heather Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.18 2006/05/23 06:16:26 heather Exp $
 // 
 //  Original author: R.Giannitrapani
 //
@@ -45,6 +45,7 @@
 #include "GaudiKernel/IDataProviderSvc.h"
 
 #include "GlastSvc/GlastDetSvc/IGlastDetSvc.h"
+#include "TkrUtil/ITkrGeometrySvc.h"
 
 // declare the service factories for the FluxSvc
 static SvcFactory<HepRepSvc> a_factory;
@@ -124,6 +125,14 @@ StatusCode HepRepSvc::initialize ()
       return status;
     }
 
+    // get the TkrGeometry Service    
+    ITkrGeometrySvc* tgsvc = 0;
+    status = service("TkrGeometrySvc", tgsvc);
+    if( status.isFailure()) {
+      log << MSG::ERROR << "Could not find TkrGeometrySvc" << endreq;
+      return status;
+    }
+
     // get the Event Data Service
     IDataProviderSvc* esvc = 0;
     status = service("EventDataSvc", esvc, true);
@@ -161,7 +170,7 @@ StatusCode HepRepSvc::initialize ()
     // Register the header filler
     m_registry->registerFiller(new HeaderFiller(esvc), "Event");
     // Register the Recon filler 
-    m_registry->registerFiller(new ReconFiller(gsvc,esvc,pps), "Event");
+    m_registry->registerFiller(new ReconFiller(gsvc,tgsvc,esvc,pps), "Event");
     // Register the mc filler
     m_registry->registerFiller(new MonteCarloFiller(gsvc,esvc,pps), "Event");
 

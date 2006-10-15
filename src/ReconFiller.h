@@ -6,6 +6,7 @@
 #include "HepRepSvc/IFiller.h"
 
 class IGlastDetSvc;
+class ITkrGeometrySvc;
 class IDataProviderSvc;
 class IParticlePropertySvc;
 class CalReconFiller;
@@ -22,6 +23,7 @@ class ReconFiller: public IFiller{
   
  public:
   ReconFiller(IGlastDetSvc* gsvc,
+              ITkrGeometrySvc* tgsvc,
               IDataProviderSvc* dpsvc,
               IParticlePropertySvc* ppsvc);
   
@@ -40,6 +42,7 @@ class ReconFiller: public IFiller{
   std::vector<IFiller*> m_subFillers;
 
   IGlastDetSvc* m_gdsvc;
+  ITkrGeometrySvc* m_tgsvc;
   IDataProviderSvc* m_dpsvc;
   IParticlePropertySvc* m_ppsvc;
 };

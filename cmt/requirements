@@ -1,5 +1,5 @@
 package HepRepSvc
-version v0r18p4
+version v0r18p5
 author Riccardo Giannitrapani <riccardo@fisica.uniud.it>
 
 use GlastPolicy
@@ -8,6 +8,7 @@ use GlastSvc
 use FluxSvc
 use RootIo
 use flux
+use TkrUtil
 use Fred * IExternal 
 
 apply_pattern packageShr

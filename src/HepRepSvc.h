@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.h,v 1.9.8.1 2006/02/11 08:20:55 heather Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.h,v 1.11 2006/03/30 21:07:13 heather Exp $
 // 
 //  Original author: R.Giannitrapani
 
@@ -16,6 +16,7 @@
 //forward declarations
 template <class TYPE> class SvcFactory;
 class IGlastDetSvc;
+class ITkrGeometrySvc;
 class IRegistry;
 class IStreamer;
 class IServer;
