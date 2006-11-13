@@ -1,5 +1,16 @@
 ------------------------------------------------------------
 User: claval  Mon Nov 13 02:09:53 PST 2006
+HepRepSvc/HepRepSvc
+
+Modified Files:
+	ISvcAdapter.h 
+Log Message:
+new ROOT file added (gcrSelect.root)
+
+
+    *
+------------------------------------------------------------
+User: claval  Mon Nov 13 02:09:53 PST 2006
 HepRepSvc
 
 Modified Files:
