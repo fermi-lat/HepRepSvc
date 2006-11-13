@@ -32,7 +32,7 @@ class SvcAdapter: public ISvcAdapter
   /// This method set the Event ID to a pair Run/Event
   virtual bool setEventId(int run, int event);
   /// This method sets the input ROOT files
-  virtual bool openFile(const char* mc, const char* digi, const char* rec);
+  virtual bool openFile(const char* mc, const char* digi, const char* rec, const char* gcr);
   /// This method return the Event ID as a pair Run/Event
   virtual std::string getEventId();  
   /// This method set the Event index 
