@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: claval  Mon Nov 13 02:09:53 PST 2006
+HepRepSvc
+
+Modified Files:
+	.cvsignore 
+Log Message:
+new ROOT file added (gcrSelect.root)
+
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v0r18p5, operation: add
 Package: HepRepSvc
