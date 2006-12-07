@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.19 2006/10/15 19:37:44 lsrea Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.20 2006/11/13 10:09:53 claval Exp $
 // 
 //  Original author: R.Giannitrapani
 //
@@ -127,7 +127,7 @@ StatusCode HepRepSvc::initialize ()
 
     // get the TkrGeometry Service    
     ITkrGeometrySvc* tgsvc = 0;
-    status = service("TkrGeometrySvc", tgsvc);
+    status = service("TkrGeometrySvc", tgsvc, true);
     if( status.isFailure()) {
       log << MSG::ERROR << "Could not find TkrGeometrySvc" << endreq;
       return status;
