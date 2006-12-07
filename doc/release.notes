@@ -1,4 +1,4 @@
-//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.37 2006/07/13 12:04:48 lsrea Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.38 2006/10/15 19:37:44 lsrea Exp $
 /*
  * v0r1     20-09-02 RG Inital release of the package
  * v0r2     07-07-03 RG Complete refactoring of HepRepSvc	
@@ -40,3 +40,4 @@
  * v0r18p2  22-05-06 HMK Load EventDataSvc if it isn't already
  * v0r18p3  13-07-06 LSR Fixed a bug in AcdReconFiller. Seems to display all the events now!
  * v0r18p5  15-10-06 LSR Display the digis if the clusters are not present
+ * v0r19    07-12-06 CL  Modifications to add gcr ROOT file
