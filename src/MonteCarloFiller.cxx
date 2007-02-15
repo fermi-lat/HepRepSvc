@@ -17,6 +17,7 @@
 #include "Event/MonteCarlo/McParticle.h"
 #include "Event/MonteCarlo/McPositionHit.h"
 #include "Event/MonteCarlo/McIntegratingHit.h"
+#include "Event/MonteCarlo/McRelTableDefs.h"
 
 
 #include <algorithm>
@@ -61,6 +62,36 @@ void MonteCarloFiller::buildTypes()
     m_builder->addAttDef("NumDaughters", "# of Daughteres", "Physics", "");
 
     m_builder->addAttValue("DrawAs","Line","");
+
+    m_builder->addType("Particle","Daughters","An mc particle","");
+    m_builder->addAttDef("Name","The name of the particle","Physics","");
+    m_builder->addAttDef("PDG","The PDG code of the particle","Physics","");
+    m_builder->addAttDef("Status", "MC Status Bits","Physics","");
+    m_builder->addAttDef("Ei","Initial energy","Physics","MeV");
+    m_builder->addAttDef("Eo","Final energy","Physics","MeV");
+    m_builder->addAttDef("Initial Position","Initial position","Physics","");
+    m_builder->addAttDef("Final Position","Final position","Physics","");
+    m_builder->addAttDef("Direction","Initial direction","Physics","");
+    m_builder->addAttDef("Proc","Process name","Physics","");
+    m_builder->addAttDef("Charge","Electrical Charge (pos, neg, neutral)","Physics","");
+    m_builder->addAttDef("NumDaughters", "# of Daughteres", "Physics", "");
+
+    m_builder->addAttValue("DrawAs","Line","");
+
+    m_builder->addType("Particle","PosHit","Position Hit","");
+    m_builder->addAttDef("E","Energy deposited","Physics","MeV");
+    m_builder->addAttDef("VolId", "Volume Identifier","Geometry","");
+    m_builder->addAttDef("Pos", "Global Position Hit","Physics","");
+    m_builder->addAttValue("DrawAs","Prism","");
+    m_builder->addAttValue("Color","red","");
+
+    m_builder->addType("PosHit","PosHitSteps","Position Hit Steps","");
+    m_builder->addAttValue("DrawAs","Point","");
+
+    m_builder->addType("Particle","IntHit","Integrating Hit","");
+    m_builder->addAttDef("E","Energy deposited","Physics","MeV");
+    m_builder->addAttValue("DrawAs","Prism","");
+    m_builder->addAttValue("Color","blue","");
 }
 
 
@@ -72,6 +103,15 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
 
     m_builder->addInstance("","MC");
 
+    // Recover the hits to trajectory points relational tables
+    SmartDataPtr<Event::McPointToPosHitTabList> 
+        mcPointToPosHitList(m_dpsvc, "/Event/MC/McPointToPosHit");
+    Event::McPointToPosHitTab mcPosHitTab(mcPointToPosHitList);
+
+    SmartDataPtr<Event::McPointToIntHitTabList> 
+        mcPointToIntHitList(m_dpsvc, "/Event/MC/McPointToIntHit");
+    Event::McPointToIntHitTab mcIntHitTab(mcPointToIntHitList);
+
     if (hasType(typesList,"MC/PosHitCol/PosHit") ||
         hasType(typesList,"MC/PosHitCol/PosHit/PosHitSteps"))
     {
@@ -81,69 +121,16 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
         {
             m_builder->addInstance("MC","PosHitCol");
             for(Event::McPositionHitVector::const_iterator ihit=posHits->begin();
-                ihit != posHits->end(); ihit++){
-                    {
-                        HepGeom::Transform3D global;
-                        idents::VolumeIdentifier id = (*ihit)->volumeID();
-                        m_gdsvc->getTransform3DByID(id, &global);
+                ihit != posHits->end(); ihit++)
+            {
+                Event::McPointToPosHitVec relVec = mcPosHitTab.getRelBySecond(*ihit);
 
-                        m_builder->addInstance("PosHitCol","PosHit");
-                        m_builder->addAttValue("E",
-                            (float)(*ihit)->depositedEnergy(),"");
-                        m_builder->addAttValue("VolId", id.name(),"");
-
-                        const HepPoint3D pos = (*ihit)->globalEntryPoint();
-                        std::stringstream posStr("");
-                        posStr << "(" << pos.x() << "," << pos.y() << "," << pos.z() << ")";
-                        m_builder->addAttValue("Pos", posStr.str(), "");
-
-                        if (id[0] == 1) m_builder->addAttValue("Color","yellow","");   
-
-                        std::string shape;
-                        std::vector<double> params;
-
-                        m_gdsvc->getShapeByID(id, &shape, &params); 
-
-                        double dx = params[0]/2;
-                        double dy = params[1]/2;
-                        double dz = params[2]/2;
-
-                        HepPoint3D temp;
-
-                        temp = global*HepPoint3D(dx,dy,dz);
-                        m_builder->addPoint(temp.x(),temp.y(),temp.z());
-                        temp = global*HepPoint3D(-dx,dy,dz);
-                        m_builder->addPoint(temp.x(),temp.y(),temp.z());
-                        temp = global*HepPoint3D(-dx,-dy,dz);
-                        m_builder->addPoint(temp.x(),temp.y(),temp.z());
-                        temp = global*HepPoint3D(dx,-dy,dz);
-                        m_builder->addPoint(temp.x(),temp.y(),temp.z());
-                        temp = global*HepPoint3D(dx,dy,-dz);
-                        m_builder->addPoint(temp.x(),temp.y(),temp.z());
-                        temp = global*HepPoint3D(-dx,dy,-dz);
-                        m_builder->addPoint(temp.x(),temp.y(),temp.z());
-                        temp = global*HepPoint3D(-dx,-dy,-dz);
-                        m_builder->addPoint(temp.x(),temp.y(),temp.z());
-                        temp = global*HepPoint3D(dx,-dy,-dz);
-                        m_builder->addPoint(temp.x(),temp.y(),temp.z());
-
-
-                        if(hasType(typesList,"PosHitSteps"))
-                        {
-                            m_builder->addInstance("PosHit","PosHitSteps");
-                            HepPoint3D origin(0,0,0);
-
-                            HepPoint3D entry = global.getTranslation() + 
-                                (global.getRotation()*(*ihit)->entryPoint());
-                            HepPoint3D exit = global.getTranslation() + 
-                                (global.getRotation()*(*ihit)->exitPoint());
-
-                            m_builder->addPoint(entry.x(),entry.y(),entry.z());
-                            m_builder->addPoint(exit.x(),exit.y(),exit.z());
-
-                        }                  
-                    }      
+                if (relVec.empty())
+                {
+                    m_builder->addInstance("PosHitCol","PosHit");
+                    fillMcPositionHit(typesList, *ihit);
                 }
+            }
         }
     }
     if (hasType(typesList,"MC/IntHitCol") ||
@@ -158,45 +145,14 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
             for(Event::McIntegratingHitVector::const_iterator inHit=intHits->begin(); 
                 inHit != intHits->end(); inHit++) 
             {
+                Event::McPointToIntHitVec relVec = mcIntHitTab.getRelBySecond(*inHit);
 
-                m_builder->addInstance("IntHitCol","IntHit");
+                if (relVec.empty())
+                {
+                    m_builder->addInstance("IntHitCol","IntHit");
 
-                HepTransform3D global;
-                idents::VolumeIdentifier id = (*inHit)->volumeID();
-                m_gdsvc->getTransform3DByID(id, &global);
-
-                std::string shape;
-                std::vector<double> params;
-
-                m_gdsvc->getShapeByID(id, &shape, &params); 
-
-                HepPoint3D origin(0,0,0);
-
-                m_builder->addAttValue("E", (float)(*inHit)->totalEnergy(), "");
-
-                double dx = params[0]/2;
-                double dy = params[1]/2;
-                double dz = params[2]/2;
-
-                HepPoint3D temp;
-
-
-                temp = global*HepPoint3D(dx,dy,dz);
-                m_builder->addPoint(temp.x(),temp.y(),temp.z());
-                temp = global*HepPoint3D(-dx,dy,dz);
-                m_builder->addPoint(temp.x(),temp.y(),temp.z());
-                temp = global*HepPoint3D(-dx,-dy,dz);
-                m_builder->addPoint(temp.x(),temp.y(),temp.z());
-                temp = global*HepPoint3D(dx,-dy,dz);
-                m_builder->addPoint(temp.x(),temp.y(),temp.z());
-                temp = global*HepPoint3D(dx,dy,-dz);
-                m_builder->addPoint(temp.x(),temp.y(),temp.z());
-                temp = global*HepPoint3D(-dx,dy,-dz);
-                m_builder->addPoint(temp.x(),temp.y(),temp.z());
-                temp = global*HepPoint3D(-dx,-dy,-dz);
-                m_builder->addPoint(temp.x(),temp.y(),temp.z());
-                temp = global*HepPoint3D(dx,-dy,-dz);
-                m_builder->addPoint(temp.x(),temp.y(),temp.z());
+                    fillMcIntegratingHit(typesList, *inHit);
+                }
             }
         }
     }
@@ -204,118 +160,152 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
     // TODO lot of duplicated code here; needs to refactor
     if (hasType(typesList,"MC/ParticleCol/Particle"))
     {      
-        m_builder->addInstance("MC","ParticleCol");      
-        // If there are trajectories in the TDS, we use them
-        SmartDataPtr<Event::McTrajectoryCol> 
-            mcTraj(m_dpsvc, "/Event/MC/TrajectoryCol");
-        if (mcTraj !=0)
+        SmartDataPtr<Event::McParticleCol> mcPart(m_dpsvc, "/Event/MC/McParticleCol");
+
+        if (mcPart !=0 )
         {
-            int trajSize = mcTraj->size();
-            int maxTrajs = 20000;
+            m_builder->addInstance("MC","ParticleCol");
+            m_builder->setSubinstancesNumber("ParticleCol", mcPart->size());
 
-            m_builder->setSubinstancesNumber("ParticleCol", mcTraj->size());
-            for(Event::McTrajectoryCol::const_iterator traj=mcTraj->begin(); 
-                traj != mcTraj->end(); traj++) 
+            // Get the McParticle <--> McTrajectory relations from TDS 
+            SmartDataPtr<Event::McPartToTrajectoryTabList> 
+                mcPartToTraj(m_dpsvc, "/Event/MC/McPartToTrajectory");
+            Event::McPartToTrajectoryTab mcPartToTrajTab(mcPartToTraj);
+
+            // We want to skip the first McParticle, so initialize here
+            Event::McParticleCol::const_iterator part = mcPart->begin();
+            part++;
+
+            //for( ; part != mcPart->end(); part++)
+            //{
+            fillMcParticle(typesList, "ParticleCol", *part, mcPartToTrajTab, mcPosHitTab, mcIntHitTab);
+            //}
+        }
+    }
+
+    return;
+}
+
+void MonteCarloFiller::fillMcParticle(std::vector<std::string>&     typesList,
+                                      std::string                   father,
+                                      const Event::McParticle*      mcPart,
+                                      Event::McPartToTrajectoryTab& partToTrajTab,
+                                      Event::McPointToPosHitTab&    mcPosHitTab,
+                                      Event::McPointToIntHitTab&    mcIntHitTab)
+{
+    if (father == "ParticleCol") m_builder->addInstance(father,"Particle");
+    else                         m_builder->addInstance("Particle","Daughters");
+
+    Event::McParticle::StdHepId hepid= mcPart->particleProperty();
+    ParticleProperty* ppty = m_ppsvc->findByStdHepID( hepid );
+
+    if (ppty) m_builder->addAttValue("Name",ppty->particle(),"");
+    else      m_builder->addAttValue("Name","Unknown","");
+
+    CLHEP::HepLorentzVector in = mcPart->initialFourMomentum();
+    CLHEP::HepLorentzVector out = mcPart->finalFourMomentum();
+
+    Vector inDir(in.x(), in.y(), in.z());
+    double mag = inDir.mag();
+    if(mag>0.0) inDir /= inDir.mag();
+
+    m_builder->addAttValue("Ei",(float)in.e()-(float)in.m(),"");
+    m_builder->addAttValue("Eo",(float)out.e()-(float)out.m(),"");
+
+    HepPoint3D start = mcPart->initialPosition();
+    HepPoint3D end   = mcPart->finalPosition();
+    Point iniPos(start.x(), start.y(), start.z());
+    Point finPos(end.x(), end.y(), end.z());
+    m_builder->addAttValue("Initial Position", getPositionString(iniPos),"");
+    m_builder->addAttValue("Final Position", getPositionString(finPos),"");
+    m_builder->addAttValue("Direction", getDirectionString(inDir),"");
+
+    m_builder->addAttValue("Proc",mcPart->getProcess(),"");
+      
+    m_builder->addAttValue("PDG", hepid,"");                  
+
+    //Build strings for status bits
+    unsigned int statBits = mcPart->statusFlags();
+    m_builder->addAttValue("Status Low",getBits(statBits, 15, 0),"");
+
+    if(ppty) setCharge(ppty->charge());
+    int numDaughters = (int)mcPart->daughterList().size();
+    m_builder->addAttValue("NumDaughters", numDaughters, "");
+
+    // Look up related McTrajectory (if it exists)
+    Event::McPartToTrajectoryVec trajVec = partToTrajTab.getRelByFirst(mcPart);
+
+    // In the case the trajectories don't exist (old school read back from root)
+    // then all we can do is plot the start and end points
+    if (trajVec.empty())
+    {
+        m_builder->addPoint(start.x(),start.y(),start.z());
+        m_builder->addPoint(end.x(),end.y(),end.z());
+    }
+    // Otherwise plot the full trajectory
+    else
+    {
+        // There is only one association possible here
+        const Event::McTrajectory* traj = (*(trajVec.begin()))->getSecond();
+
+        std::vector<Event::McTrajectoryPoint*> points = traj->getPoints();
+        std::vector<Event::McTrajectoryPoint*>::const_iterator pit;
+
+        std::map<Event::McIntegratingHit*,const Event::McTrajectory*> intHitMap;
+        intHitMap.clear();
+
+        // Loop through to draw the trajectory
+        for(pit = points.begin(); pit != points.end(); pit++) 
+        {
+            const CLHEP::Hep3Vector hit = (*pit)->getPoint();
+            m_builder->addPoint(hit.x(),hit.y(),hit.z());
+
+            Event::McPointToIntHitVec relVec = mcIntHitTab.getRelByFirst(*pit);
+
+            if (!relVec.empty())
             {
-                if (maxTrajs-- < 0) break;
-
-                Event::McParticle* part = (*traj)->getMcParticle();
-                m_builder->addInstance("ParticleCol","Particle");
-
-                if (part)
-                {                  
-                    std::string name;
-                    Event::McParticle::StdHepId hepid= part->particleProperty();
-                    ParticleProperty* ppty = m_ppsvc->findByStdHepID( hepid );
-                    if (ppty)
-                        name = ppty->particle(); 
-                    else
-                        name = "Unknown"; 
-
-                    CLHEP::HepLorentzVector in = part->initialFourMomentum();
-                    CLHEP::HepLorentzVector out = part->finalFourMomentum();
-
-                    m_builder->addAttValue("Ei",(float)in.e()-(float)in.m(),"");
-                    m_builder->addAttValue("Eo",(float)out.e()-(float)out.m(),"");
-
-                    m_builder->addAttValue("Proc",part->getProcess(),"");
-
-                    m_builder->addAttValue("PDG", hepid,"");
-                    m_builder->addAttValue("Name",name,"");
-
-                    if (ppty)
-                        setCharge(ppty->charge());
-                }
-                else  setCharge((*traj)->getCharge());               
-
-                std::vector<CLHEP::Hep3Vector> points = (*traj)->getPoints();
-                std::vector<CLHEP::Hep3Vector>::const_iterator pit;
-
-                for(pit = points.begin(); pit != points.end(); pit++) 
-                {                
-                    m_builder->addPoint((*pit).x(),(*pit).y(),(*pit).z());
-                }      
+                Event::McPointToIntHitRel* hitRel = *(relVec.begin());
+                intHitMap[hitRel->getSecond()] = traj;
             }
         }
-        else // otherwise we use the McParticle 
+
+        // Loop through to draw associated McPositionHits
+        for(pit = points.begin(); pit != points.end(); pit++) 
         {
-            SmartDataPtr<Event::McParticleCol> 
-                mcPart(m_dpsvc, "/Event/MC/McParticleCol");
+            Event::McPointToPosHitVec relVec = mcPosHitTab.getRelByFirst(*pit);
 
-            if (mcPart !=0)
+            if (!relVec.empty())
             {
-                m_builder->setSubinstancesNumber("ParticleCol", mcPart->size());
-                for(Event::McParticleCol::const_iterator part=mcPart->begin()++; 
-                    part != mcPart->end(); part++) 
-                {
-                    m_builder->addInstance("ParticleCol","Particle");
+                Event::McPointToPosHitRel* hitRel = *(relVec.begin());
 
-                    Event::McParticle::StdHepId hepid= (*part)->particleProperty();
-                    ParticleProperty* ppty = m_ppsvc->findByStdHepID( hepid );
-
-                    if (ppty) m_builder->addAttValue("Name",ppty->particle(),"");
-                    else      m_builder->addAttValue("Name","Unknown","");
-
-                    CLHEP::HepLorentzVector in = (*part)->initialFourMomentum();
-                    CLHEP::HepLorentzVector out = (*part)->finalFourMomentum();
-
-                    Vector inDir(in.x(), in.y(), in.z());
-                    double mag = inDir.mag();
-                    if(mag>0.0) inDir /= inDir.mag();
-
-                    m_builder->addAttValue("Ei",(float)in.e()-(float)in.m(),"");
-                    m_builder->addAttValue("Eo",(float)out.e()-(float)out.m(),"");
-
-                    HepPoint3D start = (*part)->initialPosition();
-                    HepPoint3D end   = (*part)->finalPosition();
-                    Point iniPos(start.x(), start.y(), start.z());
-                    Point finPos(end.x(), end.y(), end.z());
-                    m_builder->addAttValue("Initial Position", getPositionString(iniPos),"");
-                    m_builder->addAttValue("Final Position", getPositionString(finPos),"");
-                    m_builder->addAttValue("Direction", getDirectionString(inDir),"");
-
-                    m_builder->addAttValue("Proc",(*part)->getProcess(),"");
-                  
-                    m_builder->addAttValue("PDG", hepid,"");                  
-
-                    //Build strings for status bits
-                    unsigned int statBits = (*part)->statusFlags();
-                    m_builder->addAttValue("Status Low",getBits(statBits, 15, 0),"");
-
-
-                    //HepPoint3D start = (*part)->initialPosition();
-                    //HepPoint3D end = (*part)->finalPosition();
-
-                    if(ppty) setCharge(ppty->charge());
-                    int numDaughters = (int)(*part)->daughterList().size();
-                    m_builder->addAttValue("NumDaughters", numDaughters, "");
-
-                    m_builder->addPoint(start.x(),start.y(),start.z());
-                    m_builder->addPoint(end.x(),end.y(),end.z());
-                }
+                m_builder->addInstance("Particle","PosHit");
+                fillMcPositionHit(typesList, hitRel->getSecond());
             }
         }
-    }  
+
+        // Loop through to draw associated McIntegratingHits
+        std::map<Event::McIntegratingHit*,const Event::McTrajectory*>::iterator intHitIter;
+        for(intHitIter = intHitMap.begin(); intHitIter != intHitMap.end(); intHitIter++)
+        {
+            Event::McIntegratingHit* inHit = intHitIter->first;
+            
+            m_builder->addInstance("Particle","IntHit");
+            fillMcIntegratingHit(typesList, inHit);
+        }
+    }
+
+    // Now draw the daughters of this particle
+    const SmartRefVector<Event::McParticle>& daughterList = mcPart->daughterList();
+    SmartRefVector<Event::McParticle>::const_iterator daughterIter;
+
+    for(daughterIter = daughterList.begin(); daughterIter != daughterList.end(); daughterIter++)
+    {
+        const Event::McParticle* mcDaughter = *daughterIter;
+
+        if (mcDaughter) fillMcParticle(typesList, "ParticleCol", mcDaughter, partToTrajTab, mcPosHitTab, mcIntHitTab);
+    }
+
+    return;
 }
 
 // A support method to add electrical charge attributes
@@ -348,6 +338,110 @@ bool MonteCarloFiller::hasType(std::vector<std::string>& list, std::string type)
     i = std::find(list.begin(),list.end(),type);
     if(i == list.end()) return 0;
     else return 1;
+}
+
+void MonteCarloFiller::fillMcPositionHit(std::vector<std::string>& typesList, Event::McPositionHit* hit)
+{
+    HepGeom::Transform3D global;
+    idents::VolumeIdentifier id = hit->volumeID();
+    m_gdsvc->getTransform3DByID(id, &global);
+
+    //m_builder->addInstance("PosHitCol","PosHit");
+    m_builder->addAttValue("E",
+        (float)hit->depositedEnergy(),"");
+    m_builder->addAttValue("VolId", id.name(),"");
+
+    const HepPoint3D pos = hit->globalEntryPoint();
+    std::stringstream posStr("");
+    posStr << "(" << pos.x() << "," << pos.y() << "," << pos.z() << ")";
+    m_builder->addAttValue("Pos", posStr.str(), "");
+
+    if (id[0] == 1) m_builder->addAttValue("Color","yellow","");   
+
+    std::string shape;
+    std::vector<double> params;
+
+    m_gdsvc->getShapeByID(id, &shape, &params); 
+
+    double dx = params[0]/2;
+    double dy = params[1]/2;
+    double dz = params[2]/2;
+
+    HepPoint3D temp;
+
+    temp = global*HepPoint3D(dx,dy,dz);
+    m_builder->addPoint(temp.x(),temp.y(),temp.z());
+    temp = global*HepPoint3D(-dx,dy,dz);
+    m_builder->addPoint(temp.x(),temp.y(),temp.z());
+    temp = global*HepPoint3D(-dx,-dy,dz);
+    m_builder->addPoint(temp.x(),temp.y(),temp.z());
+    temp = global*HepPoint3D(dx,-dy,dz);
+    m_builder->addPoint(temp.x(),temp.y(),temp.z());
+    temp = global*HepPoint3D(dx,dy,-dz);
+    m_builder->addPoint(temp.x(),temp.y(),temp.z());
+    temp = global*HepPoint3D(-dx,dy,-dz);
+    m_builder->addPoint(temp.x(),temp.y(),temp.z());
+    temp = global*HepPoint3D(-dx,-dy,-dz);
+    m_builder->addPoint(temp.x(),temp.y(),temp.z());
+    temp = global*HepPoint3D(dx,-dy,-dz);
+    m_builder->addPoint(temp.x(),temp.y(),temp.z());
+
+
+    if(hasType(typesList,"PosHitSteps"))
+    {
+        m_builder->addInstance("PosHit","PosHitSteps");
+        HepPoint3D origin(0,0,0);
+
+        HepPoint3D entry = global.getTranslation() + 
+            (global.getRotation()*hit->entryPoint());
+        HepPoint3D exit = global.getTranslation() + 
+            (global.getRotation()*hit->exitPoint());
+
+        m_builder->addPoint(entry.x(),entry.y(),entry.z());
+        m_builder->addPoint(exit.x(),exit.y(),exit.z());
+
+    }                  
+}
+
+void MonteCarloFiller::fillMcIntegratingHit(std::vector<std::string>& typesList, Event::McIntegratingHit* hit)
+{
+    HepTransform3D global;
+    idents::VolumeIdentifier id = hit->volumeID();
+    m_gdsvc->getTransform3DByID(id, &global);
+
+    std::string shape;
+    std::vector<double> params;
+
+    m_gdsvc->getShapeByID(id, &shape, &params); 
+
+    HepPoint3D origin(0,0,0);
+
+    m_builder->addAttValue("E", (float)hit->totalEnergy(), "");
+
+    double dx = params[0]/2;
+    double dy = params[1]/2;
+    double dz = params[2]/2;
+
+    HepPoint3D temp;
+
+    temp = global*HepPoint3D(dx,dy,dz);
+    m_builder->addPoint(temp.x(),temp.y(),temp.z());
+    temp = global*HepPoint3D(-dx,dy,dz);
+    m_builder->addPoint(temp.x(),temp.y(),temp.z());
+    temp = global*HepPoint3D(-dx,-dy,dz);
+    m_builder->addPoint(temp.x(),temp.y(),temp.z());
+    temp = global*HepPoint3D(dx,-dy,dz);
+    m_builder->addPoint(temp.x(),temp.y(),temp.z());
+    temp = global*HepPoint3D(dx,dy,-dz);
+    m_builder->addPoint(temp.x(),temp.y(),temp.z());
+    temp = global*HepPoint3D(-dx,dy,-dz);
+    m_builder->addPoint(temp.x(),temp.y(),temp.z());
+    temp = global*HepPoint3D(-dx,-dy,-dz);
+    m_builder->addPoint(temp.x(),temp.y(),temp.z());
+    temp = global*HepPoint3D(dx,-dy,-dz);
+    m_builder->addPoint(temp.x(),temp.y(),temp.z());
+    
+    return;
 }
 
 std::string MonteCarloFiller::getTripleString(int precis, double x, double y, double z)

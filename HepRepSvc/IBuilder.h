@@ -41,6 +41,7 @@ class IBuilder{
   /// Add an Instance to the Hierarchy
   virtual void addInstance(std::string father, 
                            std::string type) = 0;
+
   /// Add a type to the Hierarchy
   virtual void addType(std::string father, 
                        std::string name, 
