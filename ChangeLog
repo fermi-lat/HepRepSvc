@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: usher  Thu Feb 15 11:19:57 PST 2007
+HepRepSvc/HepRepSvc
+
+Modified Files:
+	IBuilder.h 
+Log Message:
+Modifications to MC drawing scheme to incorporate McTrajectories in slightly different system...
+    *
+------------------------------------------------------------
 TAG
 Tag name: v0r19p1, operation: add
 Package: HepRepSvc
