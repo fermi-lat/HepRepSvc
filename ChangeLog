@@ -1,5 +1,14 @@
 ------------------------------------------------------------
 User: usher  Thu Feb 15 11:19:57 PST 2007
+HepRepSvc/src
+
+Modified Files:
+	MonteCarloFiller.cxx MonteCarloFiller.h 
+Log Message:
+Modifications to MC drawing scheme to incorporate McTrajectories in slightly different system...
+    *
+------------------------------------------------------------
+User: usher  Thu Feb 15 11:19:57 PST 2007
 HepRepSvc/HepRepSvc
 
 Modified Files:
