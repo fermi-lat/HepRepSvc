@@ -7,10 +7,17 @@
 
 #include "geometry/Point.h"
 
+#include "Event/MonteCarlo/McRelTableDefs.h"
+
 
 class IGlastDetSvc;
 class IDataProviderSvc;
 class IParticlePropertySvc;
+namespace Event {
+    class McParticle;
+    class McPositionHit;
+    class McIntegratingHit;
+}
 
 /** 
  *  @class MonteCarloFiller
@@ -51,6 +58,15 @@ class MonteCarloFiller: public IFiller{
 
 
  private:
+  void fillMcPositionHit(std::vector<std::string>& typesList, Event::McPositionHit* hit);
+  void fillMcIntegratingHit(std::vector<std::string>& typesList, Event::McIntegratingHit* hit);
+  void fillMcParticle(std::vector<std::string>&     typesList,
+                      std::string                   father,
+                      const Event::McParticle*      mcPart,
+                      Event::McPartToTrajectoryTab& partToTrajTab,
+                      Event::McPointToPosHitTab&    mcPosHitTab,
+                      Event::McPointToIntHitTab&    mcIntHitTab);
+
   IGlastDetSvc* m_gdsvc;
   IDataProviderSvc* m_dpsvc;
   IParticlePropertySvc* m_ppsvc;
