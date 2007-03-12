@@ -1,4 +1,58 @@
 ------------------------------------------------------------
+TAG
+Tag name: v0r20, operation: add
+Package: HepRepSvc
+User: usher  Mon Mar 12 15:29:06 2007
+Files:
+  HepRepSvc/.cvsignore  1.3
+  HepRepSvc/ChangeLog  1.229
+  HepRepSvc/HepRepSvc/IRegister.h  1.1
+  HepRepSvc/HepRepSvc/IBuilder.h  1.3
+  HepRepSvc/HepRepSvc/IHepRepSvc.h  1.2
+  HepRepSvc/HepRepSvc/ISvcAdapter.h  1.10
+  HepRepSvc/HepRepSvc/IServer.h  1.2
+  HepRepSvc/HepRepSvc/IFiller.h  1.3
+  HepRepSvc/HepRepSvc/IRegistry.h  1.3
+  HepRepSvc/HepRepSvc/mainpage.h  1.4
+  HepRepSvc/HepRepSvc/IStreamer.h  1.1
+  HepRepSvc/cmt/requirements  1.47
+  HepRepSvc/doc/release.notes  1.41
+  HepRepSvc/src/HepRepGeometry.cxx  1.15
+  HepRepSvc/src/ReconFiller.h  1.2
+  HepRepSvc/src/HepRepSvc.cxx  1.21
+  HepRepSvc/src/HeaderFiller.cxx  1.3
+  HepRepSvc/src/MonteCarloFiller.cxx  1.17
+  HepRepSvc/src/AcdReconFiller.cxx  1.4
+  HepRepSvc/src/CalReconFiller.cxx  1.15
+  HepRepSvc/src/HepRepGeometry.h  1.5
+  HepRepSvc/src/CalReconFiller.h  1.3
+  HepRepSvc/src/GeometryFiller.cxx  1.2
+  HepRepSvc/src/Registry.cxx  1.2
+  HepRepSvc/src/AcdReconFiller.h  1.1
+  HepRepSvc/src/ReconFiller.cxx  1.6
+  HepRepSvc/src/SvcAdapter.h  1.10
+  HepRepSvc/src/HeaderFiller.h  1.1
+  HepRepSvc/src/HepRepSvc.h  1.13
+  HepRepSvc/src/Registry.h  1.3
+  HepRepSvc/src/TkrReconFiller.h  1.3
+  HepRepSvc/src/MonteCarloFiller.h  1.4
+  HepRepSvc/src/SvcAdapter.cxx  1.10
+  HepRepSvc/src/TkrReconFiller.cxx  1.9
+  HepRepSvc/src/GeometryFiller.h  1.2
+  HepRepSvc/src/Dll/HepRepSvc_load.cxx  1.2
+  HepRepSvc/src/Dll/HepRepSvc_dll.cxx  1.2
+  HepRepSvc/src/Tracker/TrackFiller.cxx  1.10
+  HepRepSvc/src/Tracker/VertexFiller.h  1.3
+  HepRepSvc/src/Tracker/TkrEventParams.cxx  1.3
+  HepRepSvc/src/Tracker/TrackFiller.h  1.2
+  HepRepSvc/src/Tracker/TkrEventParamsFiller.h  1.1
+  HepRepSvc/src/Tracker/ClusterFiller.h  1.5
+  HepRepSvc/src/Tracker/VertexFiller.cxx  1.7
+  HepRepSvc/src/Tracker/ClusterFiller.cxx  1.14
+  HepRepSvc/src/test/jobOptions.txt  1.2
+
+    *
+------------------------------------------------------------
 User: usher  Mon Mar 12 15:28:42 PDT 2007
 HepRepSvc/doc
 
