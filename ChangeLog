@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: lsrea  Thu Mar 15 13:08:20 PDT 2007
+HepRepSvc/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+Prepare for tag v0r20p1
+Fix req and jO so test program "runs"
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v0r20, operation: add
 Package: HepRepSvc
