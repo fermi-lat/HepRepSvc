@@ -1,13 +1,20 @@
 //##############################################################
 //
-// Job options file for HepRepXml test program
+// Job options file for HepRepSvc test program
 //
-ApplicationMgr.DLLs   = { "GlastSvc", "HepRepSvc", "FluxSvc"};
+ApplicationMgr.DLLs   = 
+    { "GlastSvc", "HepRepSvc", "FluxSvc", 
+      "TkrUtil", 
+      "G4Generator", 
+      "G4Propagator", 
+      "CalibSvc"
+      };
 
 ApplicationMgr.ExtSvc = { 
     "EventCnvSvc", 
     "GlastDetSvc",
-    "HepRepSvc"};
+    "HepRepSvc"
+    };
 
 
 ApplicationMgr.ExtSvc += { "ParticlePropertySvc" };
@@ -24,7 +31,7 @@ GlastDetSvc.xmlfile="$(XMLGEODBSROOT)/xml/flight/flight.xml";
 GlastDetSvc.topVolume="LAT";         // the whole schebang 
 
 ApplicationMgr.EvtSel = "NONE";
-ApplicationMgr.EvtMax = 1;
+ApplicationMgr.EvtMax = 0;
 
 //==============================================================
 //
