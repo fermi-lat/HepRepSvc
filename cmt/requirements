@@ -1,5 +1,5 @@
 package HepRepSvc
-version v0r20
+version v0r20p1
 author Riccardo Giannitrapani <riccardo@fisica.uniud.it>
 
 use GlastPolicy
@@ -29,6 +29,9 @@ library HepRepSvc $(HepRepSvc_headers) \
  
 
 # test program, using local joboptions
+# test program doesn't actually do anything, but the test
+# checks to see that it can load and initialize
+
 public 
 set JOBOPTIONS ${HEPREPSVCROOT}/src/test/jobOptions.txt
 apply_pattern package_test
