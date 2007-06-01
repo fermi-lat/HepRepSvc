@@ -98,6 +98,11 @@ void MonteCarloFiller::buildTypes()
 // This method fill the instance tree Event/MC with the actual TDS content
 void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
 {
+    
+    // quick fix for FRED crash on real data
+    SmartDataPtr<Event::McParticleCol> mcPart(m_dpsvc, "/Event/MC/McParticleCol");
+    if(!mcPart) return;
+
     if (!hasType(typesList,"MC")) 
         return;  
 
@@ -160,8 +165,6 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
     // TODO lot of duplicated code here; needs to refactor
     if (hasType(typesList,"MC/ParticleCol/Particle"))
     {      
-        SmartDataPtr<Event::McParticleCol> mcPart(m_dpsvc, "/Event/MC/McParticleCol");
-
         if (mcPart !=0 )
         {
             m_builder->addInstance("MC","ParticleCol");
