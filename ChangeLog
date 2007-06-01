@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: lsrea  Fri Jun  1 16:47:04 PDT 2007
+HepRepSvc/src
+
+Modified Files:
+	MonteCarloFiller.cxx 
+Log Message:
+Recover gracefully if there's no Mc relations info
+
+    *
+------------------------------------------------------------
+User: lsrea  Fri Jun  1 16:47:04 PDT 2007
 HepRepSvc/doc
 
 Modified Files:
