@@ -177,12 +177,13 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
 
             // We want to skip the first McParticle, so initialize here
             Event::McParticleCol::const_iterator part = mcPart->begin();
-            part++;
+            if (!((*part)->statusFlags() & Event::McParticle::NOTTRACK)) part++;
 
-            //for( ; part != mcPart->end(); part++)
-            //{
-            fillMcParticle(typesList, "ParticleCol", *part, mcPartToTrajTab, mcPosHitTab, mcIntHitTab);
-            //}
+//            for( ; part != mcPart->end(); part++)
+//            {
+//                if (!(*part)->primaryParticle()) break;
+                fillMcParticle(typesList, "ParticleCol", *part, mcPartToTrajTab, mcPosHitTab, mcIntHitTab);
+//            }
         }
     }
 
@@ -196,104 +197,107 @@ void MonteCarloFiller::fillMcParticle(std::vector<std::string>&     typesList,
                                       Event::McPointToPosHitTab&    mcPosHitTab,
                                       Event::McPointToIntHitTab&    mcIntHitTab)
 {
-    if (father == "ParticleCol") m_builder->addInstance(father,"Particle");
-    else                         m_builder->addInstance("Particle","Daughters");
-
-    Event::McParticle::StdHepId hepid= mcPart->particleProperty();
-    ParticleProperty* ppty = m_ppsvc->findByStdHepID( hepid );
-
-    if (ppty) m_builder->addAttValue("Name",ppty->particle(),"");
-    else      m_builder->addAttValue("Name","Unknown","");
-
-    CLHEP::HepLorentzVector in = mcPart->initialFourMomentum();
-    CLHEP::HepLorentzVector out = mcPart->finalFourMomentum();
-
-    Vector inDir(in.x(), in.y(), in.z());
-    double mag = inDir.mag();
-    if(mag>0.0) inDir /= inDir.mag();
-
-    m_builder->addAttValue("Ei",(float)in.e()-(float)in.m(),"");
-    m_builder->addAttValue("Eo",(float)out.e()-(float)out.m(),"");
-
-    HepPoint3D start = mcPart->initialPosition();
-    HepPoint3D end   = mcPart->finalPosition();
-    Point iniPos(start.x(), start.y(), start.z());
-    Point finPos(end.x(), end.y(), end.z());
-    m_builder->addAttValue("Initial Position", getPositionString(iniPos),"");
-    m_builder->addAttValue("Final Position", getPositionString(finPos),"");
-    m_builder->addAttValue("Direction", getDirectionString(inDir),"");
-
-    m_builder->addAttValue("Proc",mcPart->getProcess(),"");
-      
-    m_builder->addAttValue("PDG", hepid,"");                  
-
-    //Build strings for status bits
-    unsigned int statBits = mcPart->statusFlags();
-    m_builder->addAttValue("Status Low",getBits(statBits, 15, 0),"");
-
-    if(ppty) setCharge(ppty->charge());
-    int numDaughters = (int)mcPart->daughterList().size();
-    m_builder->addAttValue("NumDaughters", numDaughters, "");
-
-    // Look up related McTrajectory (if it exists)
-    Event::McPartToTrajectoryVec trajVec = partToTrajTab.getRelByFirst(mcPart);
-
-    // In the case the trajectories don't exist (old school read back from root)
-    // then all we can do is plot the start and end points
-    if (trajVec.empty())
+    if (!(mcPart->statusFlags() & Event::McParticle::NOTTRACK))
     {
-        m_builder->addPoint(start.x(),start.y(),start.z());
-        m_builder->addPoint(end.x(),end.y(),end.z());
-    }
-    // Otherwise plot the full trajectory
-    else
-    {
-        // There is only one association possible here
-        const Event::McTrajectory* traj = (*(trajVec.begin()))->getSecond();
+        if (father == "ParticleCol") m_builder->addInstance(father,"Particle");
+        else                         m_builder->addInstance("Particle","Daughters");
 
-        std::vector<Event::McTrajectoryPoint*> points = traj->getPoints();
-        std::vector<Event::McTrajectoryPoint*>::const_iterator pit;
+        Event::McParticle::StdHepId hepid= mcPart->particleProperty();
+        ParticleProperty* ppty = m_ppsvc->findByStdHepID( hepid );
 
-        std::map<Event::McIntegratingHit*,const Event::McTrajectory*> intHitMap;
-        intHitMap.clear();
+        if (ppty) m_builder->addAttValue("Name",ppty->particle(),"");
+        else      m_builder->addAttValue("Name","Unknown","");
 
-        // Loop through to draw the trajectory
-        for(pit = points.begin(); pit != points.end(); pit++) 
+        CLHEP::HepLorentzVector in = mcPart->initialFourMomentum();
+        CLHEP::HepLorentzVector out = mcPart->finalFourMomentum();
+
+        Vector inDir(in.x(), in.y(), in.z());
+        double mag = inDir.mag();
+        if(mag>0.0) inDir /= inDir.mag();
+
+        m_builder->addAttValue("Ei",(float)in.e()-(float)in.m(),"");
+        m_builder->addAttValue("Eo",(float)out.e()-(float)out.m(),"");
+
+        HepPoint3D start = mcPart->initialPosition();
+        HepPoint3D end   = mcPart->finalPosition();
+        Point iniPos(start.x(), start.y(), start.z());
+        Point finPos(end.x(), end.y(), end.z());
+        m_builder->addAttValue("Initial Position", getPositionString(iniPos),"");
+        m_builder->addAttValue("Final Position", getPositionString(finPos),"");
+        m_builder->addAttValue("Direction", getDirectionString(inDir),"");
+
+        m_builder->addAttValue("Proc",mcPart->getProcess(),"");
+          
+        m_builder->addAttValue("PDG", hepid,"");                  
+
+        //Build strings for status bits
+        unsigned int statBits = mcPart->statusFlags();
+        m_builder->addAttValue("Status Low",getBits(statBits, 15, 0),"");
+
+        if(ppty) setCharge(ppty->charge());
+        int numDaughters = (int)mcPart->daughterList().size();
+        m_builder->addAttValue("NumDaughters", numDaughters, "");
+
+        // Look up related McTrajectory (if it exists)
+        Event::McPartToTrajectoryVec trajVec = partToTrajTab.getRelByFirst(mcPart);
+
+        // In the case the trajectories don't exist (old school read back from root)
+        // then all we can do is plot the start and end points
+        if (trajVec.empty())
         {
-            const CLHEP::Hep3Vector hit = (*pit)->getPoint();
-            m_builder->addPoint(hit.x(),hit.y(),hit.z());
-
-            Event::McPointToIntHitVec relVec = mcIntHitTab.getRelByFirst(*pit);
-
-            if (!relVec.empty())
-            {
-                Event::McPointToIntHitRel* hitRel = *(relVec.begin());
-                intHitMap[hitRel->getSecond()] = traj;
-            }
+            m_builder->addPoint(start.x(),start.y(),start.z());
+            m_builder->addPoint(end.x(),end.y(),end.z());
         }
-
-        // Loop through to draw associated McPositionHits
-        for(pit = points.begin(); pit != points.end(); pit++) 
+        // Otherwise plot the full trajectory
+        else
         {
-            Event::McPointToPosHitVec relVec = mcPosHitTab.getRelByFirst(*pit);
+            // There is only one association possible here
+            const Event::McTrajectory* traj = (*(trajVec.begin()))->getSecond();
 
-            if (!relVec.empty())
+            std::vector<Event::McTrajectoryPoint*> points = traj->getPoints();
+            std::vector<Event::McTrajectoryPoint*>::const_iterator pit;
+
+            std::map<Event::McIntegratingHit*,const Event::McTrajectory*> intHitMap;
+            intHitMap.clear();
+
+            // Loop through to draw the trajectory
+            for(pit = points.begin(); pit != points.end(); pit++) 
             {
-                Event::McPointToPosHitRel* hitRel = *(relVec.begin());
+                const CLHEP::Hep3Vector hit = (*pit)->getPoint();
+                m_builder->addPoint(hit.x(),hit.y(),hit.z());
 
-                m_builder->addInstance("Particle","PosHit");
-                fillMcPositionHit(typesList, hitRel->getSecond());
+                Event::McPointToIntHitVec relVec = mcIntHitTab.getRelByFirst(*pit);
+
+                if (!relVec.empty())
+                {
+                    Event::McPointToIntHitRel* hitRel = *(relVec.begin());
+                    intHitMap[hitRel->getSecond()] = traj;
+                }
             }
-        }
 
-        // Loop through to draw associated McIntegratingHits
-        std::map<Event::McIntegratingHit*,const Event::McTrajectory*>::iterator intHitIter;
-        for(intHitIter = intHitMap.begin(); intHitIter != intHitMap.end(); intHitIter++)
-        {
-            Event::McIntegratingHit* inHit = intHitIter->first;
-            
-            m_builder->addInstance("Particle","IntHit");
-            fillMcIntegratingHit(typesList, inHit);
+            // Loop through to draw associated McPositionHits
+            for(pit = points.begin(); pit != points.end(); pit++) 
+            {
+                Event::McPointToPosHitVec relVec = mcPosHitTab.getRelByFirst(*pit);
+
+                if (!relVec.empty())
+                {
+                    Event::McPointToPosHitRel* hitRel = *(relVec.begin());
+
+                    m_builder->addInstance("Particle","PosHit");
+                    fillMcPositionHit(typesList, hitRel->getSecond());
+                }
+            }
+
+            // Loop through to draw associated McIntegratingHits
+            std::map<Event::McIntegratingHit*,const Event::McTrajectory*>::iterator intHitIter;
+            for(intHitIter = intHitMap.begin(); intHitIter != intHitMap.end(); intHitIter++)
+            {
+                Event::McIntegratingHit* inHit = intHitIter->first;
+                
+                m_builder->addInstance("Particle","IntHit");
+                fillMcIntegratingHit(typesList, inHit);
+            }
         }
     }
 
