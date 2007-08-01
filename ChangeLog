@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: usher  Wed Aug  1 09:18:22 PDT 2007
+HepRepSvc/src
+
+Modified Files:
+	MonteCarloFiller.cxx 
+Log Message:
+Fix McParticle display so it will correctly draw all the particles in a BeamTest MC event
+    *
+------------------------------------------------------------
 TAG
 Tag name: v0r20p2, operation: add
 Package: HepRepSvc
