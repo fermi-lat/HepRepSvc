@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: heather  Tue Sep 18 20:24:13 PDT 2007
+HepRepSvc/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+move int and flaot vectors into namespace
+    *
+------------------------------------------------------------
 User: usher  Wed Aug  1 09:18:22 PDT 2007
 HepRepSvc/src
 
