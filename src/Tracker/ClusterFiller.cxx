@@ -379,9 +379,9 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
             Event::TkrTruncatedPlane trunc = iter->second;
             const int status   = trunc.getStatus();
             if (status==0) continue;
-            const intVector& numStrips = trunc.getStripCount();
-            const intVector& stripNumber = trunc.getStripNumber();
-            const floatVector& localX = trunc.getLocalX();
+            const Event::intVector& numStrips = trunc.getStripCount();
+            const Event::intVector& stripNumber = trunc.getStripNumber();
+            const Event::floatVector& localX = trunc.getLocalX();
             Event::SortId id = iter->first;
             int tower = id.getTower();
             int tray  = id.getTray();
