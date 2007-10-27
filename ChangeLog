@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: jrb  Fri Oct 26 17:40:14 PDT 2007
+HepRepSvc/src
+
+Modified Files:
+	HepRepGeometry.cxx 
+Log Message:
+Support for trapezoidal prisms
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v0r20p3, operation: add
 Package: HepRepSvc
