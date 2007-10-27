@@ -1,5 +1,5 @@
 // File and Version Information:
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepGeometry.cxx,v 1.14 2006/03/21 01:24:09 usher Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepGeometry.cxx,v 1.15 2006/03/21 20:03:09 usher Exp $
 //
 // Author(s):
 //      R.Giannitrapani
@@ -68,22 +68,28 @@ HepRepGeometry::pushShape(ShapeType s, const UintVector& idvec,
           m_actualDepth++;
 
           m_actualType.push_back(name);          
-          m_builder->addType(father,name,"A volume of the geometry; it can be simple, a composition or a stack","");
+          m_builder->addType(father,name,
+                             "A volume of the geometry; it can be simple, a composition or a stack","");
 
-
-					// The color is set only to the root of the geometry, so it will be possible
-					// to change the color of subtypes 
-					if (name == "LAT")
+          // The color is set only to the root of the geometry, so it will be
+          // possible to change the color of subtypes 
+          if (name == "LAT")
           {
-						m_builder->addAttValue("Color","0.98,0.92,0.8","");
+            m_builder->addAttValue("Color","0.98,0.92,0.8","");
             m_builder->addAttValue("Layer","Geometry","");
           }
 
-          //          m_builder->addAttDef("Volume type","The kind of volume (simple, composition, stack or sensitive)","Physics","");
-          m_builder->addAttDef("Volume type","The kind of volume (simple, composition or stack)","Physics","");
-          m_builder->addAttDef("Sensitivity","One of Nonsensitive, intSensitive, or posSensitive","Physics","");
-          m_builder->addAttDef("Material","The material name of the volume","Physics","");
-          m_builder->addAttDef("Shape","At the moment this can be just a Box","Physics","");
+          m_builder->addAttDef("Volume type",
+                               "The kind of volume (simple, composition or stack)",
+                               "Physics","");
+          m_builder->addAttDef("Sensitivity",
+                               "One of Nonsensitive, intSensitive, or posSensitive",
+                               "Physics","");
+          m_builder->addAttDef("Material","The material name of the volume",
+                               "Physics","");
+          m_builder->addAttDef("Shape",
+                               "Currently this can be Box,Tube,Sphere or Trap",
+                               "Physics","");
 
           if (m_actualDepth > m_depth)
             m_builder->addAttValue("Visibility", false, "");
@@ -133,7 +139,11 @@ HepRepGeometry::pushShape(ShapeType s, const UintVector& idvec,
             case Sphere:
               m_builder->addAttValue("DrawAs","Point","");
               m_builder->addAttValue("Shape","Sphere","");
-              break;              
+              break;           
+            case Trap:   
+              m_builder->addAttValue("DrawAs","Prism","");
+              m_builder->addAttValue("Shape","Trap","");
+              break;
             }
         }
       else
@@ -174,7 +184,6 @@ HepRepGeometry::pushShape(ShapeType s, const UintVector& idvec,
       // Verify that this instance is in the typesList
       if (hasType(m_typesList, temp+name))
       {                                    
-        
         m_builder->addInstance(father,name);
 
         if ((s == Box))
@@ -186,12 +195,13 @@ HepRepGeometry::pushShape(ShapeType s, const UintVector& idvec,
           HepPoint3D v;
           HepPoint3D v1;
 
-//          if ((((type == Simple) || (type == posSensitive) || (type == intSensitive)) 
-//                && (m_actualDepth < m_depth)) || (m_actualDepth == m_depth)) 
-//          if ((type == Simple) || (type == posSensitive) || (type == intSensitive))
+          //   if ((((type == Simple) || (type == posSensitive) 
+          //  || (type == intSensitive)) 
+          //    && (m_actualDepth < m_depth)) || (m_actualDepth == m_depth)) 
+          // if ((type == Simple) || (type == posSensitive) 
+          //   || (type == intSensitive))
           if (type == Simple)
           {
-
             v.setX(dx); v.setY(dy); v.setZ(dz); v1 = (atr*v);
             m_builder->addPoint(v1.x(), v1.y(), v1.z());
             v.setX(-dx); v.setY(dy); v.setZ(dz); v1 = atr*v;
@@ -212,6 +222,35 @@ HepRepGeometry::pushShape(ShapeType s, const UintVector& idvec,
             m_builder->addPoint(v1.x(), v1.y(), v1.z());              
           }
         } // End of Box case
+        else if (s == Trap)
+        {
+          double dx1 = params[6]/2;
+          double dx2 = params[7]/2;
+          double dxDiff = params[8]/2;
+          double dy = params[9]/2;
+          double dz = params[10]/2;
+
+          HepPoint3D v;
+          HepPoint3D v1;
+
+          v.setX(dx2+dxDiff); v.setY(dy); v.setZ(dz); v1 = (atr*v);
+          m_builder->addPoint(v1.x(), v1.y(), v1.z());
+          v.setX(-dx2+dxDiff); v.setY(dy); v.setZ(dz); v1 = atr*v;
+          m_builder->addPoint(v1.x(), v1.y(), v1.z());
+          v.setX(-dx1-dxDiff); v.setY(-dy); v.setZ(dz); v1 = atr*v;
+          m_builder->addPoint(v1.x(), v1.y(), v1.z());
+          v.setX(dx1-dxDiff); v.setY(-dy); v.setZ(dz); v1 = atr*v;
+          m_builder->addPoint(v1.x(), v1.y(), v1.z());
+
+          v.setX(dx2+dxDiff); v.setY(dy); v.setZ(-dz); v1 = (atr*v);
+          m_builder->addPoint(v1.x(), v1.y(), v1.z());
+          v.setX(-dx2+dxDiff); v.setY(dy); v.setZ(-dz); v1 = atr*v;
+          m_builder->addPoint(v1.x(), v1.y(), v1.z());
+          v.setX(-dx1-dxDiff); v.setY(-dy); v.setZ(-dz); v1 = atr*v;
+          m_builder->addPoint(v1.x(), v1.y(), v1.z());
+          v.setX(dx1-dxDiff); v.setY(-dy); v.setZ(-dz); v1 = atr*v;
+          m_builder->addPoint(v1.x(), v1.y(), v1.z());
+        }   // end Trap (trapezoidal prism)
         else if (s == Tube)
         {
           double dz = params[6]/2;
