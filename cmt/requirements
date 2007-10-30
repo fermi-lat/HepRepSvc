@@ -1,5 +1,5 @@
 package HepRepSvc
-version v0r21
+version v0r22
 author Riccardo Giannitrapani <riccardo@fisica.uniud.it>
 
 use GlastPolicy
@@ -15,6 +15,8 @@ apply_pattern packageShr
 apply_pattern package_include
 
 private 
+
+use gr_app
 
 apply_pattern package_headers
 apply_pattern package_Cshlibflags
