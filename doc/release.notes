@@ -1,4 +1,4 @@
-//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.45 2007/09/19 03:24:13 heather Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.46 2007/10/27 00:57:59 jrb Exp $
 /*
  * v0r1     20-09-02 RG Inital release of the package
  * v0r2     07-07-03 RG Complete refactoring of HepRepSvc	
@@ -48,3 +48,4 @@
  * v0r20p3  18-09-07 HMK Move intVector and floatVector from Event into
                          Event namespace
  * v0r21    10-26-07 jrb Support trapezoidal prisms
+ * v0r22    10-30-07 hmk use gr_app
