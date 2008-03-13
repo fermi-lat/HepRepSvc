@@ -1,4 +1,4 @@
-//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.46 2007/10/27 00:57:59 jrb Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.47 2007/10/30 03:07:00 heather Exp $
 /*
  * v0r1     20-09-02 RG Inital release of the package
  * v0r2     07-07-03 RG Complete refactoring of HepRepSvc	
@@ -49,3 +49,4 @@
                          Event namespace
  * v0r21    10-26-07 jrb Support trapezoidal prisms
  * v0r22    10-30-07 hmk use gr_app
+ * v0r23     3-13-08 TU  Better protection for missing relations in MC display
