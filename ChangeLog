@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: usher  Thu Mar 13 10:24:25 PDT 2008
+HepRepSvc/src
+
+Modified Files:
+	MonteCarloFiller.cxx 
+Log Message:
+Fix the MonteCarlo filler routine to properly handle the event of missing relations
+    *
+------------------------------------------------------------
 TAG
 Tag name: v0r22, operation: add
 Package: HepRepSvc
