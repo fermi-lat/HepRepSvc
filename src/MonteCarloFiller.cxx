@@ -108,15 +108,18 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
 
     m_builder->addInstance("","MC");
 
-    // Recover the hits to trajectory points relational tables
+    // Recover the McPositionHits to trajectory points relational tables
     SmartDataPtr<Event::McPointToPosHitTabList> 
         mcPointToPosHitList(m_dpsvc, "/Event/MC/McPointToPosHit");
-    Event::McPointToPosHitTab mcPosHitTab(mcPointToPosHitList);
+    bool fakePointToPosHitList = false;
+    if (!mcPointToPosHitList)
+    { 
+        mcPointToPosHitList   = new Event::RelationList<Event::McTrajectoryPoint, Event::McPositionHit>;
+        fakePointToPosHitList = true;
+    }
+    Event::McPointToPosHitTab mcPosHitTab(mcPointToPosHitList.ptr());
 
-    SmartDataPtr<Event::McPointToIntHitTabList> 
-        mcPointToIntHitList(m_dpsvc, "/Event/MC/McPointToIntHit");
-    Event::McPointToIntHitTab mcIntHitTab(mcPointToIntHitList);
-
+    // Go through and "draw" the McPositionHits which do not have a relation to a trajectory
     if (hasType(typesList,"MC/PosHitCol/PosHit") ||
         hasType(typesList,"MC/PosHitCol/PosHit/PosHitSteps"))
     {
@@ -130,6 +133,7 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
             {
                 Event::McPointToPosHitVec relVec = mcPosHitTab.getRelBySecond(*ihit);
 
+                // If not related to a trajectory point then is "isolated" and we draw it here
                 if (relVec.empty())
                 {
                     m_builder->addInstance("PosHitCol","PosHit");
@@ -138,6 +142,19 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
             }
         }
     }
+
+    // Recover the McIntegratingHits to trajectory points relational tables
+    SmartDataPtr<Event::McPointToIntHitTabList> 
+        mcPointToIntHitList(m_dpsvc, "/Event/MC/McPointToIntHit");
+    bool fakePointToIntHitList = false;
+    if (!mcPointToIntHitList)
+    { 
+        mcPointToIntHitList   = new Event::RelationList<Event::McTrajectoryPoint, Event::McIntegratingHit>;
+        fakePointToIntHitList = true;
+    }
+    Event::McPointToIntHitTab mcIntHitTab(mcPointToIntHitList.ptr());
+
+    // Now go through and do the same for the McIntegrating Hits
     if (hasType(typesList,"MC/IntHitCol") ||
         hasType(typesList,"MC/IntHitCol/IntHit")) 
     {
@@ -152,6 +169,7 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
             {
                 Event::McPointToIntHitVec relVec = mcIntHitTab.getRelBySecond(*inHit);
 
+                // If not related to a trajectory point then is "isolated" and we draw it here
                 if (relVec.empty())
                 {
                     m_builder->addInstance("IntHitCol","IntHit");
@@ -173,7 +191,13 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
             // Get the McParticle <--> McTrajectory relations from TDS 
             SmartDataPtr<Event::McPartToTrajectoryTabList> 
                 mcPartToTraj(m_dpsvc, "/Event/MC/McPartToTrajectory");
-            Event::McPartToTrajectoryTab mcPartToTrajTab(mcPartToTraj);
+            bool fakeMcPartToTrajectoryList = false;
+            if (!mcPartToTraj)
+            {
+                mcPartToTraj = new Event::RelationList<Event::McParticle, Event::McTrajectory>;
+                fakeMcPartToTrajectoryList = true;
+            }
+            Event::McPartToTrajectoryTab mcPartToTrajTab(mcPartToTraj.ptr());
 
             // We want to skip the first McParticle, so initialize here
             Event::McParticleCol::const_iterator part = mcPart->begin();
@@ -184,8 +208,14 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
 //                if (!(*part)->primaryParticle()) break;
                 fillMcParticle(typesList, "ParticleCol", *part, mcPartToTrajTab, mcPosHitTab, mcIntHitTab);
 //            }
+            // Clean up if fake relational table
+            if (fakeMcPartToTrajectoryList) delete mcPartToTraj.ptr();
         }
     }
+
+    // Clean up if we were using fake relational tables
+    if (fakePointToPosHitList) delete mcPointToPosHitList.ptr();
+    if (fakePointToIntHitList) delete mcPointToIntHitList.ptr();
 
     return;
 }
