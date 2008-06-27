@@ -1,4 +1,4 @@
-//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.47 2007/10/30 03:07:00 heather Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.48 2008/03/13 21:07:05 usher Exp $
 /*
  * v0r1     20-09-02 RG Inital release of the package
  * v0r2     07-07-03 RG Complete refactoring of HepRepSvc	
@@ -49,4 +49,4 @@
                          Event namespace
  * v0r21    10-26-07 jrb Support trapezoidal prisms
  * v0r22    10-30-07 hmk use gr_app
- * v0r23     3-13-08 TU  Better protection for missing relations in MC display
+ * v0r23p1  06-26-08 LSR Fixed bug that caused the ACD struck tiles from being displayed
