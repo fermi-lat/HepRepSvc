@@ -90,7 +90,9 @@ void AcdReconFiller::fillInstances (std::vector<std::string>& typesList)
                     m_gdsvc->getTransform3DByID(volid, &global);
 
                     std::string shape;
-                    std::vector<double> params(3);
+                    // getShapeById returns the params by push_back()
+                    // so the vector needs to be empty to start with!
+                    std::vector<double> params(0);
 
                     m_gdsvc->getShapeByID(volid, &shape, &params); 
 
