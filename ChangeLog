@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: lsrea  Thu Jun 26 18:02:30 PDT 2008
+HepRepSvc/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+Fixed bug that prevented actual hit tiles from being displayed
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-23-00, operation: add
 Package: HepRepSvc
