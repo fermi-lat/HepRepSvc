@@ -7,6 +7,7 @@
 
 class IBuilder;
 class IGlastDetSvc;
+class HepRepInitSvc;
 class HepRepGeometry;
 
 /** 
@@ -20,7 +21,9 @@ class HepRepGeometry;
 class GeometryFiller: public IFiller{
   
  public:
-  GeometryFiller(unsigned int depth,IGlastDetSvc* gsvc);
+  GeometryFiller(unsigned int depth,
+      HepRepInitSvc* hrisvc,
+      IGlastDetSvc* gsvc);
   /// This method init the type tree
   virtual void buildTypes ();
   /// This method fill the instance tree, using the string vector to decide
@@ -29,8 +32,10 @@ class GeometryFiller: public IFiller{
 
   
  private:
+  HepRepInitSvc* m_hrisvc;
   HepRepGeometry* m_geometry;
   IGlastDetSvc* m_gsvc;
+
 };
 
 #endif //GEOMETRYFILLER_H

@@ -1,4 +1,4 @@
-//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.48 2008/03/13 21:07:05 usher Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.49 2008/06/27 01:02:30 lsrea Exp $
 /*
  * v0r1     20-09-02 RG Inital release of the package
  * v0r2     07-07-03 RG Complete refactoring of HepRepSvc	
@@ -49,4 +49,7 @@
                          Event namespace
  * v0r21    10-26-07 jrb Support trapezoidal prisms
  * v0r22    10-30-07 hmk use gr_app
- * v0r23p1  06-26-08 LSR Fixed bug that caused the ACD struck tiles from being displayed
+ * v0r23p1  06-26-08 LSR Fixed bug that caused the ACD struck tiles not to be displayed
+ * v0r24    07-06-08 LSR new service: HepRepInitSvc, to carry jO parameters to non-Alg routines
+                         First one is bool VertexFiller_dashes, to draw
+                            extrapolated vertices with dashed lines

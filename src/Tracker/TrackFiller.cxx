@@ -1,5 +1,6 @@
 #include "TrackFiller.h"
 #include "HepRepSvc/IBuilder.h"
+#include "HepRepSvc/HepRepInitSvc.h"
 
 #include "GaudiKernel/MsgStream.h"
 #include "GaudiKernel/IDataProviderSvc.h"
@@ -21,10 +22,11 @@
 #include <algorithm>
 
 // Constructor
-TrackFiller::TrackFiller(IGlastDetSvc* gsvc,
+TrackFiller::TrackFiller(HepRepInitSvc* hrisvc,
+                         IGlastDetSvc* gsvc,
                          IDataProviderSvc* dpsvc,
                          IParticlePropertySvc* ppsvc):
-m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc)
+m_hrisvc(hrisvc),m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc)
 {
 
 

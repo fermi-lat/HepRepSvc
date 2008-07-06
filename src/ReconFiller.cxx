@@ -3,6 +3,7 @@
 #include "CalReconFiller.h"
 #include "TkrReconFiller.h"
 #include "HepRepSvc/IBuilder.h"
+#include "HepRepSvc/HepRepInitSvc.h"
 
 #include "GaudiKernel/MsgStream.h"
 #include "GaudiKernel/IDataProviderSvc.h"
@@ -18,15 +19,16 @@
 
 #include <algorithm>
 
-ReconFiller::ReconFiller(IGlastDetSvc* gsvc,
+ReconFiller::ReconFiller(HepRepInitSvc* hrisvc,
+                         IGlastDetSvc* gsvc,
                          ITkrGeometrySvc* tgsvc,
                          IDataProviderSvc* dpsvc,
                          IParticlePropertySvc* ppsvc):
-  m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc), m_tgsvc(tgsvc)
+  m_hrisvc(hrisvc),m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc), m_tgsvc(tgsvc)
 {
-  AcdReconFiller* acdRecon = new AcdReconFiller(m_gdsvc, m_dpsvc, m_ppsvc);
-  CalReconFiller* calRecon = new CalReconFiller(m_gdsvc, m_dpsvc, m_ppsvc);
-  TkrReconFiller* tkrRecon = new TkrReconFiller(m_gdsvc, m_tgsvc, m_dpsvc, m_ppsvc);
+  AcdReconFiller* acdRecon = new AcdReconFiller(m_hrisvc,m_gdsvc, m_dpsvc, m_ppsvc);
+  CalReconFiller* calRecon = new CalReconFiller(m_hrisvc,m_gdsvc, m_dpsvc, m_ppsvc);
+  TkrReconFiller* tkrRecon = new TkrReconFiller(m_hrisvc,m_gdsvc, m_tgsvc, m_dpsvc, m_ppsvc);
   m_subFillers.push_back(acdRecon);
   m_subFillers.push_back(calRecon);
   m_subFillers.push_back(tkrRecon);

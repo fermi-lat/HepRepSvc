@@ -4,7 +4,6 @@
 #include <vector>
 #include "GlastSvc/GlastDetSvc/IGeometry.h"
 
-
 class IBuilder;
 namespace HepGeom {class Transform3D;}
 

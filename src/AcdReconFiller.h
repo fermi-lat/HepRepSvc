@@ -8,6 +8,7 @@
 class IGlastDetSvc;
 class IDataProviderSvc;
 class IParticlePropertySvc;
+class HepRepInitSvc;
 
 /** 
  *  @class AcdReconFiller
@@ -22,7 +23,8 @@ class IParticlePropertySvc;
 class AcdReconFiller: public IFiller{
   
  public:
-  AcdReconFiller(IGlastDetSvc* gsvc,
+  AcdReconFiller(HepRepInitSvc* hrisvc,
+                 IGlastDetSvc* gsvc,
                  IDataProviderSvc* dpsvc,
                  IParticlePropertySvc* ppsvc);
   
@@ -35,6 +37,7 @@ class AcdReconFiller: public IFiller{
   bool hasType(std::vector<std::string>& list, std::string type); 
 
  private:
+  HepRepInitSvc* m_hrisvc;
   IGlastDetSvc* m_gdsvc;
   IDataProviderSvc* m_dpsvc;
   IParticlePropertySvc* m_ppsvc;

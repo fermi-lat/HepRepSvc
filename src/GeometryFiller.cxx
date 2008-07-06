@@ -2,9 +2,14 @@
 #include "HepRepGeometry.h"
 #include "GeometryFiller.h"
 #include "HepRepSvc/IBuilder.h"
+
+#include "HepRepSvc/HepRepInitSvc.h"
+
 #include <algorithm>
 
-GeometryFiller::GeometryFiller( unsigned int depth,IGlastDetSvc* gsvc):m_gsvc(gsvc)
+GeometryFiller::GeometryFiller( unsigned int depth,
+                               HepRepInitSvc* hrisvc,
+                               IGlastDetSvc* gsvc):m_gsvc(gsvc)
 {
   m_geometry = new HepRepGeometry(depth);
 }

@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.20 2006/11/13 10:09:53 claval Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.21 2006/12/07 18:42:13 lsrea Exp $
 // 
 //  Original author: R.Giannitrapani
 //
@@ -10,6 +10,7 @@
 #include "HepRepSvc/IServer.h"
 #include "HepRepSvc/IStreamer.h"
 #include "HepRepSvc/IRegister.h"
+#include "HepRepSvc/HepRepInitSvc.h"
 
 #include "SvcAdapter.h"
 #include "HepRepSvc.h"
@@ -133,6 +134,14 @@ StatusCode HepRepSvc::initialize ()
       return status;
     }
 
+    // get the HepRepInitSvc Service    
+    HepRepInitSvc* hrisvc = 0;
+    status = service("HepRepInitSvc", hrisvc, true);
+    if( status.isFailure()) {
+      log << MSG::ERROR << "Could not find HepRepInitSvc" << endreq;
+      return status;
+    }
+
     // get the Event Data Service
     IDataProviderSvc* esvc = 0;
     status = service("EventDataSvc", esvc, true);
@@ -166,13 +175,13 @@ StatusCode HepRepSvc::initialize ()
     incsvc->addListener(this, "EndEvent", 0);
     
     // Register the geometry filler
-    m_registry->registerFiller(new GeometryFiller(m_geomDepth,gsvc), "Geometry3D");
+    m_registry->registerFiller(new GeometryFiller(m_geomDepth, hrisvc, gsvc), "Geometry3D");
     // Register the header filler
-    m_registry->registerFiller(new HeaderFiller(esvc), "Event");
+    m_registry->registerFiller(new HeaderFiller(hrisvc, esvc), "Event");
     // Register the Recon filler 
-    m_registry->registerFiller(new ReconFiller(gsvc,tgsvc,esvc,pps), "Event");
+    m_registry->registerFiller(new ReconFiller(hrisvc,gsvc,tgsvc,esvc,pps), "Event");
     // Register the mc filler
-    m_registry->registerFiller(new MonteCarloFiller(gsvc,esvc,pps), "Event");
+    m_registry->registerFiller(new MonteCarloFiller(hrisvc,gsvc,esvc,pps), "Event");
 
 
 

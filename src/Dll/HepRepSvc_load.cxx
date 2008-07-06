@@ -16,7 +16,8 @@
 
 DECLARE_FACTORY_ENTRIES(HepRepSvc) 
 {
-    DECLARE_SERVICE( HepRepSvc   );
+    DECLARE_SERVICE( HepRepSvc     );
+    DECLARE_SERVICE( HepRepInitSvc );
 }
 
 

@@ -13,6 +13,8 @@
 class IGlastDetSvc;
 class IDataProviderSvc;
 class IParticlePropertySvc;
+class HepRepInitSvc;
+
 namespace Event {
     class McParticle;
     class McPositionHit;
@@ -32,7 +34,8 @@ namespace Event {
 class MonteCarloFiller: public IFiller{
   
  public:
-  MonteCarloFiller(IGlastDetSvc* gsvc,
+  MonteCarloFiller(HepRepInitSvc* hrisvc,
+                   IGlastDetSvc* gsvc,
                    IDataProviderSvc* dpsvc,
                    IParticlePropertySvc* ppsvc):
     m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc){};
@@ -67,9 +70,11 @@ class MonteCarloFiller: public IFiller{
                       Event::McPointToPosHitTab&    mcPosHitTab,
                       Event::McPointToIntHitTab&    mcIntHitTab);
 
+  HepRepInitSvc* m_hrisvc;
   IGlastDetSvc* m_gdsvc;
   IDataProviderSvc* m_dpsvc;
   IParticlePropertySvc* m_ppsvc;
+
 };
 
 #endif //MONTECARLOFILLER_H

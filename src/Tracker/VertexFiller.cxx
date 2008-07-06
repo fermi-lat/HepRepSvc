@@ -1,5 +1,6 @@
 #include "VertexFiller.h"
 #include "HepRepSvc/IBuilder.h"
+#include "HepRepSvc/HepRepInitSvc.h"
 
 #include "GaudiKernel/MsgStream.h"
 #include "GaudiKernel/IDataProviderSvc.h"
@@ -23,25 +24,31 @@
 
 
 // Constructor
-VertexFiller::VertexFiller(IGlastDetSvc* gsvc,
-                               IDataProviderSvc* dpsvc,
-                               IParticlePropertySvc* ppsvc):
-              m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc)
-{
-    
-  
+VertexFiller::VertexFiller(HepRepInitSvc* hrisvc,
+                           IGlastDetSvc* gsvc,
+                           IDataProviderSvc* dpsvc,
+                           IParticlePropertySvc* ppsvc
+):
+              m_hrisvc(hrisvc),m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc)
+{  
 }
 
 
 // This method build the types for the HepRep
 void VertexFiller::buildTypes()
 {
+    //m_control = HepRepControl::getPtr();
     m_builder->addType("TkrRecon","GammaVtxCol",
 		     "Reconstructed Gamma Vertex collection","");
   
     m_builder->addType("GammaVtxCol","GammaVtx","Reconstructed Gamma Vertex","");
     m_builder->addAttValue("DrawAs","Line","");
     m_builder->addAttValue("Color","yellow","");
+
+    // This will make all the vertex extrapolations dashed
+    if(m_hrisvc->getVertexFiller_dashes()) {
+        m_builder->addAttValue("LineStyle", "Dashed", "");
+    }
     m_builder->addAttDef("Status Low","Low Status Bits","Physics","");
     m_builder->addAttDef("Status High","High Status Bits","Physics","");
     m_builder->addAttDef("Start Position","Vtx start position","Physics","");

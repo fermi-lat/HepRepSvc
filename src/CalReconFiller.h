@@ -8,6 +8,8 @@
 class IGlastDetSvc;
 class IDataProviderSvc;
 class IParticlePropertySvc;
+class HepRepInitSvc;
+
 class Point;
 class Vector;
 
@@ -24,7 +26,8 @@ class Vector;
 class CalReconFiller: public IFiller{
   
  public:
-  CalReconFiller(IGlastDetSvc* gsvc,
+  CalReconFiller(HepRepInitSvc* hrisvc,
+                 IGlastDetSvc* gsvc,
                  IDataProviderSvc* dpsvc,
                  IParticlePropertySvc* ppsvc);
   
@@ -41,6 +44,7 @@ class CalReconFiller: public IFiller{
   std::string getPositionString(const Point& position);
   std::string getDirectionString(const Vector& position);
 
+  HepRepInitSvc* m_hrisvc;
   IGlastDetSvc* m_gdsvc;
   IDataProviderSvc* m_dpsvc;
   IParticlePropertySvc* m_ppsvc;

@@ -20,13 +20,16 @@
 
 #include "idents/VolumeIdentifier.h"
 
+#include "HepRepSvc/HepRepInitSvc.h"
+
 #include <algorithm>
 
 // Constructor
-AcdReconFiller::AcdReconFiller(IGlastDetSvc* gsvc,
+AcdReconFiller::AcdReconFiller(HepRepInitSvc* hrisvc,
+                               IGlastDetSvc* gsvc,
                                IDataProviderSvc* dpsvc,
                                IParticlePropertySvc* ppsvc):
-m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc)
+m_hrisvc(hrisvc),m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc)
 {    
 }
 
@@ -59,6 +62,7 @@ void AcdReconFiller::fillInstances (std::vector<std::string>& typesList)
 
     m_builder->addInstance("Recon","AcdRecon");
 
+    SmartDataPtr<Event::AcdRecon> acdRec(m_dpsvc, EventModel::AcdRecon::Event);
 
     if (hasType(typesList, "Recon/AcdRecon/HitCol/AcdHit"))
     {
@@ -83,7 +87,14 @@ void AcdReconFiller::fillInstances (std::vector<std::string>& typesList)
                         m_builder->addAttValue("Color","red","");
                     else if ((*acdDigiIt)->getAcceptMapBit(Event::AcdDigi::A) || 
                         (*acdDigiIt)->getAcceptMapBit(Event::AcdDigi::B))
-                        m_builder->addAttValue("Color","purple","");
+                        m_builder->addAttValue("Color","160,32,240",""); // this is *really* purple!
+                    if(((*acdDigiIt)->getHitMapBit(Event::AcdDigi::A) &&
+                        !(*acdDigiIt)->getAcceptMapBit(Event::AcdDigi::A)) ||
+                        ((*acdDigiIt)->getHitMapBit(Event::AcdDigi::B) &&
+                        !(*acdDigiIt)->getAcceptMapBit(Event::AcdDigi::B))) {
+                            m_builder->addAttValue("LineStyle", "Dashed","");
+                            m_builder->addAttValue("LineWidth", "3.0","");
+                        }
 
                     HepTransform3D global;
                     idents::VolumeIdentifier volid = id.volId();
@@ -96,9 +107,9 @@ void AcdReconFiller::fillInstances (std::vector<std::string>& typesList)
 
                     m_gdsvc->getShapeByID(volid, &shape, &params); 
 
-                    double dx = params[0]/2;
-                    double dy = params[1]/2;
-                    double dz = params[2]/2;
+                    double dx = params[0]*0.5;
+                    double dy = params[1]*0.5;
+                    double dz = params[2]*0.5;
 
                     HepPoint3D temp;
 
@@ -123,9 +134,11 @@ void AcdReconFiller::fillInstances (std::vector<std::string>& typesList)
 
                 // Fill in attributes of the two PMTs
                 m_builder->addInstance("AcdHit", "PMT_A");
-                m_builder->addAttValue("PHA",(*acdDigiIt)->getPulseHeight(Event::AcdDigi::A),"");
+                Event::AcdDigi digi = **acdDigiIt;
+                m_builder->addAttValue("PHA_A",(*acdDigiIt)->getPulseHeight(Event::AcdDigi::A),"");
+                m_builder->addAttValue("Range",(*acdDigiIt)->getRange(Event::AcdDigi::A),"");
 
-                if ((*acdDigiIt)->getAcceptMapBit(Event::AcdDigi::A) == true) 
+                if ((*acdDigiIt)->getAcceptMapBit(Event::AcdDigi::A) == true)  
                     m_builder->addAttValue("AcceptBit","true","");
                 else
                     m_builder->addAttValue("AcceptBit","false","");
@@ -142,6 +155,7 @@ void AcdReconFiller::fillInstances (std::vector<std::string>& typesList)
 
                 m_builder->addInstance("AcdHit", "PMT_B");
                 m_builder->addAttValue("PHA_B",(*acdDigiIt)->getPulseHeight(Event::AcdDigi::B),"");
+                m_builder->addAttValue("Range",(*acdDigiIt)->getRange(Event::AcdDigi::A),"");
                 if ((*acdDigiIt)->getAcceptMapBit(Event::AcdDigi::B) == true) 
                     m_builder->addAttValue("AcceptBit","true","");
                 else
@@ -164,8 +178,6 @@ void AcdReconFiller::fillInstances (std::vector<std::string>& typesList)
 
     if (hasType(typesList,"Recon/AcdRecon/DocaCol/DocaTile"))
     {      
-
-        SmartDataPtr<Event::AcdRecon> acdRec(m_dpsvc, EventModel::AcdRecon::Event);
         if (acdRec)
         {        
             if( acdRec->getDoca()<=1000. )
