@@ -1,5 +1,21 @@
 ------------------------------------------------------------
 User: lsrea  Sun Jul  6 15:12:41 PDT 2008
+HepRepSvc/src
+
+Modified Files:
+	AcdReconFiller.cxx AcdReconFiller.h CalReconFiller.cxx 
+	CalReconFiller.h GeometryFiller.cxx GeometryFiller.h 
+	HeaderFiller.cxx HeaderFiller.h HepRepGeometry.h HepRepSvc.cxx 
+	MonteCarloFiller.cxx MonteCarloFiller.h ReconFiller.cxx 
+	ReconFiller.h TkrReconFiller.cxx TkrReconFiller.h 
+Log Message:
+add HepRepInitSvc, to carry jO parameters to the fillers.
+First one is VertexFiller_dashes, which, if true, causes the extrapolated vertices
+to be drawn as dashed lines. Default is false.
+
+    *
+------------------------------------------------------------
+User: lsrea  Sun Jul  6 15:12:41 PDT 2008
 HepRepSvc/doc
 
 Modified Files:
