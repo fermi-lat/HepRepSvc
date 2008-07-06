@@ -13,7 +13,8 @@ ApplicationMgr.DLLs   =
 ApplicationMgr.ExtSvc = { 
     "EventCnvSvc", 
     "GlastDetSvc",
-    "HepRepSvc"
+    "HepRepSvc",
+    "HepRepInitSvc"
     };
 
 

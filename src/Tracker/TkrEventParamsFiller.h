@@ -9,6 +9,7 @@
 class IGlastDetSvc;
 class IDataProviderSvc;
 class IParticlePropertySvc;
+class HepRepInitSvc;
 
 // Foward declarations...
 namespace idents {
@@ -30,7 +31,8 @@ class Point;
 class TkrEventParamsFiller: public IFiller{
   
  public:
-  TkrEventParamsFiller(IGlastDetSvc* gsvc,
+  TkrEventParamsFiller(HepRepInitSvc* hrisvc,
+              IGlastDetSvc* gsvc,
               IDataProviderSvc* dpsvc,
               IParticlePropertySvc* ppsvc);
   
@@ -48,6 +50,7 @@ class TkrEventParamsFiller: public IFiller{
   std::string getPositionString(const Point& position);
   std::string getDirectionString(const Vector& position);
 
+  HepRepInitSvc* m_hrisvc;
   IGlastDetSvc*         m_gdsvc;
   IDataProviderSvc*     m_dpsvc;
   IParticlePropertySvc* m_ppsvc;

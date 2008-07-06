@@ -1,5 +1,6 @@
 #include "ClusterFiller.h"
 #include "HepRepSvc/IBuilder.h"
+#include "HepRepSvc/HepRepInitSvc.h"
 
 #include "GaudiKernel/MsgStream.h"
 #include "GaudiKernel/IDataProviderSvc.h"
@@ -31,11 +32,12 @@ namespace {
 }
 
 // Constructor
-ClusterFiller::ClusterFiller(IGlastDetSvc* gsvc,
+ClusterFiller::ClusterFiller(HepRepInitSvc* hrisvc,
+                             IGlastDetSvc* gsvc,
                              ITkrGeometrySvc* tgsvc,
                              IDataProviderSvc* dpsvc,
                              IParticlePropertySvc* ppsvc):
-m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc), m_tgsvc(tgsvc)
+m_hrisvc(hrisvc),m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc), m_tgsvc(tgsvc)
 {
     int    ladderNStrips;
     double ladderGap;

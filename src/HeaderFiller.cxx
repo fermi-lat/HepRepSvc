@@ -1,5 +1,6 @@
 #include "HeaderFiller.h"
 #include "HepRepSvc/IBuilder.h"
+#include "HepRepSvc/HepRepInitSvc.h"
 
 #include "GaudiKernel/MsgStream.h"
 #include "GaudiKernel/IDataProviderSvc.h"

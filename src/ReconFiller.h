@@ -10,6 +10,7 @@ class ITkrGeometrySvc;
 class IDataProviderSvc;
 class IParticlePropertySvc;
 class CalReconFiller;
+class HepRepInitSvc;
 
 /** 
  *  @class ReconFiller
@@ -22,7 +23,8 @@ class CalReconFiller;
 class ReconFiller: public IFiller{
   
  public:
-  ReconFiller(IGlastDetSvc* gsvc,
+  ReconFiller(HepRepInitSvc* hrisvc,
+              IGlastDetSvc* gsvc,
               ITkrGeometrySvc* tgsvc,
               IDataProviderSvc* dpsvc,
               IParticlePropertySvc* ppsvc);
@@ -41,6 +43,7 @@ class ReconFiller: public IFiller{
  private:
   std::vector<IFiller*> m_subFillers;
 
+  HepRepInitSvc* m_hrisvc;
   IGlastDetSvc* m_gdsvc;
   ITkrGeometrySvc* m_tgsvc;
   IDataProviderSvc* m_dpsvc;

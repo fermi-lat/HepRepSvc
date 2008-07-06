@@ -9,6 +9,7 @@ class IGlastDetSvc;
 class ITkrGeometrySvc;
 class IDataProviderSvc;
 class IParticlePropertySvc;
+class HepRepInitSvc;
 
 /** 
  *  @class TkrReconFiller
@@ -21,7 +22,8 @@ class IParticlePropertySvc;
 class TkrReconFiller: public IFiller{
   
  public:
-  TkrReconFiller(IGlastDetSvc* gsvc,
+  TkrReconFiller(HepRepInitSvc* hrisvc,
+                 IGlastDetSvc* gsvc,
                  ITkrGeometrySvc* tgsvc,
                  IDataProviderSvc* dpsvc,
                  IParticlePropertySvc* ppsvc);
@@ -39,10 +41,12 @@ class TkrReconFiller: public IFiller{
   bool hasType(std::vector<std::string>& list, std::string type); 
 
  private:
+  HepRepInitSvc* m_hrisvc;
   IGlastDetSvc* m_gdsvc;
   ITkrGeometrySvc* m_tgsvc;
   IDataProviderSvc* m_dpsvc;
   IParticlePropertySvc* m_ppsvc;
+
 
   std::vector<IFiller*> fillVector;
 

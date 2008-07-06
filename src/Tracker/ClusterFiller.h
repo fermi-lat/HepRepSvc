@@ -9,6 +9,7 @@ class IGlastDetSvc;
 class ITkrGeometrySvc;
 class IDataProviderSvc;
 class IParticlePropertySvc;
+class HepRepInitSvc;
 
 /** 
  *  @class ClusterFiller
@@ -21,10 +22,11 @@ class IParticlePropertySvc;
 class ClusterFiller: public IFiller{
   
  public:
-  ClusterFiller(IGlastDetSvc* gsvc,
-                 ITkrGeometrySvc* tgsvc,
-                 IDataProviderSvc* dpsvc,
-                 IParticlePropertySvc* ppsvc);
+  ClusterFiller(HepRepInitSvc* hrisvc,
+                IGlastDetSvc* gsvc,
+                ITkrGeometrySvc* tgsvc,
+                IDataProviderSvc* dpsvc,
+                IParticlePropertySvc* ppsvc);
   
   /// This method init the type tree
   virtual void buildTypes ();
@@ -36,6 +38,7 @@ class ClusterFiller: public IFiller{
 
  private:
     void drawPrism(double x, double y, double z, double dx, double dy, double dz);
+    HepRepInitSvc* m_hrisvc;
     IGlastDetSvc* m_gdsvc;
     ITkrGeometrySvc* m_tgsvc;
     IDataProviderSvc* m_dpsvc;

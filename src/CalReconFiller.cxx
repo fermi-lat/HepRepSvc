@@ -28,13 +28,16 @@ typedef HepGeom::Vector3D<double> HepVector3D;
 
 #include "idents/VolumeIdentifier.h"
 
+#include "HepRepSvc/HepRepInitSvc.h"
+
 #include <algorithm>
 
 // Constructor
-CalReconFiller::CalReconFiller(IGlastDetSvc* gsvc,
+CalReconFiller::CalReconFiller(HepRepInitSvc* hrisvc,
+                               IGlastDetSvc* gsvc,
                                IDataProviderSvc* dpsvc,
                                IParticlePropertySvc* ppsvc):
-m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc)
+m_hrisvc(hrisvc),m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc)
 {
 
     double xtalHeight;

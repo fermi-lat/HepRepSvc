@@ -4,12 +4,14 @@
 #include <string>
 
 #include "HepRepSvc/IFiller.h"
+
 #include "geometry/Vector.h"
 #include "geometry/Point.h"
 
 class IGlastDetSvc;
 class IDataProviderSvc;
 class IParticlePropertySvc;
+class HepRepInitSvc;
 
 /** 
  *  @class VertexFiller
@@ -22,9 +24,10 @@ class IParticlePropertySvc;
 class VertexFiller: public IFiller{
   
  public:
-  VertexFiller(IGlastDetSvc* gsvc,
-                 IDataProviderSvc* dpsvc,
-                 IParticlePropertySvc* ppsvc);
+  VertexFiller(HepRepInitSvc* hrisvc,
+               IGlastDetSvc* gsvc,
+               IDataProviderSvc* dpsvc,
+               IParticlePropertySvc* ppsvc);
   
   /// This method init the type tree
   virtual void buildTypes ();
@@ -39,6 +42,8 @@ class VertexFiller: public IFiller{
   std::string getPositionString(const Point& position);
   std::string getDirectionString(const Vector& position);
   std::string getBits(unsigned int statBits, int highBit, int lowBit);
+  
+  HepRepInitSvc* m_hrisvc;
   IGlastDetSvc* m_gdsvc;
   IDataProviderSvc* m_dpsvc;
   IParticlePropertySvc* m_ppsvc;

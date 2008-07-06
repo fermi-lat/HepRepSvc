@@ -1,5 +1,5 @@
 package HepRepSvc
-version v0r23p1
+version v0r24
 author Riccardo Giannitrapani <riccardo@fisica.uniud.it>
 
 use GlastPolicy

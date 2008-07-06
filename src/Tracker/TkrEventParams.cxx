@@ -1,5 +1,6 @@
 #include "TkrEventParamsFiller.h"
 #include "HepRepSvc/IBuilder.h"
+#include "HepRepSvc/HepRepInitSvc.h"
 
 #include "GaudiKernel/MsgStream.h"
 #include "GaudiKernel/IDataProviderSvc.h"
@@ -21,9 +22,11 @@
 #include <algorithm>
 
 // Constructor
-TkrEventParamsFiller::TkrEventParamsFiller(IGlastDetSvc* gsvc,
-                         IDataProviderSvc* dpsvc,
-                         IParticlePropertySvc* ppsvc):
+TkrEventParamsFiller::TkrEventParamsFiller(
+    HepRepInitSvc* hrisvc,
+    IGlastDetSvc* gsvc,
+    IDataProviderSvc* dpsvc,
+    IParticlePropertySvc* ppsvc):
 m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc)
 {
 

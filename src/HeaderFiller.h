@@ -6,7 +6,7 @@
 #include "HepRepSvc/IFiller.h"
 
 class IDataProviderSvc;
-
+class HepRepInitSvc;
 /** 
  *  @class HeaderFiller
  *
@@ -21,7 +21,8 @@ class IDataProviderSvc;
 class HeaderFiller: public IFiller{
   
  public:
-  HeaderFiller(IDataProviderSvc* dpsvc):
+  HeaderFiller(HepRepInitSvc* hrisvc,
+               IDataProviderSvc* dpsvc):
     m_dpsvc(dpsvc){};
 
   /// This method init the type tree
@@ -39,8 +40,10 @@ class HeaderFiller: public IFiller{
   /// This is the list of subfillers for the event (MC and Recon)
   std::vector<IFiller*> m_subFillers;
 
+  HepRepInitSvc* m_hrisvc;
   /// A pointer to the DataService
   IDataProviderSvc* m_dpsvc;
+
 };
 
 #endif //HEADERFILLER_H

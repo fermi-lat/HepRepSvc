@@ -9,6 +9,7 @@
 class IGlastDetSvc;
 class IDataProviderSvc;
 class IParticlePropertySvc;
+class HepRepInitSvc;
 
 // Foward declarations...
 namespace idents {
@@ -30,7 +31,8 @@ class Point;
 class TrackFiller: public IFiller{
   
  public:
-  TrackFiller(IGlastDetSvc* gsvc,
+  TrackFiller(HepRepInitSvc* hrisvc,
+              IGlastDetSvc* gsvc,
               IDataProviderSvc* dpsvc,
               IParticlePropertySvc* ppsvc);
   
@@ -50,6 +52,7 @@ class TrackFiller: public IFiller{
   std::string getDirectionString(const Vector& position);
   std::string getSlopeString(const Event::TkrTrackParams& params);
 
+  HepRepInitSvc* m_hrisvc;
   IGlastDetSvc* m_gdsvc;
   IDataProviderSvc* m_dpsvc;
   IParticlePropertySvc* m_ppsvc;
