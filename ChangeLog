@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: lsrea  Sun Jul  6 15:12:40 PDT 2008
+HepRepSvc/HepRepSvc
+
+Modified Files:
+	mainpage.h 
+Log Message:
+add HepRepInitSvc, to carry jO parameters to the fillers.
+First one is VertexFiller_dashes, which, if true, causes the extrapolated vertices
+to be drawn as dashed lines. Default is false.
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-23-01, operation: add
 Package: HepRepSvc
