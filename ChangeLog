@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: lsrea  Tue Jul  8 07:50:13 PDT 2008
+HepRepSvc/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+Forgot to 'cvs add' the new HepRepInitSvc
+
+    *
+------------------------------------------------------------
 User: lsrea  Tue Jul  8 07:50:12 PDT 2008
 HepRepSvc/HepRepSvc
 
