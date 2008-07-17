@@ -152,6 +152,8 @@ void CalReconFiller::buildTypes()
     m_builder->addType("Recon","CalRecon","CalRecon Tree","");
 
     m_builder->addType("CalRecon","XtalCol","Crystal Collection","");
+    m_builder->addAttDef("#Xtals", "number of Xtals fired","Physics","");
+    m_builder->addAttDef("MaxEnergy", "highest energy in any xtal", "Physics", "");
     m_builder->addType("XtalCol", "Xtal", "Crystal reconstruction", "");
     m_builder->addAttDef("E","Energy reconstructed","Physics","MeV");
     m_builder->addAttValue("DrawAs","Prism","");
@@ -196,6 +198,8 @@ void CalReconFiller::buildTypes()
 // This method fill the instance tree Event/MC with the actual TDS content
 void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
 {
+    //bool printEnergy = false; // diagnostic
+    
     if (!hasType(typesList, "Recon/CalRecon"))
         return;
 
@@ -213,142 +217,146 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
         // if pointer is not zero - draw the reconstructed xtal data
         if(cxrc){        
 
+            int nXtals = cxrc->size();
+            double eTot = 0.0;
             m_builder->addInstance("CalRecon","XtalCol");    
             // drawing red box for each log with a size
             // proportional to energy deposition
 
             double emax = 0.; // reset maximum energy per crystal
+            Event::CalXtalRecCol::const_iterator it = cxrc->begin();
 
             // to find maximum energy per crystal
-            for (Event::CalXtalRecCol::const_iterator it = cxrc->begin();
-                it != cxrc->end(); it++){
+            for (; it != cxrc->end(); it++){
 
-                    // get poiner to the reconstructed data for individual crystal
-                    Event::CalXtalRecData* recData = *it;
+                // get poiner to the reconstructed data for individual crystal
+                Event::CalXtalRecData* recData = *it;
 
-                    // get reconstructed energy in the crystal
-                    double eneXtal = recData->getEnergy();
+                // get reconstructed energy in the crystal
+                double eneXtal = recData->getEnergy();
+                //if(printEnergy) std::cout << eneXtal << std::endl;
+                eTot += eneXtal;
 
-                    // if energy is bigger than current maximum - update the maximum 
-                    if(eneXtal>emax)emax=eneXtal;
-                }
+                // if energy is bigger than current maximum - update the maximum 
+                if(eneXtal>emax)emax=eneXtal;
+            }
+            m_builder->addAttValue("#Xtals",nXtals,"");
+            m_builder->addAttValue("MaxEnergy",(float)emax,"");
+
+            // if maximum crystal energy isn't zero - start drawing 
+            if(emax>0 && (hasType(typesList, "Recon/CalRecon/XtalCol/Xtal")) ){
+                // loop over all crystals in reconstructed collection
+                // to draw red boxes
+                for (Event::CalXtalRecCol::const_iterator it = cxrc->begin();
+                    it != cxrc->end(); it++){
+
+                        // get poiner to the reconstructed data for individual crystal
+                        Event::CalXtalRecData* recData = *it;
+
+                        // get reconstructed energy in the crystal
+                        double eneXtal = recData->getEnergy();
+
+                        // draw crystals containing less than 1% of maximum energy dashed
+                        m_builder->addInstance("XtalCol", "Xtal"); 
+                        //if(eneXtal<0.01*emax) m_builder->addAttValue("LineStyle","Dashed","");
+                        m_builder->addAttValue("E", (float)eneXtal, "");
+
+                        // get the vector of reconstructed position
+                        HepVector3D pXtal = recData->getPosition() - p0;
+
+                        // get reconstructed coordinates
+                        double x = pXtal.x();
+                        double y = pXtal.y();
+                        double z = pXtal.z();
 
 
-                // if maximum crystal energy isn't zero - start drawing 
-                if(emax>0){
-                    // loop over all crystals in reconstructed collection
-                    // to draw red boxes
-                    for (Event::CalXtalRecCol::const_iterator it = cxrc->begin();
-                        it != cxrc->end(); it++){
+                        // calculate the half size of the box, 
+                        // taking the 90% of crystal half height
+                        // as the size corresponding to the maximum energy
+                        //double s = 0.45*m_xtalHeight*eneXtal/emax;
+                        double s = 2. * 0.45*m_xtalHalfHeight*pow(eneXtal/emax,0.333);
 
-                            // get poiner to the reconstructed data for individual crystal
-                            Event::CalXtalRecData* recData = *it;
+                        m_builder->addPoint(x+s,y+s,z+s);
+                        m_builder->addPoint(x-s,y+s,z+s);
+                        m_builder->addPoint(x-s,y-s,z+s);
+                        m_builder->addPoint(x+s,y-s,z+s);
+                        m_builder->addPoint(x+s,y+s,z-s);
+                        m_builder->addPoint(x-s,y+s,z-s);
+                        m_builder->addPoint(x-s,y-s,z-s);
+                        m_builder->addPoint(x+s,y-s,z-s);
 
-                            // get reconstructed energy in the crystal
-                            double eneXtal = recData->getEnergy();
+                        // Draw the faint outline of the entire log
+                        m_builder->addInstance("XtalCol", "XtalLog");
+                        //if(eneXtal<0.01*emax) m_builder->addAttValue("LineStyle","Dashed","");
 
-                            // draw only crystals containing more than 1% of maximum energy
-                            if((eneXtal>0.01*emax) && (hasType(typesList, "Recon/CalRecon/XtalCol/Xtal")))
-                            {
-                                m_builder->addInstance("XtalCol", "Xtal");    
-                                m_builder->addAttValue("E", (float)eneXtal, "");
+                        // Get the volume identifier
+                        const idents::CalXtalId xtalId = recData->getPackedId();
 
-                                // get the vector of reconstructed position
-                                HepVector3D pXtal = recData->getPosition() - p0;
+                        // unpack crystal identification into tower, layer and column number
+                        int layer = xtalId.getLayer();
+                        int tower = xtalId.getTower();
+                        int col   = xtalId.getColumn();
 
-                                // get reconstructed coordinates
-                                double x = pXtal.x();
-                                double y = pXtal.y();
-                                double z = pXtal.z();
+                        // create Volume Identifier for segment 0 of this crystal
+                        idents::VolumeIdentifier segm0Id;
+                        segm0Id.append(m_eLATTowers);
+                        segm0Id.append(tower/m_xNum);
+                        segm0Id.append(tower%m_xNum);
+                        segm0Id.append(m_eTowerCAL);
+                        segm0Id.append(layer);
+                        segm0Id.append(layer%2); 
+                        segm0Id.append(col);
+                        segm0Id.append(m_eXtal);
+                        segm0Id.append(0);
 
+                        HepTransform3D transf;
 
-                                // calculate the half size of the box, 
-                                // taking the 90% of crystal half height
-                                // as the size corresponding to the maximum energy
-                                //double s = 0.45*m_xtalHeight*eneXtal/emax;
-                                double s = 2. * 0.45*m_xtalHalfHeight*pow(eneXtal/emax,0.333);
+                        //get 3D transformation for segment 0 of this crystal
+                        m_gdsvc->getTransform3DByID(segm0Id,&transf);
+                        //get position of the center of the segment 0
+                        CLHEP::Hep3Vector vect0 = transf.getTranslation();
 
-                                m_builder->addPoint(x+s,y+s,z+s);
-                                m_builder->addPoint(x-s,y+s,z+s);
-                                m_builder->addPoint(x-s,y-s,z+s);
-                                m_builder->addPoint(x+s,y-s,z+s);
-                                m_builder->addPoint(x+s,y+s,z-s);
-                                m_builder->addPoint(x-s,y+s,z-s);
-                                m_builder->addPoint(x-s,y-s,z-s);
-                                m_builder->addPoint(x+s,y-s,z-s);
+                        // create Volume Identifier for the last segment of this crystal
+                        idents::VolumeIdentifier segm11Id;
+                        // copy all fields from segm0Id, except segment number
+                        for(int ifield = 0; ifield < fSegment; ifield++)
+                            segm11Id.append(segm0Id[ifield]);
+                        segm11Id.append(m_nCsISeg-1); // set segment number for the last segment
 
-                                // Draw the faint outline of the entire log
-                                m_builder->addInstance("XtalCol", "XtalLog");    
+                        //get 3D transformation for the last segment of this crystal
+                        m_gdsvc->getTransform3DByID(segm11Id,&transf);
+                        //get position of the center of the last segment
+                        CLHEP::Hep3Vector vect1 = transf.getTranslation();
 
-                                // Get the volume identifier
-                                const idents::CalXtalId xtalId = recData->getPackedId();
-    
-                                // unpack crystal identification into tower, layer and column number
-                                int layer = xtalId.getLayer();
-                                int tower = xtalId.getTower();
-                                int col   = xtalId.getColumn();
+                        // Crystal center is what we want
+                        CLHEP::Hep3Vector xtalCtr = 0.5 * (vect0 + vect1);
 
-                                // create Volume Identifier for segment 0 of this crystal
-                                idents::VolumeIdentifier segm0Id;
-                                segm0Id.append(m_eLATTowers);
-                                segm0Id.append(tower/m_xNum);
-                                segm0Id.append(tower%m_xNum);
-                                segm0Id.append(m_eTowerCAL);
-                                segm0Id.append(layer);
-                                segm0Id.append(layer%2); 
-                                segm0Id.append(col);
-                                segm0Id.append(m_eXtal);
-                                segm0Id.append(0);
-
-                                HepTransform3D transf;
-
-                                //get 3D transformation for segment 0 of this crystal
-                                m_gdsvc->getTransform3DByID(segm0Id,&transf);
-                                //get position of the center of the segment 0
-                                CLHEP::Hep3Vector vect0 = transf.getTranslation();
-
-                                // create Volume Identifier for the last segment of this crystal
-                                idents::VolumeIdentifier segm11Id;
-                                // copy all fields from segm0Id, except segment number
-                                for(int ifield = 0; ifield < fSegment; ifield++)
-                                        segm11Id.append(segm0Id[ifield]);
-                                segm11Id.append(m_nCsISeg-1); // set segment number for the last segment
-  
-                                //get 3D transformation for the last segment of this crystal
-                                m_gdsvc->getTransform3DByID(segm11Id,&transf);
-                                //get position of the center of the last segment
-                                CLHEP::Hep3Vector vect1 = transf.getTranslation();
-
-                                // Crystal center is what we want
-                                CLHEP::Hep3Vector xtalCtr = 0.5 * (vect0 + vect1);
-
-                                // Start drawing this side of the log. 
-                                // How we do this depends on if x or y 
-                                if (layer % 2 == 1) // y face is constant
-                                {
-                                    m_builder->addPoint(xtalCtr.x() - m_xtalHalfWidth, xtalCtr.y() - m_xtalHalfLength, xtalCtr.z() + m_xtalHalfHeight);
-                                    m_builder->addPoint(xtalCtr.x() + m_xtalHalfWidth, xtalCtr.y() - m_xtalHalfLength, xtalCtr.z() + m_xtalHalfHeight);
-                                    m_builder->addPoint(xtalCtr.x() + m_xtalHalfWidth, xtalCtr.y() - m_xtalHalfLength, xtalCtr.z() - m_xtalHalfHeight);
-                                    m_builder->addPoint(xtalCtr.x() - m_xtalHalfWidth, xtalCtr.y() - m_xtalHalfLength, xtalCtr.z() - m_xtalHalfHeight);
-                                    m_builder->addPoint(xtalCtr.x() - m_xtalHalfWidth, xtalCtr.y() + m_xtalHalfLength, xtalCtr.z() + m_xtalHalfHeight);
-                                    m_builder->addPoint(xtalCtr.x() + m_xtalHalfWidth, xtalCtr.y() + m_xtalHalfLength, xtalCtr.z() + m_xtalHalfHeight);
-                                    m_builder->addPoint(xtalCtr.x() + m_xtalHalfWidth, xtalCtr.y() + m_xtalHalfLength, xtalCtr.z() - m_xtalHalfHeight);
-                                    m_builder->addPoint(xtalCtr.x() - m_xtalHalfWidth, xtalCtr.y() + m_xtalHalfLength, xtalCtr.z() - m_xtalHalfHeight);
-                                }
-                                else // x face is constant
-                                {
-                                    m_builder->addPoint(xtalCtr.x() - m_xtalHalfLength, xtalCtr.y() - m_xtalHalfWidth, xtalCtr.z() + m_xtalHalfHeight);
-                                    m_builder->addPoint(xtalCtr.x() - m_xtalHalfLength, xtalCtr.y() + m_xtalHalfWidth, xtalCtr.z() + m_xtalHalfHeight);
-                                    m_builder->addPoint(xtalCtr.x() - m_xtalHalfLength, xtalCtr.y() + m_xtalHalfWidth, xtalCtr.z() - m_xtalHalfHeight);
-                                    m_builder->addPoint(xtalCtr.x() - m_xtalHalfLength, xtalCtr.y() - m_xtalHalfWidth, xtalCtr.z() - m_xtalHalfHeight);
-                                    m_builder->addPoint(xtalCtr.x() + m_xtalHalfLength, xtalCtr.y() - m_xtalHalfWidth, xtalCtr.z() + m_xtalHalfHeight);
-                                    m_builder->addPoint(xtalCtr.x() + m_xtalHalfLength, xtalCtr.y() + m_xtalHalfWidth, xtalCtr.z() + m_xtalHalfHeight);
-                                    m_builder->addPoint(xtalCtr.x() + m_xtalHalfLength, xtalCtr.y() + m_xtalHalfWidth, xtalCtr.z() - m_xtalHalfHeight);
-                                    m_builder->addPoint(xtalCtr.x() + m_xtalHalfLength, xtalCtr.y() - m_xtalHalfWidth, xtalCtr.z() - m_xtalHalfHeight);
-                                }
-                            }
+                        // Start drawing this side of the log. 
+                        // How we do this depends on if x or y 
+                        if (layer % 2 == 1) // y face is constant
+                        {
+                            m_builder->addPoint(xtalCtr.x() - m_xtalHalfWidth, xtalCtr.y() - m_xtalHalfLength, xtalCtr.z() + m_xtalHalfHeight);
+                            m_builder->addPoint(xtalCtr.x() + m_xtalHalfWidth, xtalCtr.y() - m_xtalHalfLength, xtalCtr.z() + m_xtalHalfHeight);
+                            m_builder->addPoint(xtalCtr.x() + m_xtalHalfWidth, xtalCtr.y() - m_xtalHalfLength, xtalCtr.z() - m_xtalHalfHeight);
+                            m_builder->addPoint(xtalCtr.x() - m_xtalHalfWidth, xtalCtr.y() - m_xtalHalfLength, xtalCtr.z() - m_xtalHalfHeight);
+                            m_builder->addPoint(xtalCtr.x() - m_xtalHalfWidth, xtalCtr.y() + m_xtalHalfLength, xtalCtr.z() + m_xtalHalfHeight);
+                            m_builder->addPoint(xtalCtr.x() + m_xtalHalfWidth, xtalCtr.y() + m_xtalHalfLength, xtalCtr.z() + m_xtalHalfHeight);
+                            m_builder->addPoint(xtalCtr.x() + m_xtalHalfWidth, xtalCtr.y() + m_xtalHalfLength, xtalCtr.z() - m_xtalHalfHeight);
+                            m_builder->addPoint(xtalCtr.x() - m_xtalHalfWidth, xtalCtr.y() + m_xtalHalfLength, xtalCtr.z() - m_xtalHalfHeight);
                         }
-                }
+                        else // x face is constant
+                        {
+                            m_builder->addPoint(xtalCtr.x() - m_xtalHalfLength, xtalCtr.y() - m_xtalHalfWidth, xtalCtr.z() + m_xtalHalfHeight);
+                            m_builder->addPoint(xtalCtr.x() - m_xtalHalfLength, xtalCtr.y() + m_xtalHalfWidth, xtalCtr.z() + m_xtalHalfHeight);
+                            m_builder->addPoint(xtalCtr.x() - m_xtalHalfLength, xtalCtr.y() + m_xtalHalfWidth, xtalCtr.z() - m_xtalHalfHeight);
+                            m_builder->addPoint(xtalCtr.x() - m_xtalHalfLength, xtalCtr.y() - m_xtalHalfWidth, xtalCtr.z() - m_xtalHalfHeight);
+                            m_builder->addPoint(xtalCtr.x() + m_xtalHalfLength, xtalCtr.y() - m_xtalHalfWidth, xtalCtr.z() + m_xtalHalfHeight);
+                            m_builder->addPoint(xtalCtr.x() + m_xtalHalfLength, xtalCtr.y() + m_xtalHalfWidth, xtalCtr.z() + m_xtalHalfHeight);
+                            m_builder->addPoint(xtalCtr.x() + m_xtalHalfLength, xtalCtr.y() + m_xtalHalfWidth, xtalCtr.z() - m_xtalHalfHeight);
+                            m_builder->addPoint(xtalCtr.x() + m_xtalHalfLength, xtalCtr.y() - m_xtalHalfWidth, xtalCtr.z() - m_xtalHalfHeight);
+                        }
+                    }
+            }
         }
     }
 
@@ -474,73 +482,73 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
                 Point  mipPos   = calMipTrack->getPoint();
                 Vector mipDir   = calMipTrack->getDir();
 
-//                 // Number of crystals
-//                 int    numXtals = calMipTrack->size();
+                //                 // Number of crystals
+                //                 int    numXtals = calMipTrack->size();
 
-// 		// Update the point
-//  		double delta  = 2 * numXtals * m_xtalHeight;
-//  		Point  topPos = mipPos + delta * mipDir;
-		
-// 		// Bottom point
-// 		mipPos -= delta * mipDir;
+                // 		// Update the point
+                //  		double delta  = 2 * numXtals * m_xtalHeight;
+                //  		Point  topPos = mipPos + delta * mipDir;
 
-//                  // Add the starting point to the display
-//                  m_builder->addPoint(mipPos.x(), mipPos.y(), mipPos.z());
+                // 		// Bottom point
+                // 		mipPos -= delta * mipDir;
 
-//                  // Add the endpoint
-//                  m_builder->addPoint(topPos.x(), topPos.y(), topPos.z());
+                //                  // Add the starting point to the display
+                //                  m_builder->addPoint(mipPos.x(), mipPos.y(), mipPos.z());
+
+                //                  // Add the endpoint
+                //                  m_builder->addPoint(topPos.x(), topPos.y(), topPos.z());
 
 
-// 	      //projection of this hit on track
-// 	      Point Hp=C+((Hit[hid].P-C)*dir)*dir;
-// 	      for (int ihh=ih+1; ihh<tr[itr].nh; ihh++)
-// 		{
-// 		  int hidd=tr[itr].hid[ihh];
-// 		  //projection of this hit on track
-// 		  Point HHp=C+((Hit[hidd].P-C)*dir)*dir;
-// 		  //vv=Hit[hid].P-Hit[hidd].P;
-// 		  vv=HHp-Hp;
-// 		  double d=sqrt(vv*vv);
-// 		  if (d>tr[itr].length)
-// 		    {
-// 		      tr[itr].length=d;
-// 		      tr[itr].H1=Hp;
-// 		      tr[itr].H2=HHp;
-// 		    }
+                // 	      //projection of this hit on track
+                // 	      Point Hp=C+((Hit[hid].P-C)*dir)*dir;
+                // 	      for (int ihh=ih+1; ihh<tr[itr].nh; ihh++)
+                // 		{
+                // 		  int hidd=tr[itr].hid[ihh];
+                // 		  //projection of this hit on track
+                // 		  Point HHp=C+((Hit[hidd].P-C)*dir)*dir;
+                // 		  //vv=Hit[hid].P-Hit[hidd].P;
+                // 		  vv=HHp-Hp;
+                // 		  double d=sqrt(vv*vv);
+                // 		  if (d>tr[itr].length)
+                // 		    {
+                // 		      tr[itr].length=d;
+                // 		      tr[itr].H1=Hp;
+                // 		      tr[itr].H2=HHp;
+                // 		    }
 
-		Point startPos;
-		Point endPos;
-		double dmax=-1.;
+                Point startPos;
+                Point endPos;
+                double dmax=-1.;
                 // Find start and end of track
                 for(Event::CalMipXtalVec::iterator xTalIter1  = calMipTrack->begin(); 
-                                                   xTalIter1 != calMipTrack->end(); 
-                                                   xTalIter1++)
+                    xTalIter1 != calMipTrack->end(); 
+                    xTalIter1++)
                 {
                     Event::CalMipXtal& xTal1 = *xTalIter1;
                     // get the vector of reconstructed position
                     HepVector3D pXtal1 = xTal1.getXtal()->getPosition();
-		    Point H1=xTal1.getXtal()->getPosition();
-		    // projection on the track
-		    Point P1=mipPos+((H1-mipPos)*mipDir)*mipDir;
- 		    for(Event::CalMipXtalVec::iterator xTalIter2  = calMipTrack->begin(); 
- 			xTalIter2 != calMipTrack->end(); 
- 			xTalIter2++)
- 		      {
- 			Event::CalMipXtal& xTal2 = *xTalIter2;
-			// get the vector of reconstructed position
- 			HepVector3D pXtal2 = xTal2.getXtal()->getPosition();
-			Point H2=xTal2.getXtal()->getPosition();
-			// projection on the track
-			Point P2=mipPos+((H2-mipPos)*mipDir)*mipDir;			
-			Vector vv=P2-P1;
-			double dist=sqrt(vv*vv);
-			if (dist>dmax)
-			  {
-			    startPos=P1;
-			    endPos=P2;
-			    dmax=dist;
-			  }
-		      }
+                    Point H1=xTal1.getXtal()->getPosition();
+                    // projection on the track
+                    Point P1=mipPos+((H1-mipPos)*mipDir)*mipDir;
+                    for(Event::CalMipXtalVec::iterator xTalIter2  = calMipTrack->begin(); 
+                        xTalIter2 != calMipTrack->end(); 
+                        xTalIter2++)
+                    {
+                        Event::CalMipXtal& xTal2 = *xTalIter2;
+                        // get the vector of reconstructed position
+                        HepVector3D pXtal2 = xTal2.getXtal()->getPosition();
+                        Point H2=xTal2.getXtal()->getPosition();
+                        // projection on the track
+                        Point P2=mipPos+((H2-mipPos)*mipDir)*mipDir;			
+                        Vector vv=P2-P1;
+                        double dist=sqrt(vv*vv);
+                        if (dist>dmax)
+                        {
+                            startPos=P1;
+                            endPos=P2;
+                            dmax=dist;
+                        }
+                    }
                 }
 
                 // Add the starting point to the display
@@ -551,8 +559,8 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
 
                 // Draw these crystals
                 for(Event::CalMipXtalVec::iterator xTalIter  = calMipTrack->begin(); 
-                                                   xTalIter != calMipTrack->end(); 
-                                                   xTalIter++)
+                    xTalIter != calMipTrack->end(); 
+                    xTalIter++)
                 {
                     Event::CalMipXtal& xTal = *xTalIter;
 
