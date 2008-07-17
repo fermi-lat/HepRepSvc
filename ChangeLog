@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: lsrea  Thu Jul 17 11:32:16 PDT 2008
+HepRepSvc/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+Add some info to CalRecon Instance Tree
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-24-01, operation: add
 Package: HepRepSvc
