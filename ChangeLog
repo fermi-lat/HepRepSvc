@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: lsrea  Thu Jul 17 11:32:17 PDT 2008
+HepRepSvc/src
+
+Modified Files:
+	CalReconFiller.cxx 
+Log Message:
+Add some info to CalRecon Instance Tree
+
+    *
+------------------------------------------------------------
+User: lsrea  Thu Jul 17 11:32:17 PDT 2008
 HepRepSvc/doc
 
 Modified Files:
