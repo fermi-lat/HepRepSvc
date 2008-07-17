@@ -1,4 +1,4 @@
-//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.50 2008/07/06 22:12:40 lsrea Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.51 2008/07/08 14:50:13 lsrea Exp $
 /*
  * v0r1     20-09-02 RG Inital release of the package
  * v0r2     07-07-03 RG Complete refactoring of HepRepSvc	
@@ -54,3 +54,4 @@
                          First one is bool VertexFiller_dashes, to draw
                             extrapolated vertices with dashed lines
  * v0r24p1  07-8-08 LSR  Try again!
+ * v0r24p2  07-17-08 LSR Add some info to CalRecon Tree
