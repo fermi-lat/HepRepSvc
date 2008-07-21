@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: glastrm  Mon Jul 21 08:17:31 PDT 2008
+GlastRelease-scons/HepRepSvc/src/test
+
+Modified Files:
+	jobOptions.txt 
+Log Message:
+Removed dependency on CMT env variables
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-24-02, operation: add
 Package: HepRepSvc
