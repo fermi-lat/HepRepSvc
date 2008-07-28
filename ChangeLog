@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: jrb  Mon Jul 28 10:18:55 PDT 2008
+HepRepSvc/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+Added new line - version v0r24p3
+    *
+------------------------------------------------------------
 User: glastrm  Mon Jul 21 08:17:31 PDT 2008
 GlastRelease-scons/HepRepSvc/src/test
 
