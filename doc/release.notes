@@ -1,4 +1,4 @@
-//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.51 2008/07/08 14:50:13 lsrea Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.52 2008/07/17 18:32:17 lsrea Exp $
 /*
  * v0r1     20-09-02 RG Inital release of the package
  * v0r2     07-07-03 RG Complete refactoring of HepRepSvc	
@@ -55,3 +55,4 @@
                             extrapolated vertices with dashed lines
  * v0r24p1  07-8-08 LSR  Try again!
  * v0r24p2  07-17-08 LSR Add some info to CalRecon Tree
+ * v0r24p3  07-28-08 jrb Tag Navid's change to xml path ref. in job options
