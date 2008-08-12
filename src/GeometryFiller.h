@@ -1,9 +1,10 @@
 #ifndef GEOMETRYFILLER_H
 #define GEOMETRYFILLER_H
+
 #include <vector>
 #include <string>
 
-#include "HepRepSvc/IFiller.h"
+#include "Filler.h"
 
 class IBuilder;
 class IGlastDetSvc;
@@ -18,12 +19,14 @@ class HepRepGeometry;
  *  @author R.Giannitrapani
  */
 
-class GeometryFiller: public IFiller{
+class GeometryFiller : public Filler {
   
  public:
   GeometryFiller(unsigned int depth,
       HepRepInitSvc* hrisvc,
       IGlastDetSvc* gsvc);
+
+  // needed to satisfy the abstract class 
   /// This method init the type tree
   virtual void buildTypes ();
   /// This method fill the instance tree, using the string vector to decide

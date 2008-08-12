@@ -1,9 +1,10 @@
 #ifndef ACDRECONFILLER_H
 #define ACDRECONFILLER_H
+
 #include <vector>
 #include <string>
 
-#include "HepRepSvc/IFiller.h"
+#include "Filler.h"
 
 class IGlastDetSvc;
 class IDataProviderSvc;
@@ -20,7 +21,7 @@ class HepRepInitSvc;
  *  @author R.Giannitrapani
  */
 
-class AcdReconFiller: public IFiller{
+class AcdReconFiller: public Filler{
   
  public:
   AcdReconFiller(HepRepInitSvc* hrisvc,
@@ -33,8 +34,6 @@ class AcdReconFiller: public IFiller{
   /// This method fill the instance tree, using the string vector to decide
   /// which subinstances to fill
   virtual void fillInstances (std::vector<std::string>&);
-
-  bool hasType(std::vector<std::string>& list, std::string type); 
 
  private:
   HepRepInitSvc* m_hrisvc;

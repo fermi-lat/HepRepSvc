@@ -47,7 +47,7 @@ void ReconFiller::buildTypes()
   m_builder->addType("","Recon","Recon Tree","");
   m_builder->addAttValue("Layer","Event","");
  
-  for(unsigned int i=0;i<m_subFillers.size();i++)
+  for(unsigned int i=0;i<m_subFillers.size();++i)
   {
     m_subFillers[i]->buildTypes();
   }  
@@ -61,19 +61,6 @@ void ReconFiller::fillInstances (std::vector<std::string>& typesList)
     return;
   
   m_builder->addInstance("","Recon");
-  for(unsigned int i=0;i<m_subFillers.size();i++)
+  for(unsigned int i=0;i<m_subFillers.size();++i)
     m_subFillers[i]->fillInstances(typesList);
 }
-
-bool ReconFiller::hasType(std::vector<std::string>& list, std::string type) 
-{
-  if (list.size() == 0) return 1;
-
-  std::vector<std::string>::const_iterator i; 
-
-  i = std::find(list.begin(),list.end(),type);
-  if(i == list.end()) return 0;
-  else return 1;
-
-}
-

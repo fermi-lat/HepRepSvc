@@ -47,19 +47,4 @@ void HeaderFiller::fillInstances (std::vector<std::string>& typesList)
      m_builder->addAttValue("HPos",(float)hpos,"");
      m_builder->addAttValue("VPos",(float)vpos,"");     
    }  
-
 }
-
-
-bool HeaderFiller::hasType(std::vector<std::string>& list, std::string type) 
-{
-  if (list.size() == 0) return 1;
-
-  std::vector<std::string>::const_iterator i; 
-
-  i = std::find(list.begin(),list.end(),type);
-  if(i == list.end()) return 0;
-  else return 1;
-
-}
-

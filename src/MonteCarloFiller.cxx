@@ -367,17 +367,6 @@ void MonteCarloFiller::setCharge(int charge)
 
 }
 
-bool MonteCarloFiller::hasType(std::vector<std::string>& list, std::string type) 
-{
-    if (list.size() == 0) return 1;
-
-    std::vector<std::string>::const_iterator i; 
-
-    i = std::find(list.begin(),list.end(),type);
-    if(i == list.end()) return 0;
-    else return 1;
-}
-
 void MonteCarloFiller::fillMcPositionHit(std::vector<std::string>& typesList, Event::McPositionHit* hit)
 {
     HepGeom::Transform3D global;
@@ -405,25 +394,7 @@ void MonteCarloFiller::fillMcPositionHit(std::vector<std::string>& typesList, Ev
     double dy = params[1]/2;
     double dz = params[2]/2;
 
-    HepPoint3D temp;
-
-    temp = global*HepPoint3D(dx,dy,dz);
-    m_builder->addPoint(temp.x(),temp.y(),temp.z());
-    temp = global*HepPoint3D(-dx,dy,dz);
-    m_builder->addPoint(temp.x(),temp.y(),temp.z());
-    temp = global*HepPoint3D(-dx,-dy,dz);
-    m_builder->addPoint(temp.x(),temp.y(),temp.z());
-    temp = global*HepPoint3D(dx,-dy,dz);
-    m_builder->addPoint(temp.x(),temp.y(),temp.z());
-    temp = global*HepPoint3D(dx,dy,-dz);
-    m_builder->addPoint(temp.x(),temp.y(),temp.z());
-    temp = global*HepPoint3D(-dx,dy,-dz);
-    m_builder->addPoint(temp.x(),temp.y(),temp.z());
-    temp = global*HepPoint3D(-dx,-dy,-dz);
-    m_builder->addPoint(temp.x(),temp.y(),temp.z());
-    temp = global*HepPoint3D(dx,-dy,-dz);
-    m_builder->addPoint(temp.x(),temp.y(),temp.z());
-
+    drawTransformedPrism(dx, dy, dz, global);
 
     if(hasType(typesList,"PosHitSteps"))
     {
@@ -460,58 +431,7 @@ void MonteCarloFiller::fillMcIntegratingHit(std::vector<std::string>& typesList,
     double dy = params[1]/2;
     double dz = params[2]/2;
 
-    HepPoint3D temp;
-
-    temp = global*HepPoint3D(dx,dy,dz);
-    m_builder->addPoint(temp.x(),temp.y(),temp.z());
-    temp = global*HepPoint3D(-dx,dy,dz);
-    m_builder->addPoint(temp.x(),temp.y(),temp.z());
-    temp = global*HepPoint3D(-dx,-dy,dz);
-    m_builder->addPoint(temp.x(),temp.y(),temp.z());
-    temp = global*HepPoint3D(dx,-dy,dz);
-    m_builder->addPoint(temp.x(),temp.y(),temp.z());
-    temp = global*HepPoint3D(dx,dy,-dz);
-    m_builder->addPoint(temp.x(),temp.y(),temp.z());
-    temp = global*HepPoint3D(-dx,dy,-dz);
-    m_builder->addPoint(temp.x(),temp.y(),temp.z());
-    temp = global*HepPoint3D(-dx,-dy,-dz);
-    m_builder->addPoint(temp.x(),temp.y(),temp.z());
-    temp = global*HepPoint3D(dx,-dy,-dz);
-    m_builder->addPoint(temp.x(),temp.y(),temp.z());
+    drawTransformedPrism(dx, dy, dz, global);
     
     return;
 }
-
-std::string MonteCarloFiller::getTripleString(int precis, double x, double y, double z)
-{
-    std::stringstream triple;
-    triple.setf(std::ios::fixed);
-    triple.precision(precis);
-    triple << " (" << x << "," << y << "," << z << ")";
-
-    return triple.str();
-}
-
-std::string MonteCarloFiller::getPositionString(const Point& position)
-{
-    int precis = 3;
-    return getTripleString(precis, position.x(), position.y(), position.z());
-}
-
-std::string MonteCarloFiller::getDirectionString(const Vector& direction)
-{
-    int precis = 5;
-    return getTripleString(precis, direction.x(), direction.y(), direction.z());
-}
-
-std::string MonteCarloFiller::getBits(unsigned int statBits, int highBit, int lowBit)
-{                    
-    std::stringstream outString;
-    int bit;
-    for (bit=highBit; bit>=lowBit; --bit) {
-        outString << (statBits>>(bit)&1) ;
-        if (bit%4==0) outString << " ";
-    }
-    return outString.str();
-}
-

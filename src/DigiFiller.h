@@ -1,5 +1,5 @@
-#ifndef RECONFILLER_H
-#define RECONFILLER_H
+#ifndef DigiFiller_H
+#define DigiFiller_H
 #include <vector>
 #include <string>
 
@@ -9,25 +9,23 @@ class IGlastDetSvc;
 class ITkrGeometrySvc;
 class IDataProviderSvc;
 class IParticlePropertySvc;
-class CalReconFiller;
 class HepRepInitSvc;
 
 /** 
- *  @class ReconFiller
+ *  @class DigiFiller
  *
  *  @brief 
  *
  *  @author R.Giannitrapani, M.Frailis
  */
 
-class ReconFiller: public Filler{
+class DigiFiller: public Filler{
   
  public:
-  ReconFiller(HepRepInitSvc* hrisvc,
+  DigiFiller(HepRepInitSvc* hrisvc,
               IGlastDetSvc* gsvc,
               ITkrGeometrySvc* tgsvc,
-              IDataProviderSvc* dpsvc,
-              IParticlePropertySvc* ppsvc);
+              IDataProviderSvc* dpsvc);
   
   /// This method init the type tree
   virtual void buildTypes ();
@@ -41,11 +39,10 @@ class ReconFiller: public Filler{
  private:
   std::vector<IFiller*> m_subFillers;
 
-  HepRepInitSvc* m_hrisvc;
-  IGlastDetSvc* m_gdsvc;
-  ITkrGeometrySvc* m_tgsvc;
+  HepRepInitSvc*    m_hrisvc;
+  IGlastDetSvc*     m_gdsvc;
+  ITkrGeometrySvc*  m_tgsvc;
   IDataProviderSvc* m_dpsvc;
-  IParticlePropertySvc* m_ppsvc;
 };
 
-#endif //RECONFILLER_H
+#endif //DigiFiller_H

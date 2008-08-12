@@ -48,6 +48,22 @@ m_hrisvc(hrisvc),m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc)
     int eTowerCAL;
     int eXtal;
 
+    m_gdsvc->getNumericConstByName(std::string("CALnLayer"), &nLayers);
+
+    m_gdsvc->getNumericConstByName(std::string("CsIHeight"),&xtalHeight); 
+    m_gdsvc->getNumericConstByName(std::string("CsIWidth"),&xtalWidth); 
+    m_gdsvc->getNumericConstByName(std::string("CsILength"),&xtalLength); 
+    m_gdsvc->getNumericConstByName(std::string("xNum"),&m_xNum); 
+    m_gdsvc->getNumericConstByName(std::string("yNum"),&m_yNum); 
+    m_gdsvc->getNumericConstByName(std::string("eTowerCAL"),&m_eTowerCAL);
+    eTowerCAL = m_eTowerCAL;
+    m_gdsvc->getNumericConstByName(std::string("eLATTowers"),&m_eLATTowers);
+    eLATTowers = m_eLATTowers;
+    m_gdsvc->getNumericConstByName(std::string("eXtal"),&m_eXtal); 
+    eXtal = m_eXtal;
+    m_gdsvc->getNumericConstByName(std::string("nCsISeg"),&m_nCsISeg); 
+
+    /*
     double value;
     if(!m_gdsvc->getNumericConstByName(std::string("CALnLayer"), &value))
     {
@@ -102,8 +118,8 @@ m_hrisvc(hrisvc),m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc)
     } 
 
     if(!m_gdsvc->getNumericConstByName(std::string("nCsISeg"),&m_nCsISeg)) 
-    {
     } 
+*/
 
     int layer=0;
     idents::VolumeIdentifier topLayerId;
@@ -199,7 +215,7 @@ void CalReconFiller::buildTypes()
 void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
 {
     //bool printEnergy = false; // diagnostic
-    
+
     if (!hasType(typesList, "Recon/CalRecon"))
         return;
 
@@ -275,15 +291,7 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
                         // as the size corresponding to the maximum energy
                         //double s = 0.45*m_xtalHeight*eneXtal/emax;
                         double s = 2. * 0.45*m_xtalHalfHeight*pow(eneXtal/emax,0.333);
-
-                        m_builder->addPoint(x+s,y+s,z+s);
-                        m_builder->addPoint(x-s,y+s,z+s);
-                        m_builder->addPoint(x-s,y-s,z+s);
-                        m_builder->addPoint(x+s,y-s,z+s);
-                        m_builder->addPoint(x+s,y+s,z-s);
-                        m_builder->addPoint(x-s,y+s,z-s);
-                        m_builder->addPoint(x-s,y-s,z-s);
-                        m_builder->addPoint(x+s,y-s,z-s);
+                        drawPrism(x, y, z, s, s, s);
 
                         // Draw the faint outline of the entire log
                         m_builder->addInstance("XtalCol", "XtalLog");
@@ -331,29 +339,27 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
                         // Crystal center is what we want
                         CLHEP::Hep3Vector xtalCtr = 0.5 * (vect0 + vect1);
 
+                        double xXtal = xtalCtr.x();
+                        double yXtal = xtalCtr.y();
+                        double zXtal = xtalCtr.z();
+
+                        double xHalf = m_xtalHalfWidth;
+                        double yHalf = m_xtalHalfLength;
+                        double zHalf = m_xtalHalfHeight;
+
+
+
                         // Start drawing this side of the log. 
                         // How we do this depends on if x or y 
                         if (layer % 2 == 1) // y face is constant
                         {
-                            m_builder->addPoint(xtalCtr.x() - m_xtalHalfWidth, xtalCtr.y() - m_xtalHalfLength, xtalCtr.z() + m_xtalHalfHeight);
-                            m_builder->addPoint(xtalCtr.x() + m_xtalHalfWidth, xtalCtr.y() - m_xtalHalfLength, xtalCtr.z() + m_xtalHalfHeight);
-                            m_builder->addPoint(xtalCtr.x() + m_xtalHalfWidth, xtalCtr.y() - m_xtalHalfLength, xtalCtr.z() - m_xtalHalfHeight);
-                            m_builder->addPoint(xtalCtr.x() - m_xtalHalfWidth, xtalCtr.y() - m_xtalHalfLength, xtalCtr.z() - m_xtalHalfHeight);
-                            m_builder->addPoint(xtalCtr.x() - m_xtalHalfWidth, xtalCtr.y() + m_xtalHalfLength, xtalCtr.z() + m_xtalHalfHeight);
-                            m_builder->addPoint(xtalCtr.x() + m_xtalHalfWidth, xtalCtr.y() + m_xtalHalfLength, xtalCtr.z() + m_xtalHalfHeight);
-                            m_builder->addPoint(xtalCtr.x() + m_xtalHalfWidth, xtalCtr.y() + m_xtalHalfLength, xtalCtr.z() - m_xtalHalfHeight);
-                            m_builder->addPoint(xtalCtr.x() - m_xtalHalfWidth, xtalCtr.y() + m_xtalHalfLength, xtalCtr.z() - m_xtalHalfHeight);
+                            drawPrism(xXtal, yXtal, zXtal,
+                                m_xtalHalfWidth, m_xtalHalfLength, m_xtalHalfHeight);
                         }
                         else // x face is constant
                         {
-                            m_builder->addPoint(xtalCtr.x() - m_xtalHalfLength, xtalCtr.y() - m_xtalHalfWidth, xtalCtr.z() + m_xtalHalfHeight);
-                            m_builder->addPoint(xtalCtr.x() - m_xtalHalfLength, xtalCtr.y() + m_xtalHalfWidth, xtalCtr.z() + m_xtalHalfHeight);
-                            m_builder->addPoint(xtalCtr.x() - m_xtalHalfLength, xtalCtr.y() + m_xtalHalfWidth, xtalCtr.z() - m_xtalHalfHeight);
-                            m_builder->addPoint(xtalCtr.x() - m_xtalHalfLength, xtalCtr.y() - m_xtalHalfWidth, xtalCtr.z() - m_xtalHalfHeight);
-                            m_builder->addPoint(xtalCtr.x() + m_xtalHalfLength, xtalCtr.y() - m_xtalHalfWidth, xtalCtr.z() + m_xtalHalfHeight);
-                            m_builder->addPoint(xtalCtr.x() + m_xtalHalfLength, xtalCtr.y() + m_xtalHalfWidth, xtalCtr.z() + m_xtalHalfHeight);
-                            m_builder->addPoint(xtalCtr.x() + m_xtalHalfLength, xtalCtr.y() + m_xtalHalfWidth, xtalCtr.z() - m_xtalHalfHeight);
-                            m_builder->addPoint(xtalCtr.x() + m_xtalHalfLength, xtalCtr.y() - m_xtalHalfWidth, xtalCtr.z() - m_xtalHalfHeight);
+                            drawPrism(xXtal, yXtal, zXtal,
+                                m_xtalHalfLength, m_xtalHalfWidth, m_xtalHalfHeight);
                         }
                     }
             }
@@ -404,8 +410,10 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
                     m_builder->addAttValue("LongAsym",     (float)longAsy, "");
                     //m_builder->addAttValue("numTotXtal",   cl->size(),     "");
                     m_builder->addAttValue("numTruncXtal", nTrunc,         "");
-                    m_builder->addAttValue("Centroid",     getPositionString(cl->getCalParams().getCentroid()), "");
-                    m_builder->addAttValue("Axis",         getDirectionString(cl->getCalParams().getAxis()), "");
+                    m_builder->addAttValue("Centroid",     
+                        getPositionString(cl->getCalParams().getCentroid()), "");
+                    m_builder->addAttValue("Axis",         
+                        getDirectionString(cl->getCalParams().getAxis()), "");
 
                     // Draw the cluster center
                     double x = (cl->getPosition()).x();
@@ -453,7 +461,6 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
                 } 
             }
         }
-
     }
 
     if (hasType(typesList,"Recon/CalRecon/CalMipTrackCol"))
@@ -583,53 +590,9 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
                     // as the size corresponding to the maximum energy
                     //double s = 0.45*m_xtalHalfHeight*eneXtal/emax;
                     double s = m_xtalHalfHeight;
-
-                    m_builder->addPoint(x+s,y+s,z+s);
-                    m_builder->addPoint(x-s,y+s,z+s);
-                    m_builder->addPoint(x-s,y-s,z+s);
-                    m_builder->addPoint(x+s,y-s,z+s);
-                    m_builder->addPoint(x+s,y+s,z-s);
-                    m_builder->addPoint(x-s,y+s,z-s);
-                    m_builder->addPoint(x-s,y-s,z-s);
-                    m_builder->addPoint(x+s,y-s,z-s);
+                    drawPrism(x, y, z, s, s, s);
                 }
             }
         }
     }
 }
-
-bool CalReconFiller::hasType(std::vector<std::string>& list, std::string type) 
-{
-    if (list.size() == 0) return 1;
-
-    std::vector<std::string>::const_iterator i; 
-
-    i = std::find(list.begin(),list.end(),type);
-    if(i == list.end()) return 0;
-    else return 1;
-
-}
-
-
-std::string CalReconFiller::getTripleString(int precis, double x, double y, double z)
-{
-    std::stringstream triple;
-    triple.setf(std::ios::fixed);
-    triple.precision(precis);
-    triple << " (" << x << "," << y << "," << z << ")";
-
-    return triple.str();
-}
-
-std::string CalReconFiller::getPositionString(const Point& position)
-{
-    int precis = 3;
-    return getTripleString(precis, position.x(), position.y(), position.z());
-}
-
-std::string CalReconFiller::getDirectionString(const Vector& direction)
-{
-    int precis = 5;
-    return getTripleString(precis, direction.x(), direction.y(), direction.z());
-}
-

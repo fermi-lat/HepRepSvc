@@ -14,7 +14,7 @@ Service(name, pSvcLocator)
     //HepRepControl* control = HepRepControl::getPtr();
 
     // Variables which can be modified in TkrControl
-    declareProperty("VertexFiller_dashes", m_vtx_dashes=false);
+    declareProperty("VertexFiller_dashes", m_vtx_dashes=true);
 
     return; 
 }

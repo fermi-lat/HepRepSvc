@@ -1,5 +1,6 @@
 #include "AcdReconFiller.h"
 #include "HepRepSvc/IBuilder.h"
+#include "HepRepSvc/HepRepInitSvc.h"
 
 #include "GaudiKernel/MsgStream.h"
 #include "GaudiKernel/IDataProviderSvc.h"
@@ -16,11 +17,8 @@
 #include "CLHEP/Geometry/Transform3D.h"
 #include "CLHEP/Geometry/Vector3D.h"
 
-#include "CLHEP/Vector/LorentzVector.h"
-
 #include "idents/VolumeIdentifier.h"
 
-#include "HepRepSvc/HepRepInitSvc.h"
 
 #include <algorithm>
 
@@ -96,7 +94,7 @@ void AcdReconFiller::fillInstances (std::vector<std::string>& typesList)
                             m_builder->addAttValue("LineWidth", "3.0","");
                         }
 
-                    HepTransform3D global;
+                    HepGeom::Transform3D global;
                     idents::VolumeIdentifier volid = id.volId();
                     m_gdsvc->getTransform3DByID(volid, &global);
 
@@ -111,26 +109,9 @@ void AcdReconFiller::fillInstances (std::vector<std::string>& typesList)
                     double dy = params[1]*0.5;
                     double dz = params[2]*0.5;
 
-                    HepPoint3D temp;
+                    drawTransformedPrism(dx, dy, dz, global);
 
-                    temp = global*HepPoint3D(dx,dy,dz);
-                    m_builder->addPoint(temp.x(),temp.y(),temp.z());
-                    temp = global*HepPoint3D(-dx,dy,dz);
-                    m_builder->addPoint(temp.x(),temp.y(),temp.z());
-                    temp = global*HepPoint3D(-dx,-dy,dz);
-                    m_builder->addPoint(temp.x(),temp.y(),temp.z());
-                    temp = global*HepPoint3D(dx,-dy,dz);
-                    m_builder->addPoint(temp.x(),temp.y(),temp.z());
-                    temp = global*HepPoint3D(dx,dy,-dz);
-                    m_builder->addPoint(temp.x(),temp.y(),temp.z());
-                    temp = global*HepPoint3D(-dx,dy,-dz);
-                    m_builder->addPoint(temp.x(),temp.y(),temp.z());
-                    temp = global*HepPoint3D(-dx,-dy,-dz);
-                    m_builder->addPoint(temp.x(),temp.y(),temp.z());
-                    temp = global*HepPoint3D(dx,-dy,-dz);
-                    m_builder->addPoint(temp.x(),temp.y(),temp.z());
-                }
-
+                 }
 
                 // Fill in attributes of the two PMTs
                 m_builder->addInstance("AcdHit", "PMT_A");
@@ -202,31 +183,9 @@ void AcdReconFiller::fillInstances (std::vector<std::string>& typesList)
                 double z = tilecenter.z();
                 double s = 10;
 
-                m_builder->addPoint(x+s,y+s,z+s);
-                m_builder->addPoint(x-s,y+s,z+s);
-                m_builder->addPoint(x-s,y-s,z+s);
-                m_builder->addPoint(x+s,y-s,z+s);
-                m_builder->addPoint(x+s,y+s,z-s);
-                m_builder->addPoint(x-s,y+s,z-s);
-                m_builder->addPoint(x-s,y-s,z-s);
-                m_builder->addPoint(x+s,y-s,z-s);
-
+                drawPrism(x, y, z, s, s, s);
             }
         }      
     }
 
 }
-
-
-bool AcdReconFiller::hasType(std::vector<std::string>& list, std::string type) 
-{
-    if (list.size() == 0) return 1;
-
-    std::vector<std::string>::const_iterator i; 
-
-    i = std::find(list.begin(),list.end(),type);
-    if(i == list.end()) return 0;
-    else return 1;
-
-}
-

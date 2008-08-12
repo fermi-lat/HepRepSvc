@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/HepRepSvc/mainpage.h,v 1.4 2004/08/02 08:39:40 riccardo Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/HepRepSvc/mainpage.h,v 1.5 2008/07/06 22:12:40 lsrea Exp $
 // Mainpage for doxygen
 
 /** @mainpage package HepRepSvc
@@ -121,10 +121,10 @@
     clients and memory usage)
 
   HepRepInitSvc provides a mechanism for passing jobOption parameters to the fillers,
-  which are not Gaudi components. One such paramater is currently implemented:
+  which are not Gaudi components. One such parameter is currently implemented:
 
   - <b>bool HepRepInitSvc.VertexFiller_dashes</b> causes the extrapolated vertices to be drawn
-  as dashed lines. Default is false.
+  as dashed lines. Default is true.
 
   @section heprep What is HepRep?
 

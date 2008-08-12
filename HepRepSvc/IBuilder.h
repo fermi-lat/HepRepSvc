@@ -9,7 +9,7 @@
  *  @brief An abstract class to decouple compilation time to runtime
  *  implementation of the HepRep.
  * 
- *  This builde can be implemented in order to concretely build the
+ *  This builder can be implemented in order to concretely build the
  *  HepRep. It is used by the fillers at runtime, so by changing the
  *  builder it is possible to build different representations of the
  *  HepRep (XML, Corba, etc) using the same fillers.
@@ -48,7 +48,7 @@ class IBuilder{
                        std::string desc, 
                        std::string info) = 0;
   
-  /// Set the number of subinstances of a ginven instance if known;
+  /// Set the number of subinstances of a given instance if known;
   /// this can help a lot for the Corba implementation
   virtual void setSubinstancesNumber(std::string name, unsigned int n) = 0;
 

@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 
-#include "HepRepSvc/IFiller.h"
+#include "Filler.h"
 
 #include "geometry/Point.h"
 
@@ -31,7 +31,7 @@ namespace Event {
  *  @author R.Giannitrapani, M.Frailis
  */
 
-class MonteCarloFiller: public IFiller{
+class MonteCarloFiller: public Filler{
   
  public:
   MonteCarloFiller(HepRepInitSvc* hrisvc,
@@ -52,13 +52,6 @@ class MonteCarloFiller: public IFiller{
 
 	/// A method that return true if list contain type
 	/// TODO STL already has this
-  bool hasType(std::vector<std::string>& list, std::string type); 
-
-  std::string getTripleString(int precis, double x, double y, double z);
-  std::string getBits(unsigned int statBits, int highBit, int lowBit);
-  std::string getPositionString(const Point& position);
-  std::string getDirectionString(const Vector& position);
-
 
  private:
   void fillMcPositionHit(std::vector<std::string>& typesList, Event::McPositionHit* hit);

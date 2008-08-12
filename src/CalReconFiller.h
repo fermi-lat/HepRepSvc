@@ -1,9 +1,10 @@
 #ifndef CALRECONFILLER_H
 #define CALRECONFILLER_H
+
 #include <vector>
 #include <string>
 
-#include "HepRepSvc/IFiller.h"
+#include "Filler.h"
 
 class IGlastDetSvc;
 class IDataProviderSvc;
@@ -23,7 +24,7 @@ class Vector;
  *  @author R.Giannitrapani
  */
 
-class CalReconFiller: public IFiller{
+class CalReconFiller: public Filler{
   
  public:
   CalReconFiller(HepRepInitSvc* hrisvc,
@@ -37,12 +38,8 @@ class CalReconFiller: public IFiller{
   /// which subinstances to fill
   virtual void fillInstances (std::vector<std::string>&);
 
-  bool hasType(std::vector<std::string>& list, std::string type); 
 
  private:
-  std::string getTripleString(int precis, double x, double y, double z);
-  std::string getPositionString(const Point& position);
-  std::string getDirectionString(const Vector& position);
 
   HepRepInitSvc* m_hrisvc;
   IGlastDetSvc* m_gdsvc;

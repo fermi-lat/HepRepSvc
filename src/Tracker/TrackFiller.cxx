@@ -12,8 +12,8 @@
 #include "Event/TopLevel/EventModel.h"
 #include "Event/Recon/TkrRecon/TkrTrack.h"
 
-#include "CLHEP/Geometry/Transform3D.h"
-#include "CLHEP/Geometry/Vector3D.h"
+//#include "CLHEP/Geometry/Transform3D.h"
+//#include "CLHEP/Geometry/Vector3D.h"
 
 #include "CLHEP/Vector/LorentzVector.h"
 
@@ -265,19 +265,6 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
     }
 }
 
-
-bool TrackFiller::hasType(std::vector<std::string>& list, std::string type) 
-{
-    if (list.size() == 0) return 1;
-
-    std::vector<std::string>::const_iterator i; 
-
-    i = std::find(list.begin(),list.end(),type);
-    if(i == list.end()) return 0;
-    else return 1;
-
-}
-
 std::string TrackFiller::getTkrIdString(const idents::TkrId& tkrId)
 {
     std::stringstream tkrIdStream;
@@ -301,28 +288,6 @@ std::string TrackFiller::getTkrIdString(const idents::TkrId& tkrId)
     return tkrIdStream.str();
 }
 
-std::string TrackFiller::getTripleString(int precis, double x, double y, double z)
-{
-    std::stringstream triple;
-    triple.setf(std::ios::fixed);
-    triple.precision(precis);
-    triple << " (" << x << "," << y << "," << z << ")";
-
-    return triple.str();
-}
-
-std::string TrackFiller::getPositionString(const Point& position)
-{
-    int precis = 3;
-    return getTripleString(precis, position.x(), position.y(), position.z());
-}
-
-std::string TrackFiller::getDirectionString(const Vector& direction)
-{
-    int precis = 5;
-    return getTripleString(precis, direction.x(), direction.y(), direction.z());
-}
-
 std::string TrackFiller::getSlopeString(const Event::TkrTrackParams& params)
 {
     std::stringstream trkSlopes;
@@ -335,13 +300,3 @@ std::string TrackFiller::getSlopeString(const Event::TkrTrackParams& params)
     return trkSlopes.str();
 }
 
-std::string TrackFiller::getBits(unsigned int statBits, int highBit, int lowBit)
-{                    
-    std::stringstream outString;
-    int bit;
-    for (bit=highBit; bit>=lowBit; --bit) {
-        outString << (statBits>>(bit)&1) ;
-        if (bit%4==0) outString << " ";
-    }
-    return outString.str();
-}

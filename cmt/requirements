@@ -1,5 +1,5 @@
 package HepRepSvc
-version v0r24p3
+version v0r25
 author Riccardo Giannitrapani <riccardo@fisica.uniud.it>
 
 use GlastPolicy
@@ -9,7 +9,9 @@ use FluxSvc
 use RootIo
 use flux
 use TkrUtil
-use Fred * IExternal 
+use Fred * IExternal
+
+
 
 apply_pattern packageShr
 apply_pattern package_include
@@ -17,6 +19,7 @@ apply_pattern package_include
 private 
 
 use gr_app
+use OnboardFilterTds 
 
 apply_pattern package_headers
 apply_pattern package_Cshlibflags

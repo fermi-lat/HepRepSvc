@@ -11,7 +11,7 @@ GeometryFiller::GeometryFiller( unsigned int depth,
                                HepRepInitSvc* hrisvc,
                                IGlastDetSvc* gsvc):m_gsvc(gsvc)
 {
-  m_geometry = new HepRepGeometry(depth);
+  m_geometry = new HepRepGeometry(depth, this);
 }
 
 void GeometryFiller::buildTypes()
@@ -31,4 +31,3 @@ void GeometryFiller::fillInstances (std::vector<std::string>& typesList)
   m_gsvc->accept(*m_geometry);  
   m_geometry->reset();
 }
-
