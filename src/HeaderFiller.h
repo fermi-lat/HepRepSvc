@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 
-#include "HepRepSvc/IFiller.h"
+#include "Filler.h"
 
 class IDataProviderSvc;
 class HepRepInitSvc;
@@ -18,7 +18,7 @@ class HepRepInitSvc;
  *  @author R.Giannitrapani
  */
 
-class HeaderFiller: public IFiller{
+class HeaderFiller: public Filler{
   
  public:
   HeaderFiller(HepRepInitSvc* hrisvc,
@@ -34,8 +34,6 @@ class HeaderFiller: public IFiller{
 
 	/// A method that return true if list contain type
 	/// TODO STL already has this
-  bool hasType(std::vector<std::string>& list, std::string type); 
-
  private:
   /// This is the list of subfillers for the event (MC and Recon)
   std::vector<IFiller*> m_subFillers;

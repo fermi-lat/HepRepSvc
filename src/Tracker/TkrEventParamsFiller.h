@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 
-#include "HepRepSvc/IFiller.h"
+#include "src/Filler.h"
 #include "geometry/Vector.h"
 
 class IGlastDetSvc;
@@ -28,7 +28,7 @@ class Point;
  *  @author R.Giannitrapani
  */
 
-class TkrEventParamsFiller: public IFiller{
+class TkrEventParamsFiller: public Filler{
   
  public:
   TkrEventParamsFiller(HepRepInitSvc* hrisvc,
@@ -42,13 +42,7 @@ class TkrEventParamsFiller: public IFiller{
   /// which subinstances to fill
   virtual void fillInstances (std::vector<std::string>&);
 
-  bool hasType(std::vector<std::string>& list, std::string type); 
-
  private:
-  std::string getTripleString(int precis, double x, double y, double z);
-  std::string getBits(unsigned int statBits, int highBit, int lowBit);
-  std::string getPositionString(const Point& position);
-  std::string getDirectionString(const Vector& position);
 
   HepRepInitSvc* m_hrisvc;
   IGlastDetSvc*         m_gdsvc;

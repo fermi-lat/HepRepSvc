@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 
-#include "HepRepSvc/IFiller.h"
+#include "src/Filler.h"
 
 class IGlastDetSvc;
 class ITkrGeometrySvc;
@@ -19,7 +19,7 @@ class HepRepInitSvc;
  *  @author R.Giannitrapani
  */
 
-class ClusterFiller: public IFiller{
+class ClusterFiller: public Filler {
   
  public:
   ClusterFiller(HepRepInitSvc* hrisvc,
@@ -32,12 +32,9 @@ class ClusterFiller: public IFiller{
   virtual void buildTypes ();
   /// This method fill the instance tree, using the string vector to decide
   /// which subinstances to fill
-  virtual void fillInstances (std::vector<std::string>&);
-
-  bool hasType(std::vector<std::string>& list, std::string type); 
+  virtual void fillInstances (std::vector<std::string>&); 
 
  private:
-    void drawPrism(double x, double y, double z, double dx, double dy, double dz);
     HepRepInitSvc* m_hrisvc;
     IGlastDetSvc* m_gdsvc;
     ITkrGeometrySvc* m_tgsvc;

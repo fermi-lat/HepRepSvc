@@ -70,7 +70,7 @@ void ClusterFiller::buildTypes()
     m_builder->addType("TkrCluster", "Strip", "Strip", "");
     m_builder->addType("Strip", "ActiveStrip", "Active Part of Strip", "");
     m_builder->addAttValue("DrawAs","Prism","");
-    m_builder->addAttValue("Color","green","");
+    //m_builder->addAttValue("Color","green","");
     m_builder->addAttDef("Sequence", "Position in TkrClusterCol", "Physics", "");
     m_builder->addAttDef("Tower","Cluster Tower #","Physics","");
     m_builder->addAttDef("Plane","Cluster Plane #","Physics","");
@@ -86,7 +86,7 @@ void ClusterFiller::buildTypes()
     m_builder->addAttValue("Color","red","");
 
     m_builder->addType("TkrCluster", "ClusterMarker", " ", "");
-    m_builder->addAttValue("Color", "green", "");
+    //m_builder->addAttValue("Color", "green", "");
     if(_scalingMarker) {
         // Tracy hates the fixed-size marker, try again!
         m_builder->addType("ClusterMarker", "MarkerArm", " ", "");
@@ -223,17 +223,23 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
                     << ","  << pCluster->position().z() << ")";
                 m_builder->addAttValue("Position",clusterPosition.str(),"");
 
-                m_builder->addAttValue("RawToT",         (float)(pCluster->getRawToT()),"");
+                int rawToT = pCluster->getRawToT();
+                m_builder->addAttValue("RawToT",         (float) rawToT,"");
                 m_builder->addAttValue("Mips",           (float)(pCluster->getMips()),"");
 
                 //Draw the width of the cluster
 
                 //Now draw the hit strips
+                // check for ToT==255
+                bool isAcc = (rawToT==255);
+                //std::string clustColor = (isAcc ? "red" : "green");
                 m_builder->addInstance("TkrCluster", "Strip");
                 double waferPitch = m_siWaferSide + m_ssdGap;
                 double offset = -0.5*(m_nWaferAcross-1)*waferPitch;
                 for (int wafer=0;wafer<m_nWaferAcross; ++wafer) {
                     m_builder->addInstance("Strip", "ActiveStrip");
+                    if (isAcc) {m_builder->addAttValue("Color","red","");}
+                    else       {m_builder->addAttValue("Color","green","");}
                     double delta = offset + wafer*waferPitch;
                     x  = clusPos.x();
                     y  = clusPos.y() + delta;
@@ -251,14 +257,22 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
                     // make the cross in the measured view
                     m_builder->addInstance("TkrCluster", "ClusterMarker");
                     m_builder->addInstance("ClusterMarker", "MarkerArm");
+                    if (isAcc) {
+                        m_builder->addAttValue("Color","red","");
+                    }
+                    else       {m_builder->addAttValue("Color","green","");}
                     m_builder->addPoint(xToT+deltaX, yToT+deltaY, z+markerSize);
                     m_builder->addPoint(xToT-deltaX, yToT-deltaY, z-markerSize);  
                     m_builder->addInstance("ClusterMarker", "MarkerArm");
+                    if (isAcc) {m_builder->addAttValue("Color","red","");}
+                    else       {m_builder->addAttValue("Color","green","");}
                     m_builder->addPoint(xToT-deltaX, yToT-deltaY, z+markerSize);
                     m_builder->addPoint(xToT+deltaX, yToT+deltaY, z-markerSize);
                 } else {
                     // Here's the code for the real marker
                     m_builder->addInstance("TkrCluster", "ClusterMarker");
+                    if (isAcc) {m_builder->addAttValue("Color","red","");}
+                    else       {m_builder->addAttValue("Color","green","");}
                     m_builder->addPoint(xToT, yToT, z);       
                 }
 
@@ -455,31 +469,4 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
             }
         }
     }
-}
-
-void ClusterFiller::drawPrism(double x, double y, double z, 
-                              double dx, double dy, double dz)
-{
-    m_builder->addPoint(x+dx,y+dy,z+dz);
-    m_builder->addPoint(x-dx,y+dy,z+dz);
-    m_builder->addPoint(x-dx,y-dy,z+dz);
-    m_builder->addPoint(x+dx,y-dy,z+dz);
-    m_builder->addPoint(x+dx,y+dy,z-dz);
-    m_builder->addPoint(x-dx,y+dy,z-dz);
-    m_builder->addPoint(x-dx,y-dy,z-dz);
-    m_builder->addPoint(x+dx,y-dy,z-dz);
-    return;
-
-}
-
-bool ClusterFiller::hasType(std::vector<std::string>& list, std::string type) 
-{
-    if (list.size() == 0) return 1;
-
-    std::vector<std::string>::const_iterator i; 
-
-    i = std::find(list.begin(),list.end(),type);
-    if(i == list.end()) return 0;
-    else return 1;
-
 }

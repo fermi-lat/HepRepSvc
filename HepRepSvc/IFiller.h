@@ -26,7 +26,7 @@ class IBuilder;
 class IFiller{
   
  public:
-  /// This method init the type tree; it is used to define the logical
+  /// This method inits the type tree; it is used to define the logical
   /// hierarchy of HepRep types representing the event
   virtual void buildTypes () = 0;
   /// This method fill the instance tree, using the string vector to decide

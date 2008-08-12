@@ -1,5 +1,24 @@
-//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.52 2008/07/17 18:32:17 lsrea Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.53 2008/07/28 17:19:37 jrb Exp $
 /*
+ 
+ * v0r25   11-Jun-08 LSR Refactoring of package: 
+                            Implement Filler base class, and move common utils there
+                         Also:
+                            (bool) HepRepInitSvc.VertexFiller_dashes now defaults to true
+                            ToT==255 clusters now are colored red
+                            New Digi Filler, first sub-filler displays the filter track
+                               as a dashed red line
+ * v0r24p2  07-17-08 LSR Add some info to CalRecon Tree
+ * v0r24p1  07-8-08  LSR Try again!
+ * v0r24    07-06-08 LSR new service: HepRepInitSvc, to carry jO parameters to non-Alg routines
+                         First one is bool VertexFiller_dashes, to draw
+                            extrapolated vertices with dashed lines
+* v0r23p1  06-26-08 LSR Fixed bug that caused the ACD struck tiles not to be displayed
+ 
+===========================================
+Start latest first starting above here
+===========================================
+
  * v0r1     20-09-02 RG Inital release of the package
  * v0r2     07-07-03 RG Complete refactoring of HepRepSvc	
  * v0r3     17-07-03 RG Fixed compilation problems
@@ -49,10 +68,3 @@
                          Event namespace
  * v0r21    10-26-07 jrb Support trapezoidal prisms
  * v0r22    10-30-07 hmk use gr_app
- * v0r23p1  06-26-08 LSR Fixed bug that caused the ACD struck tiles not to be displayed
- * v0r24    07-06-08 LSR new service: HepRepInitSvc, to carry jO parameters to non-Alg routines
-                         First one is bool VertexFiller_dashes, to draw
-                            extrapolated vertices with dashed lines
- * v0r24p1  07-8-08 LSR  Try again!
- * v0r24p2  07-17-08 LSR Add some info to CalRecon Tree
- * v0r24p3  07-28-08 jrb Tag Navid's change to xml path ref. in job options

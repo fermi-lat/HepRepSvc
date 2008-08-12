@@ -16,7 +16,7 @@
  * 
  * @author Tracy Usher
  *
- * $Header: /nfs/slac/g/glast/ground/cvs/TkrRecon/TkrRecon/Services/HepRepInitSvc.h,v 1.17 2006/11/04 16:31:47 lsrea Exp $
+ * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/HepRepSvc/HepRepInitSvc.h,v 1.1 2008/07/08 14:50:12 lsrea Exp $
  */
 
 
@@ -45,7 +45,8 @@ public:
  
 private:
 
-    /// Variables which can be changed in TkrControl
+    // Variables connected to jO parameters
+
     bool m_vtx_dashes;
 };
 

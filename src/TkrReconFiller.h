@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 
-#include "HepRepSvc/IFiller.h"
+#include "Filler.h"
 
 class IGlastDetSvc;
 class ITkrGeometrySvc;
@@ -19,7 +19,7 @@ class HepRepInitSvc;
  *  @author R.Giannitrapani
  */
 
-class TkrReconFiller: public IFiller{
+class TkrReconFiller: public Filler{
   
  public:
   TkrReconFiller(HepRepInitSvc* hrisvc,
@@ -37,8 +37,6 @@ class TkrReconFiller: public IFiller{
   virtual void fillInstances (std::vector<std::string>&);
   /// This method to initialize the builder for the sub fillers
   virtual void setBuilder(IBuilder* b);
-
-  bool hasType(std::vector<std::string>& list, std::string type); 
 
  private:
   HepRepInitSvc* m_hrisvc;

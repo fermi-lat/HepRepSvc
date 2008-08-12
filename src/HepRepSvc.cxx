@@ -1,10 +1,10 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.21 2006/12/07 18:42:13 lsrea Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.22 2008/07/06 22:12:41 lsrea Exp $
 // 
 //  Original author: R.Giannitrapani
 //
 
 #include <sstream>
-#include "GaudiKernel/SmartIF.h"
+#include "GaudiKernel/SmartIF.h" 
 
 #include "Registry.h"
 #include "HepRepSvc/IServer.h"
@@ -20,6 +20,7 @@
 #include "MonteCarloFiller.h"
 #include "ReconFiller.h"
 #include "GeometryFiller.h"
+#include "DigiFiller.h"
 
 #include "FluxSvc/IFluxSvc.h"
 #include "FluxSvc/IFlux.h"
@@ -164,8 +165,6 @@ StatusCode HepRepSvc::initialize ()
       sc = theSvc->queryInterface(IRootIoSvc::interfaceID(), (void**)&m_rootIoSvc);
     }
     else m_rootIoSvc = 0;
-     
-    
     
     // use the incident service to register begin, end events
     IIncidentSvc* incsvc = 0;
@@ -176,14 +175,15 @@ StatusCode HepRepSvc::initialize ()
     
     // Register the geometry filler
     m_registry->registerFiller(new GeometryFiller(m_geomDepth, hrisvc, gsvc), "Geometry3D");
+
     // Register the header filler
     m_registry->registerFiller(new HeaderFiller(hrisvc, esvc), "Event");
+    // Register the digi filler
+    m_registry->registerFiller(new DigiFiller(hrisvc, gsvc, tgsvc, esvc), "Event");
     // Register the Recon filler 
     m_registry->registerFiller(new ReconFiller(hrisvc,gsvc,tgsvc,esvc,pps), "Event");
     // Register the mc filler
     m_registry->registerFiller(new MonteCarloFiller(hrisvc,gsvc,esvc,pps), "Event");
-
-
 
     //----------------------------------------------------------------
     // most of  the following taken from FluxSvc

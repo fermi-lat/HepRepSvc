@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 
-#include "HepRepSvc/IFiller.h"
+#include "src/Filler.h"
 #include "geometry/Vector.h"
 
 class IGlastDetSvc;
@@ -18,7 +18,9 @@ namespace idents {
 namespace Event {
   class TkrTrackParams;
 }
-class Point;
+
+
+//class Point;
 
 /** 
  *  @class TrackFiller
@@ -28,7 +30,7 @@ class Point;
  *  @author R.Giannitrapani
  */
 
-class TrackFiller: public IFiller{
+class TrackFiller: public Filler {
   
  public:
   TrackFiller(HepRepInitSvc* hrisvc,
@@ -42,14 +44,8 @@ class TrackFiller: public IFiller{
   /// which subinstances to fill
   virtual void fillInstances (std::vector<std::string>&);
 
-  bool hasType(std::vector<std::string>& list, std::string type); 
-
- private:
+private:
   std::string getTkrIdString(const idents::TkrId& tkrId);
-  std::string getTripleString(int precis, double x, double y, double z);
-  std::string getBits(unsigned int statBits, int highBit, int lowBit);
-  std::string getPositionString(const Point& position);
-  std::string getDirectionString(const Vector& position);
   std::string getSlopeString(const Event::TkrTrackParams& params);
 
   HepRepInitSvc* m_hrisvc;

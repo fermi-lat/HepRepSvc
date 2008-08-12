@@ -32,7 +32,7 @@ void Registry::registerFiller(IFiller* f, std::string tree)
   m_fillers[tree].push_back(f);
 }
 
-// This method set a builder to be used by the registered fillers
+// This method sets a builder to be used by the registered fillers
 void Registry::useBuilder(IBuilder* b)
 {
   std::map<std::string, fillerCol>::iterator i;

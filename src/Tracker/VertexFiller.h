@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 
-#include "HepRepSvc/IFiller.h"
+#include "src/Filler.h"
 
 #include "geometry/Vector.h"
 #include "geometry/Point.h"
@@ -21,7 +21,7 @@ class HepRepInitSvc;
  *  @author R.Giannitrapani
  */
 
-class VertexFiller: public IFiller{
+class VertexFiller: public Filler{
   
  public:
   VertexFiller(HepRepInitSvc* hrisvc,
@@ -35,13 +35,7 @@ class VertexFiller: public IFiller{
   /// which subinstances to fill
   virtual void fillInstances (std::vector<std::string>&);
 
-  bool hasType(std::vector<std::string>& list, std::string type); 
-
  private:
-  std::string getTripleString(int precis, double x, double y, double z);
-  std::string getPositionString(const Point& position);
-  std::string getDirectionString(const Vector& position);
-  std::string getBits(unsigned int statBits, int highBit, int lowBit);
   
   HepRepInitSvc* m_hrisvc;
   IGlastDetSvc* m_gdsvc;
