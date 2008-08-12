@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: lsrea  Mon Aug 11 22:03:39 PDT 2008
+HepRepSvc/HepRepSvc
+
+Modified Files:
+	HepRepInitSvc.h IBuilder.h IFiller.h IRegistry.h mainpage.h 
+Log Message:
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-24-03, operation: add
 Package: HepRepSvc
