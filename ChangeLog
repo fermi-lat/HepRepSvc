@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: ecephas  Tue Sep  2 04:14:25 PDT 2008
+GlastRelease-scons/HepRepSvc
+
+Added Files:
+	HepRepSvcLib.py SConscript 
+Log Message:
+Created SConscript and <package>Lib.py files.
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-25-00, operation: add
 Package: HepRepSvc
