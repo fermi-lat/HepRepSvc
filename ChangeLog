@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: lsrea  Tue Sep  9 18:26:40 PDT 2008
+HepRepSvc/HepRepSvc
+
+Modified Files:
+	HepRepInitSvc.h 
+Log Message:
+Color-code Tot255s, ghosts, hits on ghost tracks
+Change marker from an X to a butterfly for wide clusters (>4 strips)
+
+    *
+------------------------------------------------------------
 User: ecephas  Tue Sep  2 04:14:25 PDT 2008
 GlastRelease-scons/HepRepSvc
 
