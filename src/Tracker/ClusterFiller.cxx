@@ -29,6 +29,13 @@ namespace {
     float _markerWidth = 2.0;
     bool  _scalingMarker  = true;
     bool _drawDigisIfNoClusters = true;
+
+    std::string getClusterColor(Event::TkrCluster* pCluster, bool isAcc) {
+        if (isAcc) { return "red"; }
+        else if (pCluster->isSet(Event::TkrCluster::maskGHOST)) { return "255,100,27"; } // orange
+        else if (pCluster->isSet(Event::TkrCluster::maskSAMETRACK)) {return "yellow"; } 
+        else {return "green"; }
+    }
 }
 
 // Constructor
@@ -117,9 +124,9 @@ void ClusterFiller::buildTypes()
     m_builder->addAttDef("# strips", "# strips", "Physics", "");
     m_builder->addAttDef("StripList", "list of hit strips", "Physics", "");
 
-    m_builder->addType("TkrDigi", "DigiStrip", "Strip", "");
-    m_builder->addAttValue("DrawAs","Prism","");
-    m_builder->addAttValue("Color","yellow","");
+    //m_builder->addType("TkrDigi", "DigiStrip", "Strip", "");
+    //m_builder->addAttValue("DrawAs","Prism","");
+    //m_builder->addAttValue("Color","yellow","");
 
     m_builder->addType("TkrDigiCol","TkrYDigiCol","Digi","");
     m_builder->addAttDef("Total Y Digis", "# Y Digis", "Physics", "");
@@ -136,6 +143,7 @@ void ClusterFiller::buildTypes()
     m_builder->addType("TkrDigi", "DigiStrip", "Strip", "");
     m_builder->addAttValue("DrawAs","Prism","");
     m_builder->addAttValue("Color","yellow","");
+    m_builder->addAttValue("LineStyle","Dashed","");
 
     //add in truncation ranges... these block out the truncated portions of the plane
     m_builder->addType("TkrRecon", "TruncationMap", "map of TruncationRanges", "");
@@ -214,6 +222,7 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
                 m_builder->addAttValue("First Strip", pCluster->firstStrip(),"");
                 m_builder->addAttValue("Last Strip",  pCluster->lastStrip(),"");
 
+                /*
                 //Build string for cluster position
                 std::stringstream clusterPosition;
                 clusterPosition.setf(std::ios::fixed);
@@ -221,7 +230,9 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
                 clusterPosition << " (" << pCluster->position().x()
                     << ","  << pCluster->position().y() 
                     << ","  << pCluster->position().z() << ")";
-                m_builder->addAttValue("Position",clusterPosition.str(),"");
+                    */
+                m_builder->addAttValue("Position",
+                    getPositionString(pCluster->position()),"");
 
                 int rawToT = pCluster->getRawToT();
                 m_builder->addAttValue("RawToT",         (float) rawToT,"");
@@ -232,15 +243,16 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
                 //Now draw the hit strips
                 // check for ToT==255
                 bool isAcc = (rawToT==255);
-                //std::string clustColor = (isAcc ? "red" : "green");
+                std::string clusterColor = getClusterColor(pCluster,isAcc);
+
                 m_builder->addInstance("TkrCluster", "Strip");
                 double waferPitch = m_siWaferSide + m_ssdGap;
                 double offset = -0.5*(m_nWaferAcross-1)*waferPitch;
                 for (int wafer=0;wafer<m_nWaferAcross; ++wafer) {
                     m_builder->addInstance("Strip", "ActiveStrip");
-                    if (isAcc) {m_builder->addAttValue("Color","red","");}
-                    else       {m_builder->addAttValue("Color","green","");}
-                    double delta = offset + wafer*waferPitch;
+                    if(isAcc) m_builder->addAttValue("LineStyle","Dashed","");
+                    m_builder->addAttValue("Color", clusterColor, "");
+                     double delta = offset + wafer*waferPitch;
                     x  = clusPos.x();
                     y  = clusPos.y() + delta;
                     dx = halfWidth;
@@ -253,26 +265,30 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
                     drawPrism(x, y, z, dx, dy, dz);
                 }
 
+                // quick and dirty wide cluster display.
+                bool isWide = (pCluster->size()>4)&&m_hrisvc->getClusterFiller_showWide();
                 if(_scalingMarker) {
                     // make the cross in the measured view
                     m_builder->addInstance("TkrCluster", "ClusterMarker");
                     m_builder->addInstance("ClusterMarker", "MarkerArm");
-                    if (isAcc) {
-                        m_builder->addAttValue("Color","red","");
-                    }
-                    else       {m_builder->addAttValue("Color","green","");}
+                    if(isAcc) m_builder->addAttValue("LineStyle","Dashed","");
+                    m_builder->addAttValue("Color", clusterColor, "");
                     m_builder->addPoint(xToT+deltaX, yToT+deltaY, z+markerSize);
-                    m_builder->addPoint(xToT-deltaX, yToT-deltaY, z-markerSize);  
+                    m_builder->addPoint(xToT-deltaX, yToT-deltaY, z-markerSize);
+                    if(isWide) m_builder->addPoint(xToT-deltaX, yToT-deltaY, z+markerSize);
+
                     m_builder->addInstance("ClusterMarker", "MarkerArm");
-                    if (isAcc) {m_builder->addAttValue("Color","red","");}
-                    else       {m_builder->addAttValue("Color","green","");}
+                    if(isAcc) m_builder->addAttValue("LineStyle","Dashed","");
+                    m_builder->addAttValue("Color", clusterColor, "");
                     m_builder->addPoint(xToT-deltaX, yToT-deltaY, z+markerSize);
                     m_builder->addPoint(xToT+deltaX, yToT+deltaY, z-markerSize);
-                } else {
+                    if(isWide) m_builder->addPoint(xToT+deltaX, yToT+deltaY, z+markerSize);
+               } else {
                     // Here's the code for the real marker
                     m_builder->addInstance("TkrCluster", "ClusterMarker");
-                    if (isAcc) {m_builder->addAttValue("Color","red","");}
-                    else       {m_builder->addAttValue("Color","green","");}
+
+                    if(isAcc) m_builder->addAttValue("LineStyle","Dashed","");
+                    m_builder->addAttValue("Color", clusterColor, "");
                     m_builder->addPoint(xToT, yToT, z);       
                 }
 

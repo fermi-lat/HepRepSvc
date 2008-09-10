@@ -32,7 +32,7 @@ class ClusterFiller: public Filler {
   virtual void buildTypes ();
   /// This method fill the instance tree, using the string vector to decide
   /// which subinstances to fill
-  virtual void fillInstances (std::vector<std::string>&); 
+  virtual void fillInstances (std::vector<std::string>&);
 
  private:
     HepRepInitSvc* m_hrisvc;
