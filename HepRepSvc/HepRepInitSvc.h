@@ -16,7 +16,7 @@
  * 
  * @author Tracy Usher
  *
- * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/HepRepSvc/HepRepInitSvc.h,v 1.1 2008/07/08 14:50:12 lsrea Exp $
+ * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/HepRepSvc/HepRepInitSvc.h,v 1.2 2008/08/12 05:03:38 lsrea Exp $
  */
 
 
@@ -41,6 +41,7 @@ public:
     const InterfaceID& type() const;
 
     const bool getVertexFiller_dashes(){return m_vtx_dashes;}
+    const bool getClusterFiller_showWide() { return m_cls_showWide;}
 
  
 private:
@@ -48,6 +49,7 @@ private:
     // Variables connected to jO parameters
 
     bool m_vtx_dashes;
+    bool m_cls_showWide;
 };
 
 #endif // __HEPREPINITSVC_H
