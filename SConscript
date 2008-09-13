@@ -1,7 +1,7 @@
 # -*- python -*-
 # $Header
 # Authors: Riccardo Giannitrapani <riccardo@fisica.uniud.it> 
-# Version: HepRepSvc-00-25-00
+# Version: HepRepSvc-00-26-00
 Import('baseEnv')
 Import('listFiles')
 Import('packages')
