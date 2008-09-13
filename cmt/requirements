@@ -1,6 +1,7 @@
 package HepRepSvc
-version v0r26p1
-uthor Riccardo Giannitrapani <riccardo@fisica.uniud.it>
+version v0r26p2
+
+author Riccardo Giannitrapani <riccardo@fisica.uniud.it>
 
 use GlastPolicy
 use Event 
