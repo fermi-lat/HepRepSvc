@@ -1,7 +1,7 @@
-//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.54 2008/08/12 05:03:39 lsrea Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.55 2008/09/13 17:15:15 lsrea Exp $
 /*
  
- * v2r26    13-Sep-08   LSR  Display ghosts, wide clusters, needs latest Event
+ * v2r26p1 13-Sep-08   LSR  Display ghosts, wide clusters, needs latest Event
  * v0r25   11-Jun-08 LSR Refactoring of package: 
                             Implement Filler base class, and move common utils there
                          Also:
