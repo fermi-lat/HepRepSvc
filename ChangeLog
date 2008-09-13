@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: lsrea  Sat Sep 13 16:50:14 PDT 2008
+HepRepSvc/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+fixed a typo
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-26-01, operation: add
 Package: HepRepSvc
