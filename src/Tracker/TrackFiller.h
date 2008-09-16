@@ -53,6 +53,18 @@ private:
   IDataProviderSvc* m_dpsvc;
   IParticlePropertySvc* m_ppsvc;
 
+      double m_siStripPitch; 
+    double m_stripLength;
+    double m_siThickness;
+    double m_siWaferSide;
+    double m_siWaferActiveSide;
+    double m_ssdGap;
+    int    m_nWaferAcross;
+    int    m_numXTowers;
+    int    m_numYTowers;
+    double m_towerPitch;
+    double m_activeWidth;
+
 };
 
 #endif //TrackFiller_H

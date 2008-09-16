@@ -71,7 +71,8 @@ void ClusterFiller::buildTypes()
 {  
     m_builder->addType("TkrRecon","TkrClusterCol",
         "Reconstructed Cluster collections","");
-    m_builder->addAttDef("# Clusters", "number of clusters in Col", "Physics", "");
+    m_builder->addAttDef("# Clusters not Used", "number of clusters not used on tracks", "Physics", "");
+    m_builder->addAttDef("# Total Clusters", "number of clusters in Col", "Physics", "");
 
     m_builder->addType("TkrClusterCol","TkrCluster","Reconstructed Cluster","");
     m_builder->addType("TkrCluster", "Strip", "Strip", "");
@@ -132,7 +133,7 @@ void ClusterFiller::buildTypes()
     m_builder->addAttDef("Total Y Digis", "# Y Digis", "Physics", "");
     m_builder->addAttDef("Total Y Strips", "y-measuring strips", "Physics", "");
     m_builder->addType("TkrYDigiCol","TkrDigi","Digi","");
- 
+
     m_builder->addAttDef("DigiSequence", "Position in DigiCol", "Physics", "");
     m_builder->addAttDef("DigiTower","Digi Tower #","Physics","");
     m_builder->addAttDef("DigiPlane","Digi Plane #","Physics","");
@@ -170,21 +171,36 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
 
     if (pClusters && !pClusters->empty() && doClusters) {
 
-        int    nHits      = pClusters->size();
         m_builder->addInstance("TkrRecon","TkrClusterCol");
-        m_builder->addAttValue("# Clusters", nHits, "");
 
-        //Loop over all cluster hits in the SiClusters vector
+        int    nHits      = pClusters->size();
+        int    nNotUsed = 0;
+
+        int hit;
+        for(hit=0; hit<nHits; ++hit) {
+            Event::TkrCluster* pCluster = (*pClusters)[hit];
+            if(!pCluster->hitFlagged()) nNotUsed++;
+            //std::cout << "hit/flg/twr/pln/v/1st/lst " << hit << ": " 
+            //    << pCluster->hitFlagged() << ", " 
+            //    << pCluster->tower() << " " << pCluster->getPlane() << " " 
+            //    << pCluster->getTkrId().getView() << "; " 
+            //    << pCluster->firstStrip() << " " << pCluster->lastStrip() << std::endl;
+        }
+
+        m_builder->addAttValue("# Total Clusters", nHits, "");
+        m_builder->addAttValue("# Clusters not used", nNotUsed, "");
+
+        //Loop over all cluster hits in the TkrClusterCol vector
 
         double markerOffset = m_siStripPitch;
         double markerSize   = _markerSize*m_siStripPitch;
 
         double halfLength   = 0.5 * (m_stripLength);
 
-        int hit;
         for(hit=0; hit<nHits; ++hit) {
             {
                 Event::TkrCluster* pCluster = (*pClusters)[hit];
+                if(pCluster->hitFlagged()) continue;
                 Point              clusPos  = pCluster->position();
 
                 double halfWidth = 0.5 * pCluster->size() * m_siStripPitch;
@@ -222,15 +238,6 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
                 m_builder->addAttValue("First Strip", pCluster->firstStrip(),"");
                 m_builder->addAttValue("Last Strip",  pCluster->lastStrip(),"");
 
-                /*
-                //Build string for cluster position
-                std::stringstream clusterPosition;
-                clusterPosition.setf(std::ios::fixed);
-                clusterPosition.precision(3);
-                clusterPosition << " (" << pCluster->position().x()
-                    << ","  << pCluster->position().y() 
-                    << ","  << pCluster->position().z() << ")";
-                    */
                 m_builder->addAttValue("Position",
                     getPositionString(pCluster->position()),"");
 
@@ -252,7 +259,7 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
                     m_builder->addInstance("Strip", "ActiveStrip");
                     if(isAcc) m_builder->addAttValue("LineStyle","Dashed","");
                     m_builder->addAttValue("Color", clusterColor, "");
-                     double delta = offset + wafer*waferPitch;
+                    double delta = offset + wafer*waferPitch;
                     x  = clusPos.x();
                     y  = clusPos.y() + delta;
                     dx = halfWidth;
@@ -283,7 +290,7 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
                     m_builder->addPoint(xToT-deltaX, yToT-deltaY, z+markerSize);
                     m_builder->addPoint(xToT+deltaX, yToT+deltaY, z-markerSize);
                     if(isWide) m_builder->addPoint(xToT+deltaX, yToT+deltaY, z+markerSize);
-               } else {
+                } else {
                     // Here's the code for the real marker
                     m_builder->addInstance("TkrCluster", "ClusterMarker");
 
