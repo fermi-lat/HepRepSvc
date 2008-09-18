@@ -1,6 +1,7 @@
-//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.57 2008/09/13 23:50:14 lsrea Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.58 2008/09/16 05:01:05 lsrea Exp $
 /*
  
+ * v2r27p1 17-Sep-08   LSR  Speed up large events by a large factor!
  * v2r27   15-Sep-08   LSR  Connect Clusters on track to the TkrTrackHit
  * v2r26p2 13-Sep-08   LSR  typo in requirements file
  * v2r26p1 13-Sep-08   LSR  Display ghosts, wide clusters, needs latest Event

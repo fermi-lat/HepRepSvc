@@ -129,6 +129,15 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
         if(posHits!=0)
         {
             m_builder->addInstance("MC","PosHitCol");
+            int numPosHits = 0;
+            for(Event::McPositionHitVector::const_iterator ihit=posHits->begin();
+                ihit != posHits->end(); ihit++)
+            {
+                Event::McPointToPosHitVec relVec = mcPosHitTab.getRelBySecond(*ihit);
+                // If not related to a trajectory point then is "isolated" and we draw it here
+                if (relVec.empty()) numPosHits++;
+            }
+            m_builder->setSubinstancesNumber("PosHitCol",numPosHits);
             for(Event::McPositionHitVector::const_iterator ihit=posHits->begin();
                 ihit != posHits->end(); ihit++)
             {
@@ -165,6 +174,15 @@ void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
         if(intHits != 0)
         {
             m_builder->addInstance("MC","IntHitCol");
+            int numIntHits = 0;
+            for(Event::McIntegratingHitVector::const_iterator inHit=intHits->begin(); 
+                inHit != intHits->end(); inHit++) 
+            {
+                Event::McPointToIntHitVec relVec = mcIntHitTab.getRelBySecond(*inHit);
+                // If not related to a trajectory point then is "isolated" and we draw it here
+                if (relVec.empty()) numIntHits++;
+            }
+            m_builder->setSubinstancesNumber("IntHitCol",numIntHits);
             for(Event::McIntegratingHitVector::const_iterator inHit=intHits->begin(); 
                 inHit != intHits->end(); inHit++) 
             {
