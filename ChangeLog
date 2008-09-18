@@ -1,5 +1,17 @@
 ------------------------------------------------------------
 User: lsrea  Wed Sep 17 21:59:28 PDT 2008
+HepRepSvc/src/Tracker
+
+Modified Files:
+	ClusterFiller.cxx TrackFiller.cxx VertexFiller.cxx 
+Log Message:
+Mods to speed up large events by a large factor!!
+done by adding calls to setSubinstancesNumber() where appropriate
+Still needs to be done for McParticleCol... is this why Corba was crashing??
+
+    *
+------------------------------------------------------------
+User: lsrea  Wed Sep 17 21:59:28 PDT 2008
 HepRepSvc/src
 
 Modified Files:
