@@ -28,10 +28,14 @@ namespace {
     bool _drawDigisIfNoClusters = true;
 
     std::string getClusterColor(Event::TkrCluster* pCluster, bool isAcc) {
-        if (isAcc) { return "red"; }
-        else if (pCluster->isSet(Event::TkrCluster::maskGHOST)) { return "255,100,27"; } // orange
-        else if (pCluster->isSet(Event::TkrCluster::maskSAMETRACK)) {return "yellow"; } 
-        else {return "green"; }
+        // comment out for now, will re-enable after next FSW installation
+
+        //if (isAcc) { return "red"; }
+        //else if (pCluster->isSet(Event::TkrCluster::maskGHOST)) { return "255,100,27"; } // orange
+        //else if (pCluster->isSet(Event::TkrCluster::maskSAMETRACK)) {return "yellow"; } 
+        //else {
+            return "green"; 
+        //}
     }
 
 }
