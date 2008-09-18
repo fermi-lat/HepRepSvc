@@ -75,6 +75,7 @@ void VertexFiller::fillInstances (std::vector<std::string>& typesList)
             std::string color("yellow");
             double         lineWidth = 2;
 	        m_builder->addInstance("TkrRecon","GammaVtxCol");
+			m_builder->setSubinstancesNumber("GammaVtxCol",pVertices->size());
 	        Event::TkrVertexCol::const_iterator iter;
 	  
 	        for(iter = pVertices->begin(); iter != pVertices->end(); ++iter)

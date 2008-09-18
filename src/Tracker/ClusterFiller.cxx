@@ -71,8 +71,8 @@ void ClusterFiller::buildTypes()
 {  
     m_builder->addType("TkrRecon","TkrClusterCol",
         "Reconstructed Cluster collections","");
-    m_builder->addAttDef("# Clusters not Used", "number of clusters not used on tracks", "Physics", "");
     m_builder->addAttDef("# Total Clusters", "number of clusters in Col", "Physics", "");
+    m_builder->addAttDef("# Clusters not Used", "number of clusters not used on tracks", "Physics", "");
 
     m_builder->addType("TkrClusterCol","TkrCluster","Reconstructed Cluster","");
     m_builder->addType("TkrCluster", "Strip", "Strip", "");
@@ -170,12 +170,11 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
         SmartDataPtr<Event::TkrDigiCol>(m_dpsvc,EventModel::Digi::TkrDigiCol);
 
     if (pClusters && !pClusters->empty() && doClusters) {
+        int    nHits      = pClusters->size();
 
         m_builder->addInstance("TkrRecon","TkrClusterCol");
 
-        int    nHits      = pClusters->size();
         int    nNotUsed = 0;
-
         int hit;
         for(hit=0; hit<nHits; ++hit) {
             Event::TkrCluster* pCluster = (*pClusters)[hit];
@@ -186,6 +185,8 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
             //    << pCluster->getTkrId().getView() << "; " 
             //    << pCluster->firstStrip() << " " << pCluster->lastStrip() << std::endl;
         }
+
+        m_builder->setSubinstancesNumber("TkrClusterCol",nNotUsed);
 
         m_builder->addAttValue("# Total Clusters", nHits, "");
         m_builder->addAttValue("# Clusters not used", nNotUsed, "");
@@ -253,6 +254,7 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
                 std::string clusterColor = getClusterColor(pCluster,isAcc);
 
                 m_builder->addInstance("TkrCluster", "Strip");
+                m_builder->setSubinstancesNumber("Strip",m_nWaferAcross);
                 double waferPitch = m_siWaferSide + m_ssdGap;
                 double offset = -0.5*(m_nWaferAcross-1)*waferPitch;
                 for (int wafer=0;wafer<m_nWaferAcross; ++wafer) {
@@ -277,6 +279,7 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
                 if(_scalingMarker) {
                     // make the cross in the measured view
                     m_builder->addInstance("TkrCluster", "ClusterMarker");
+                    m_builder->setSubinstancesNumber("ClusterMarker",2);
                     m_builder->addInstance("ClusterMarker", "MarkerArm");
                     if(isAcc) m_builder->addAttValue("LineStyle","Dashed","");
                     m_builder->addAttValue("Color", clusterColor, "");
@@ -347,11 +350,13 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
 
         if(totXHits>0) {
             m_builder->addInstance("TkrDigiCol", "TkrXDigiCol");
+            m_builder->setSubinstancesNumber("TkrXDigiCol", xDigis);
             m_builder->addAttValue("Total X Digis", xDigis, "");
             m_builder->addAttValue("Total X Strips", totXHits, "");
         }
         if(totYHits>0) {
             m_builder->addInstance("TkrDigiCol", "TkrYDigiCol");       
+            m_builder->setSubinstancesNumber("TkrYDigiCol", yDigis);
             m_builder->addAttValue("Total Y Digis", yDigis, "");
             m_builder->addAttValue("Total Y Strips", totYHits, "");
         }
@@ -384,6 +389,7 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
             m_builder->addAttValue("StripList", stripList.str(), "");
 
             if(_drawDigisIfNoClusters) { 
+                m_builder->setSubinstancesNumber("TkrDigi",nHits);
                 for(iHit=0;iHit<nHits;++iHit) {
                     int strip = pDigi->getHit(iHit);
                     m_builder->addInstance("TkrDigi", "DigiStrip");
@@ -413,6 +419,13 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
         Event::TkrTruncationInfo::TkrTruncationMap*  truncMap = truncInfo->getTruncationMap();
         Event::TkrTruncationInfo::TkrTruncationMap::const_iterator iter = truncMap->begin();
         m_builder->addInstance("TkrRecon", "TruncationMap");
+        int numTrunc = 0;
+        for(; iter!=truncMap->end(); ++iter) {
+            Event::TkrTruncatedPlane trunc = iter->second;
+            const int status   = trunc.getStatus();
+            if (status!=0) numTrunc++;
+        }
+        m_builder->setSubinstancesNumber("TruncationMap",numTrunc);
 
         for(; iter!=truncMap->end(); ++iter) {
             Event::TkrTruncatedPlane trunc = iter->second;

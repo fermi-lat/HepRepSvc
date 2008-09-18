@@ -81,7 +81,9 @@ class CalReconFiller: public Filler{
   /// the value of fCellCmp field defining CsI crystal
   int m_eXtal;      
   /// number of geometric segments per Xtal
-  int m_nCsISeg;    
+  int m_nCsISeg;
+  /// number of layers
+  int m_nLayers;
 };
 
 #endif //CALRECONFILLER_H

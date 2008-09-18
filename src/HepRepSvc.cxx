@@ -1,9 +1,24 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.22 2008/07/06 22:12:41 lsrea Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.23 2008/08/12 05:03:39 lsrea Exp $
 // 
 //  Original author: R.Giannitrapani
 //
 
 #include <sstream>
+#include "GaudiKernel/SvcFactory.h"
+#include "GaudiKernel/Algorithm.h"
+#include "GaudiKernel/IAlgorithm.h"
+#include "GaudiKernel/MsgStream.h"
+#include "GaudiKernel/IAlgManager.h"
+#include "GaudiKernel/SmartDataPtr.h"
+#include "GaudiKernel/Incident.h"
+#include "GaudiKernel/IIncidentSvc.h"
+#include "GaudiKernel/IObjManager.h"
+#include "GaudiKernel/IToolFactory.h"
+#include "GaudiKernel/IAppMgrUI.h"
+#include "GaudiKernel/Property.h"
+#include "GaudiKernel/IParticlePropertySvc.h"
+#include "GaudiKernel/ParticleProperty.h"
+#include "GaudiKernel/IDataProviderSvc.h"
 #include "GaudiKernel/SmartIF.h" 
 
 #include "Registry.h"
@@ -30,28 +45,13 @@
 #include "Event/TopLevel/Event.h"
 #include "Event/TopLevel/EventModel.h"
 
-#include "GaudiKernel/SvcFactory.h"
-#include "GaudiKernel/Algorithm.h"
-#include "GaudiKernel/IAlgorithm.h"
-#include "GaudiKernel/MsgStream.h"
-#include "GaudiKernel/IAlgManager.h"
-#include "GaudiKernel/SmartDataPtr.h"
-#include "GaudiKernel/Incident.h"
-#include "GaudiKernel/IIncidentSvc.h"
-#include "GaudiKernel/IObjManager.h"
-#include "GaudiKernel/IToolFactory.h"
-#include "GaudiKernel/IAppMgrUI.h"
-#include "GaudiKernel/Property.h"
-#include "GaudiKernel/IParticlePropertySvc.h"
-#include "GaudiKernel/ParticleProperty.h"
-#include "GaudiKernel/IDataProviderSvc.h"
 
 #include "GlastSvc/GlastDetSvc/IGlastDetSvc.h"
 #include "TkrUtil/ITkrGeometrySvc.h"
 
 // declare the service factories for the FluxSvc
 static SvcFactory<HepRepSvc> a_factory;
-const ISvcFactory& HepRepSvcFactory = a_factory;
+const  ISvcFactory& HepRepSvcFactory = a_factory;
 
 // Standard Constructor
 HepRepSvc::HepRepSvc(const std::string& name,ISvcLocator* svc)

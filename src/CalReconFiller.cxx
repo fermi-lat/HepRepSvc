@@ -43,12 +43,12 @@ m_hrisvc(hrisvc),m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc)
     double xtalHeight;
     double xtalWidth;
     double xtalLength;
-    int nLayers;
+    //int nLayers;
     int eLATTowers;
     int eTowerCAL;
     int eXtal;
 
-    m_gdsvc->getNumericConstByName(std::string("CALnLayer"), &nLayers);
+    m_gdsvc->getNumericConstByName(std::string("CALnLayer"), &m_nLayers);
 
     m_gdsvc->getNumericConstByName(std::string("CsIHeight"),&xtalHeight); 
     m_gdsvc->getNumericConstByName(std::string("CsIWidth"),&xtalWidth); 
@@ -65,61 +65,24 @@ m_hrisvc(hrisvc),m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc)
 
     /*
     double value;
-    if(!m_gdsvc->getNumericConstByName(std::string("CALnLayer"), &value))
-    {
-    } 
+    if(!m_gdsvc->getNumericConstByName(std::string("CALnLayer"), &value)){} 
     else nLayers = int(value);
-
-    if(!m_gdsvc->getNumericConstByName(std::string("eLATTowers"), &value))
-    {
-    } 
+    if(!m_gdsvc->getNumericConstByName(std::string("eLATTowers"), &value)){} 
     else eLATTowers = int(value);
-
-    if(!m_gdsvc->getNumericConstByName(std::string("eTowerCAL"), &value))
-    {
-    } 
+    if(!m_gdsvc->getNumericConstByName(std::string("eTowerCAL"), &value)){} 
     else eTowerCAL = int(value);
-
-    if(!m_gdsvc->getNumericConstByName(std::string("eXtal"), &value))
-    {
-    } 
+    if(!m_gdsvc->getNumericConstByName(std::string("eXtal"), &value)){} 
     else eXtal = int(value);
-
-    if(!m_gdsvc->getNumericConstByName(std::string("CsIHeight"),&xtalHeight)) 
-    {
-    } 
-
-    if(!m_gdsvc->getNumericConstByName(std::string("CsIWidth"),&xtalWidth)) 
-    {
-    } 
-
-    if(!m_gdsvc->getNumericConstByName(std::string("CsILength"),&xtalLength)) 
-    {
-    } 
-
-    if(!m_gdsvc->getNumericConstByName(std::string("xNum"),&m_xNum)) 
-    {
-    } 
-
-    if(!m_gdsvc->getNumericConstByName(std::string("yNum"),&m_yNum)) 
-    {
-    } 
-
-    if(!m_gdsvc->getNumericConstByName(std::string("eTowerCAL"),&m_eTowerCAL)) 
-    {
-    } 
-
-    if(!m_gdsvc->getNumericConstByName(std::string("eLATTowers"),&m_eLATTowers)) 
-    {
-    } 
-
-    if(!m_gdsvc->getNumericConstByName(std::string("eXtal"),&m_eXtal)) 
-    {
-    } 
-
-    if(!m_gdsvc->getNumericConstByName(std::string("nCsISeg"),&m_nCsISeg)) 
-    } 
-*/
+    if(!m_gdsvc->getNumericConstByName(std::string("CsIHeight"),&xtalHeight)) {} 
+    if(!m_gdsvc->getNumericConstByName(std::string("CsIWidth"),&xtalWidth)) {} 
+    if(!m_gdsvc->getNumericConstByName(std::string("CsILength"),&xtalLength)) {} 
+    if(!m_gdsvc->getNumericConstByName(std::string("xNum"),&m_xNum)) {} 
+    if(!m_gdsvc->getNumericConstByName(std::string("yNum"),&m_yNum)) {} 
+    if(!m_gdsvc->getNumericConstByName(std::string("eTowerCAL"),&m_eTowerCAL)) {} 
+    if(!m_gdsvc->getNumericConstByName(std::string("eLATTowers"),&m_eLATTowers)) {} 
+    if(!m_gdsvc->getNumericConstByName(std::string("eXtal"),&m_eXtal)) {} 
+    if(!m_gdsvc->getNumericConstByName(std::string("nCsISeg"),&m_nCsISeg)) (} 
+    */
 
     int layer=0;
     idents::VolumeIdentifier topLayerId;
@@ -137,7 +100,7 @@ m_hrisvc(hrisvc),m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc)
     m_gdsvc->getTransform3DByID(topLayerId,&transfTop);
     CLHEP::Hep3Vector vecTop = transfTop.getTranslation();
 
-    layer=nLayers-1;
+    layer=m_nLayers-1;
     idents::VolumeIdentifier bottomLayerId;
     bottomLayerId.append(eLATTowers);
     bottomLayerId.append(0);
@@ -236,6 +199,7 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
             int nXtals = cxrc->size();
             double eTot = 0.0;
             m_builder->addInstance("CalRecon","XtalCol");    
+            m_builder->setSubinstancesNumber("XtalCol", nXtals);
             // drawing red box for each log with a size
             // proportional to energy deposition
 
@@ -263,105 +227,105 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
             if(emax>0 && (hasType(typesList, "Recon/CalRecon/XtalCol/Xtal")) ){
                 // loop over all crystals in reconstructed collection
                 // to draw red boxes
-                for (Event::CalXtalRecCol::const_iterator it = cxrc->begin();
-                    it != cxrc->end(); it++){
+                Event::CalXtalRecCol::const_iterator it = cxrc->begin();                
+                for (;it!=cxrc->end(); ++it){
 
-                        // get poiner to the reconstructed data for individual crystal
-                        Event::CalXtalRecData* recData = *it;
+                    // get poiner to the reconstructed data for individual crystal
+                    Event::CalXtalRecData* recData = *it;
 
-                        // get reconstructed energy in the crystal
-                        double eneXtal = recData->getEnergy();
+                    // get reconstructed energy in the crystal
+                    double eneXtal = recData->getEnergy();
 
-                        // draw crystals containing less than 1% of maximum energy dashed
-                        m_builder->addInstance("XtalCol", "Xtal"); 
-                        //if(eneXtal<0.01*emax) m_builder->addAttValue("LineStyle","Dashed","");
-                        m_builder->addAttValue("E", (float)eneXtal, "");
+                    // draw crystals containing less than 1% of maximum energy dashed
+                    m_builder->addInstance("XtalCol", "Xtal"); 
+                    //if(eneXtal<0.01*emax) m_builder->addAttValue("LineStyle","Dashed","");
+                    m_builder->addAttValue("E", (float)eneXtal, "");
 
-                        // get the vector of reconstructed position
-                        HepVector3D pXtal = recData->getPosition() - p0;
+                    // get the vector of reconstructed position
+                    HepVector3D pXtal = recData->getPosition() - p0;
 
-                        // get reconstructed coordinates
-                        double x = pXtal.x();
-                        double y = pXtal.y();
-                        double z = pXtal.z();
-
-
-                        // calculate the half size of the box, 
-                        // taking the 90% of crystal half height
-                        // as the size corresponding to the maximum energy
-                        //double s = 0.45*m_xtalHeight*eneXtal/emax;
-                        double s = 2. * 0.45*m_xtalHalfHeight*pow(eneXtal/emax,0.333);
-                        drawPrism(x, y, z, s, s, s);
-
-                        // Draw the faint outline of the entire log
-                        m_builder->addInstance("XtalCol", "XtalLog");
-                        //if(eneXtal<0.01*emax) m_builder->addAttValue("LineStyle","Dashed","");
-
-                        // Get the volume identifier
-                        const idents::CalXtalId xtalId = recData->getPackedId();
-
-                        // unpack crystal identification into tower, layer and column number
-                        int layer = xtalId.getLayer();
-                        int tower = xtalId.getTower();
-                        int col   = xtalId.getColumn();
-
-                        // create Volume Identifier for segment 0 of this crystal
-                        idents::VolumeIdentifier segm0Id;
-                        segm0Id.append(m_eLATTowers);
-                        segm0Id.append(tower/m_xNum);
-                        segm0Id.append(tower%m_xNum);
-                        segm0Id.append(m_eTowerCAL);
-                        segm0Id.append(layer);
-                        segm0Id.append(layer%2); 
-                        segm0Id.append(col);
-                        segm0Id.append(m_eXtal);
-                        segm0Id.append(0);
-
-                        HepTransform3D transf;
-
-                        //get 3D transformation for segment 0 of this crystal
-                        m_gdsvc->getTransform3DByID(segm0Id,&transf);
-                        //get position of the center of the segment 0
-                        CLHEP::Hep3Vector vect0 = transf.getTranslation();
-
-                        // create Volume Identifier for the last segment of this crystal
-                        idents::VolumeIdentifier segm11Id;
-                        // copy all fields from segm0Id, except segment number
-                        for(int ifield = 0; ifield < fSegment; ifield++)
-                            segm11Id.append(segm0Id[ifield]);
-                        segm11Id.append(m_nCsISeg-1); // set segment number for the last segment
-
-                        //get 3D transformation for the last segment of this crystal
-                        m_gdsvc->getTransform3DByID(segm11Id,&transf);
-                        //get position of the center of the last segment
-                        CLHEP::Hep3Vector vect1 = transf.getTranslation();
-
-                        // Crystal center is what we want
-                        CLHEP::Hep3Vector xtalCtr = 0.5 * (vect0 + vect1);
-
-                        double xXtal = xtalCtr.x();
-                        double yXtal = xtalCtr.y();
-                        double zXtal = xtalCtr.z();
-
-                        double xHalf = m_xtalHalfWidth;
-                        double yHalf = m_xtalHalfLength;
-                        double zHalf = m_xtalHalfHeight;
+                    // get reconstructed coordinates
+                    double x = pXtal.x();
+                    double y = pXtal.y();
+                    double z = pXtal.z();
 
 
+                    // calculate the half size of the box, 
+                    // taking the 90% of crystal half height
+                    // as the size corresponding to the maximum energy
+                    //double s = 0.45*m_xtalHeight*eneXtal/emax;
+                    double s = 2. * 0.45*m_xtalHalfHeight*pow(eneXtal/emax,0.333);
+                    drawPrism(x, y, z, s, s, s);
 
-                        // Start drawing this side of the log. 
-                        // How we do this depends on if x or y 
-                        if (layer % 2 == 1) // y face is constant
-                        {
-                            drawPrism(xXtal, yXtal, zXtal,
-                                m_xtalHalfWidth, m_xtalHalfLength, m_xtalHalfHeight);
-                        }
-                        else // x face is constant
-                        {
-                            drawPrism(xXtal, yXtal, zXtal,
-                                m_xtalHalfLength, m_xtalHalfWidth, m_xtalHalfHeight);
-                        }
+                    // Draw the faint outline of the entire log
+                    m_builder->addInstance("XtalCol", "XtalLog");
+                    //if(eneXtal<0.01*emax) m_builder->addAttValue("LineStyle","Dashed","");
+
+                    // Get the volume identifier
+                    const idents::CalXtalId xtalId = recData->getPackedId();
+
+                    // unpack crystal identification into tower, layer and column number
+                    int layer = xtalId.getLayer();
+                    int tower = xtalId.getTower();
+                    int col   = xtalId.getColumn();
+
+                    // create Volume Identifier for segment 0 of this crystal
+                    idents::VolumeIdentifier segm0Id;
+                    segm0Id.append(m_eLATTowers);
+                    segm0Id.append(tower/m_xNum);
+                    segm0Id.append(tower%m_xNum);
+                    segm0Id.append(m_eTowerCAL);
+                    segm0Id.append(layer);
+                    segm0Id.append(layer%2); 
+                    segm0Id.append(col);
+                    segm0Id.append(m_eXtal);
+                    segm0Id.append(0);
+
+                    HepTransform3D transf;
+
+                    //get 3D transformation for segment 0 of this crystal
+                    m_gdsvc->getTransform3DByID(segm0Id,&transf);
+                    //get position of the center of the segment 0
+                    CLHEP::Hep3Vector vect0 = transf.getTranslation();
+
+                    // create Volume Identifier for the last segment of this crystal
+                    idents::VolumeIdentifier segm11Id;
+                    // copy all fields from segm0Id, except segment number
+                    for(int ifield = 0; ifield < fSegment; ifield++)
+                        segm11Id.append(segm0Id[ifield]);
+                    segm11Id.append(m_nCsISeg-1); // set segment number for the last segment
+
+                    //get 3D transformation for the last segment of this crystal
+                    m_gdsvc->getTransform3DByID(segm11Id,&transf);
+                    //get position of the center of the last segment
+                    CLHEP::Hep3Vector vect1 = transf.getTranslation();
+
+                    // Crystal center is what we want
+                    CLHEP::Hep3Vector xtalCtr = 0.5 * (vect0 + vect1);
+
+                    double xXtal = xtalCtr.x();
+                    double yXtal = xtalCtr.y();
+                    double zXtal = xtalCtr.z();
+
+                    double xHalf = m_xtalHalfWidth;
+                    double yHalf = m_xtalHalfLength;
+                    double zHalf = m_xtalHalfHeight;
+
+
+
+                    // Start drawing this side of the log. 
+                    // How we do this depends on if x or y 
+                    if (layer % 2 == 1) // y face is constant
+                    {
+                        drawPrism(xXtal, yXtal, zXtal,
+                            m_xtalHalfWidth, m_xtalHalfLength, m_xtalHalfHeight);
                     }
+                    else // x face is constant
+                    {
+                        drawPrism(xXtal, yXtal, zXtal,
+                            m_xtalHalfLength, m_xtalHalfWidth, m_xtalHalfHeight);
+                    }
+                }
             }
         }
     }
@@ -380,6 +344,7 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
         // if pointer is not zero, start drawing
         if(cls){
             int numClusters = cls->size();
+            m_builder->setSubinstancesNumber("ClusterCol", numClusters);
 
             for (int ic=0; ic<numClusters; ic++) 
             {
@@ -391,7 +356,8 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
                 // Specific vector of layer data
                 Event::CalClusterLayerDataVec& lyrDataVec = (*cl);
 
-                // get total energy in the calorimeter: energySum is not filled when reading from Root!
+                // get total energy in the calorimeter: 
+                // energySum is not filled when reading from Root!
                 double clusEnergy = cl->getCalParams().getEnergy();
 
                 m_builder->addAttValue("E", (float)clusEnergy, "");
@@ -424,7 +390,7 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
                     // Draw the layers reconstructed positions
                     m_builder->addInstance("Cluster", "ClusterLayers");    
                     // loop over calorimeter layers
-                    for( int l=0;l<8;l++){
+                    for( int l=0;l<m_nLayers;l++){
 
                         // if energy in this layer is not zero - draw blue cross at
                         // the average reconstructed position for this layer
@@ -468,18 +434,24 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
         m_builder->addInstance("CalRecon","CalMipTrackCol");    
 
         //  get pointer to the CalMIPs collection
-        Event::CalMipTrackCol* CalMipTrackCol = SmartDataPtr<Event::CalMipTrackCol>(m_dpsvc, EventModel::CalRecon::CalMipTrackCol);
+        Event::CalMipTrackCol* CalMipTrackCol = 
+            SmartDataPtr<Event::CalMipTrackCol>(m_dpsvc, 
+            EventModel::CalRecon::CalMipTrackCol);
 
         // if pointer is not zero, start drawing
         if(CalMipTrackCol)
         {
             // Retrieve the CalMIPs to CalXtalRecData relational table
-            //SmartDataPtr<Event::CalXtalMIPsTabList> CalXtalMipsTable(m_dpsvc, EventModel::CalRecon::CalXtalMIPsTab);
-            //Event::CalXtalMIPsTab* CalXtalMIPsTab = new Event::CalXtalMIPsTab(CalXtalMipsTable);
+            //SmartDataPtr<Event::CalXtalMIPsTabList> 
+            //    CalXtalMipsTable(m_dpsvc, EventModel::CalRecon::CalXtalMIPsTab);
+            //Event::CalXtalMIPsTab* CalXtalMIPsTab 
+            //    = new Event::CalXtalMIPsTab(CalXtalMipsTable);
 
             int numMIPs = CalMipTrackCol->size();
+            m_builder->setSubinstancesNumber("CalMipTrackCol", numMIPs);
 
-            for(Event::CalMipTrackColItr mipIter = CalMipTrackCol->begin(); mipIter != CalMipTrackCol->end(); mipIter++)
+            Event::CalMipTrackColItr mipIter = CalMipTrackCol->begin();            
+            for(; mipIter != CalMipTrackCol->end(); mipIter++)
             {
                 Event::CalMipTrack* calMipTrack = *mipIter;
 

@@ -171,6 +171,7 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
     int numTracks = pTracks->size();
 
     if (numTracks==0) return;
+    m_builder->setSubinstancesNumber("Tracks",numTracks);
 
     int trackId  = 0;
     int trackWid = 2.0;
@@ -257,6 +258,7 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
         for(hitIter=track.begin(); hitIter!=track.end(); ++hitIter, ++hit)
         {
             m_builder->addInstance("Track","TkrTrackHit");
+            m_builder->setSubinstancesNumber("TkrTrackHit", track.size());
             m_builder->addAttValue("LineWidth", (float)trackWid, "");
 
             Event::TkrTrackHit& plane = **hitIter;
