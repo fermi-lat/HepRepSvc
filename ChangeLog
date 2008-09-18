@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: lsrea  Thu Sep 18 07:29:23 PDT 2008
+HepRepSvc/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+Commented out ghost stuff so the speedup can go in faster.
+Will re-enable after the new FSW has gone in.
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-27-01, operation: add
 Package: HepRepSvc
