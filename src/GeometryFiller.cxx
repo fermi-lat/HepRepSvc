@@ -8,10 +8,11 @@
 #include <algorithm>
 
 GeometryFiller::GeometryFiller( unsigned int depth,
-                               HepRepInitSvc* hrisvc,
-                               IGlastDetSvc* gsvc):m_gsvc(gsvc)
+				HepRepInitSvc* hrisvc,
+				IGlastDetSvc* gsvc,
+				int geomType ):m_gsvc(gsvc)
 {
-  m_geometry = new HepRepGeometry(depth, this);
+  m_geometry = new HepRepGeometry(depth, this, "propagate", geomType);
 }
 
 void GeometryFiller::buildTypes()
