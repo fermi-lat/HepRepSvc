@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: echarles  Mon Sep 22 15:05:04 PDT 2008
+HepRepSvc/src
+
+Modified Files:
+	HepRepGeometry.h HepRepGeometry.cxx 
+Log Message:
+added display levels to HepRepGeometry so I don't have to disable all the spacecraft stuff every time.  Not fully implemented
+    *
+------------------------------------------------------------
 User: echarles  Mon Sep 22 15:04:20 PDT 2008
 HepRepSvc/src
 
