@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: echarles  Mon Sep 22 15:06:15 PDT 2008
+HepRepSvc/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+added AcdUtil to requirements to get AcdGeometrySvc
+    *
+------------------------------------------------------------
 User: echarles  Mon Sep 22 15:05:54 PDT 2008
 HepRepSvc/src
 
