@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: echarles  Mon Sep 22 15:03:24 PDT 2008
+HepRepSvc/src
+
+Modified Files:
+	ReconFiller.h ReconFiller.cxx 
+Log Message:
+Added AcdGeometrySvc to ReconFiller so it can be passed to AcdReconFiller
+    *
+------------------------------------------------------------
 User: echarles  Mon Sep 22 15:02:36 PDT 2008
 HepRepSvc/src
 
