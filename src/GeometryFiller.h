@@ -20,12 +20,14 @@ class HepRepGeometry;
  */
 
 class GeometryFiller : public Filler {
+
   
  public:
   GeometryFiller(unsigned int depth,
-      HepRepInitSvc* hrisvc,
-      IGlastDetSvc* gsvc);
-
+		 HepRepInitSvc* hrisvc,
+		 IGlastDetSvc* gsvc,
+		 int geomType );
+  
   // needed to satisfy the abstract class 
   /// This method init the type tree
   virtual void buildTypes ();
