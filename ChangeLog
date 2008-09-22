@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: echarles  Mon Sep 22 15:01:35 PDT 2008
+HepRepSvc/src
+
+Added Files:
+	AcdPointFiller.cxx AcdPointFiller.h 
+Log Message:
+Added AcdPointFiller to use Acd objects to fill HepRep points in drawing tiles and ribbons
+    *
+------------------------------------------------------------
 User: echarles  Mon Sep 22 15:00:53 PDT 2008
 HepRepSvc/src
 
