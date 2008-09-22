@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.23 2008/08/12 05:03:39 lsrea Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.24 2008/09/18 04:59:28 lsrea Exp $
 // 
 //  Original author: R.Giannitrapani
 //
@@ -48,6 +48,7 @@
 
 #include "GlastSvc/GlastDetSvc/IGlastDetSvc.h"
 #include "TkrUtil/ITkrGeometrySvc.h"
+#include "AcdUtil/IAcdGeometrySvc.h"
 
 // declare the service factories for the FluxSvc
 static SvcFactory<HepRepSvc> a_factory;
@@ -63,6 +64,7 @@ HepRepSvc::HepRepSvc(const std::string& name,ISvcLocator* svc)
   declareProperty("streamPath"   , m_streamPath="");
   declareProperty("startFred"   , m_startFred="");
   declareProperty("geometryDepth", m_geomDepth=4);
+  declareProperty("geometryType", m_geomType="FullGeom");
   
   m_server=0;
 }
@@ -135,6 +137,14 @@ StatusCode HepRepSvc::initialize ()
       return status;
     }
 
+    // get the AcdGeometry Service    
+    IAcdGeometrySvc* acdsvc = 0;
+    status = service("AcdGeometrySvc", acdsvc, true);
+    if( status.isFailure()) {
+      log << MSG::ERROR << "Could not find AcdGeometrySvc" << endreq;
+      return status;
+    }
+
     // get the HepRepInitSvc Service    
     HepRepInitSvc* hrisvc = 0;
     status = service("HepRepInitSvc", hrisvc, true);
@@ -173,15 +183,19 @@ StatusCode HepRepSvc::initialize ()
     incsvc->addListener(this, "BeginEvent", 100);
     incsvc->addListener(this, "EndEvent", 0);
     
+    // 
+    int geomType = HepRepGeometry::getGeomType(m_geomType,log);
+    if ( geomType < 0 ) return StatusCode::FAILURE;
+
     // Register the geometry filler
-    m_registry->registerFiller(new GeometryFiller(m_geomDepth, hrisvc, gsvc), "Geometry3D");
+    m_registry->registerFiller(new GeometryFiller(m_geomDepth, hrisvc, gsvc, geomType), "Geometry3D");
 
     // Register the header filler
     m_registry->registerFiller(new HeaderFiller(hrisvc, esvc), "Event");
     // Register the digi filler
-    m_registry->registerFiller(new DigiFiller(hrisvc, gsvc, tgsvc, esvc), "Event");
+    m_registry->registerFiller(new DigiFiller(hrisvc, gsvc, tgsvc,acdsvc,esvc), "Event");
     // Register the Recon filler 
-    m_registry->registerFiller(new ReconFiller(hrisvc,gsvc,tgsvc,esvc,pps), "Event");
+    m_registry->registerFiller(new ReconFiller(hrisvc,gsvc,tgsvc,acdsvc,esvc,pps), "Event");
     // Register the mc filler
     m_registry->registerFiller(new MonteCarloFiller(hrisvc,gsvc,esvc,pps), "Event");
 

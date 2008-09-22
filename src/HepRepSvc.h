@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.h,v 1.12 2006/10/15 19:37:44 lsrea Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.h,v 1.13 2006/11/13 10:09:53 claval Exp $
 // 
 //  Original author: R.Giannitrapani
 
@@ -133,6 +133,9 @@ private:
 
     /// A property to set the depth of the geometry 
     int m_geomDepth;
+
+    /// A property to specify how to draw the geometry
+    std::string m_geomType;
 
     /// The fillers registry
     IRegistry* m_registry;
