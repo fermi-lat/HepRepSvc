@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: echarles  Mon Sep 22 15:05:54 PDT 2008
+HepRepSvc/src
+
+Modified Files:
+	HepRepSvc.cxx HepRepSvc.h 
+Log Message:
+updated HepRepSvc to handle new ACD stuff and to take geometry display type as a job option
+    *
+------------------------------------------------------------
 User: echarles  Mon Sep 22 15:05:04 PDT 2008
 HepRepSvc/src
 
