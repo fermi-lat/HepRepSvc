@@ -1,5 +1,6 @@
 #include "DigiFiller.h"
 #include "FilterFiller.h"
+#include "AcdDigiFiller.h"
 #include "HepRepSvc/IBuilder.h"
 #include "HepRepSvc/HepRepInitSvc.h"
 
@@ -16,11 +17,14 @@
 DigiFiller::DigiFiller(HepRepInitSvc* hrisvc,
                          IGlastDetSvc* gsvc,
                          ITkrGeometrySvc* tgsvc,
+		       IAcdGeometrySvc* acdsvc,
                          IDataProviderSvc* dpsvc):
-  m_hrisvc(hrisvc),m_gdsvc(gsvc),m_tgsvc(tgsvc), m_dpsvc(dpsvc)
+  m_hrisvc(hrisvc),m_gdsvc(gsvc),m_tgsvc(tgsvc), m_acdsvc(acdsvc), m_dpsvc(dpsvc)
 {
   FilterFiller* filter = new FilterFiller(m_hrisvc,m_gdsvc, m_dpsvc);
   m_subFillers.push_back(filter);
+  AcdDigiFiller* acdDigi = new AcdDigiFiller(hrisvc,m_acdsvc,m_dpsvc);
+  m_subFillers.push_back(acdDigi);
 }
 
 void DigiFiller::setBuilder(IBuilder* b)

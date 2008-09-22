@@ -7,6 +7,7 @@
 
 class IGlastDetSvc;
 class ITkrGeometrySvc;
+class IAcdGeometrySvc;
 class IDataProviderSvc;
 class IParticlePropertySvc;
 class HepRepInitSvc;
@@ -25,6 +26,7 @@ class DigiFiller: public Filler{
   DigiFiller(HepRepInitSvc* hrisvc,
               IGlastDetSvc* gsvc,
               ITkrGeometrySvc* tgsvc,
+	     IAcdGeometrySvc* acdsvc,
               IDataProviderSvc* dpsvc);
   
   /// This method init the type tree
@@ -42,6 +44,7 @@ class DigiFiller: public Filler{
   HepRepInitSvc*    m_hrisvc;
   IGlastDetSvc*     m_gdsvc;
   ITkrGeometrySvc*  m_tgsvc;
+  IAcdGeometrySvc*  m_acdsvc;
   IDataProviderSvc* m_dpsvc;
 };
 
