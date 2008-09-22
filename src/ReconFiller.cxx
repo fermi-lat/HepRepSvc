@@ -22,11 +22,12 @@
 ReconFiller::ReconFiller(HepRepInitSvc* hrisvc,
                          IGlastDetSvc* gsvc,
                          ITkrGeometrySvc* tgsvc,
+			 IAcdGeometrySvc* acdsvc,
                          IDataProviderSvc* dpsvc,
                          IParticlePropertySvc* ppsvc):
-  m_hrisvc(hrisvc),m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc), m_tgsvc(tgsvc)
+  m_hrisvc(hrisvc),m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc), m_tgsvc(tgsvc), m_acdsvc(acdsvc)
 {
-  AcdReconFiller* acdRecon = new AcdReconFiller(m_hrisvc,m_gdsvc, m_dpsvc, m_ppsvc);
+  AcdReconFiller* acdRecon = new AcdReconFiller(m_hrisvc,m_acdsvc, m_dpsvc, m_ppsvc);
   CalReconFiller* calRecon = new CalReconFiller(m_hrisvc,m_gdsvc, m_dpsvc, m_ppsvc);
   TkrReconFiller* tkrRecon = new TkrReconFiller(m_hrisvc,m_gdsvc, m_tgsvc, m_dpsvc, m_ppsvc);
   m_subFillers.push_back(acdRecon);

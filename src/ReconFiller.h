@@ -7,6 +7,7 @@
 
 class IGlastDetSvc;
 class ITkrGeometrySvc;
+class IAcdGeometrySvc;
 class IDataProviderSvc;
 class IParticlePropertySvc;
 class CalReconFiller;
@@ -26,6 +27,7 @@ class ReconFiller: public Filler{
   ReconFiller(HepRepInitSvc* hrisvc,
               IGlastDetSvc* gsvc,
               ITkrGeometrySvc* tgsvc,
+	      IAcdGeometrySvc* acdsvc,
               IDataProviderSvc* dpsvc,
               IParticlePropertySvc* ppsvc);
   
@@ -44,6 +46,7 @@ class ReconFiller: public Filler{
   HepRepInitSvc* m_hrisvc;
   IGlastDetSvc* m_gdsvc;
   ITkrGeometrySvc* m_tgsvc;
+  IAcdGeometrySvc* m_acdsvc;
   IDataProviderSvc* m_dpsvc;
   IParticlePropertySvc* m_ppsvc;
 };
