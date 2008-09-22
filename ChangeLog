@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: echarles  Mon Sep 22 15:00:53 PDT 2008
+HepRepSvc/src
+
+Added Files:
+	AcdDigiFiller.h AcdDigiFiller.cxx 
+Log Message:
+Added AcdDigiFiller to fill ACD digis
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-27-02, operation: add
 Package: HepRepSvc
