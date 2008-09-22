@@ -1,5 +1,5 @@
 // File and Version Information:
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepGeometry.cxx,v 1.16 2007/10/27 00:40:14 jrb Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepGeometry.cxx,v 1.17 2008/08/12 05:03:39 lsrea Exp $
 //
 // Author(s):
 //      R.Giannitrapani
@@ -7,6 +7,7 @@
 #include "HepRepGeometry.h"
 #include "HepRepSvc/IBuilder.h"
 #include "Filler.h"
+#include "GaudiKernel/MsgStream.h"
 
 #include "CLHEP/Vector/Rotation.h"
 //#include "CLHEP/Vector/ThreeVector.h"
@@ -22,9 +23,30 @@ typedef HepGeom::Vector3D<double> HepVector3D;
 
 #include <iomanip>
 #include <algorithm>
+#include <map>
 
-HepRepGeometry::HepRepGeometry(unsigned int depth, Filler* filler, std::string mode): 
-m_mode(mode), m_filler(filler), m_depth(depth)
+HepRepGeometry::GeomType 
+HepRepGeometry::getGeomType( const std::string& value, MsgStream& log ) {
+  static std::map<std::string,GeomType> theMap;
+  if ( theMap.size() == 0 ) {
+    theMap["FullGeom"] = FullGeom;
+    theMap["LatOnly"] = LatOnly;
+    theMap["ActiveOnly"] = ActiveOnly;
+    theMap["Minimal"] = Minimal;
+  }
+  std::map<std::string,GeomType>::const_iterator find = theMap.find(value);
+  if ( find != theMap.end() ) return find->second;
+  log << MSG::ERROR << "Unknown HepRepGeometry type " << value << " legal values are ";
+  for ( std::map<std::string,GeomType>::const_iterator itrOut = theMap.begin(); itrOut != theMap.end(); itrOut++ ) {
+    log << itrOut->first << ' ';
+  }
+  log << endreq;
+  return Illegal;  
+}
+
+
+HepRepGeometry::HepRepGeometry(unsigned int depth, Filler* filler, std::string mode, int geomType): 
+  m_mode(mode), m_filler(filler), m_depth(depth), m_geomType(geomType)
 {
     m_actualDepth = 0;
     m_builder = 0;
@@ -40,8 +62,11 @@ HepRepGeometry::pushShape(ShapeType s, const UintVector& idvec,
                           const DoubleVector& params, VolumeType type,
                           SenseType sense)
 {
+    
+
     if(m_hrMode == "type")
     {
+
         // Build the full path name in the list of already built types
         std::string fullName = "";
         for(unsigned int j = 0; j<m_actualType.size();++j)
@@ -88,9 +113,6 @@ HepRepGeometry::pushShape(ShapeType s, const UintVector& idvec,
                 "Currently this can be Box,Tube,Sphere or Trap",
                 "Physics","");
 
-            if (m_actualDepth > m_depth)
-                m_builder->addAttValue("Visibility", false, "");
-
             m_builder->addAttValue("Material",material,"");
 
             switch(type)
@@ -111,6 +133,9 @@ HepRepGeometry::pushShape(ShapeType s, const UintVector& idvec,
                 m_builder->addAttValue("Volume type","Zstack","");
                 break;
             }  
+
+	    bool isVisible(true);
+
             switch(sense) {
             case posSensitive:
                 m_builder->addAttValue("Sensitivity","posSensitive","");
@@ -120,8 +145,16 @@ HepRepGeometry::pushShape(ShapeType s, const UintVector& idvec,
                 break;
             case Nonsensitive:
                 m_builder->addAttValue("Sensitivity","Nonsensitive","");
+		if ( m_geomType >= ActiveOnly ) isVisible = false;
                 break;
             }
+
+
+	    if (m_actualDepth > m_depth) isVisible = false;
+	    
+	    if ( ! isVisible ) {
+	      m_builder->addAttValue("Visibility", "false", "");
+	    }
 
             switch(s)
             {

@@ -10,6 +10,7 @@ namespace HepGeom {class Transform3D;}
 class IBuilder;
 class Transform3D;
 class Filler;
+class MsgStream;
 
 /** 
 *  @class HepRepGeometry
@@ -20,8 +21,19 @@ class Filler;
 */
 class HepRepGeometry : public IGeometry
 {
+
 public:
-    HepRepGeometry(unsigned int depth, Filler* filler, std::string mode = "propagate");
+  
+  typedef enum GeomType { Illegal = -1,
+                          FullGeom = 0,
+			  LatOnly = 1,
+			  ActiveOnly = 2,
+			  Minimal = 3 };
+
+  static GeomType getGeomType( const std::string& value, MsgStream& log );
+
+public:
+    HepRepGeometry(unsigned int depth, Filler* filler, std::string mode, int geomType );
     ~HepRepGeometry();
 
     void setDepthLevel(unsigned int l){m_depth = l;};
@@ -66,6 +78,7 @@ private:
     unsigned int m_depth;
     unsigned int m_actualDepth;
     bool m_stopped;
+    int m_geomType;
 
     IBuilder* m_builder;
     Filler*   m_filler;
