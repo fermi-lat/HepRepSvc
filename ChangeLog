@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: echarles  Mon Sep 22 15:02:36 PDT 2008
+HepRepSvc/src
+
+Modified Files:
+	DigiFiller.h DigiFiller.cxx 
+Log Message:
+added AcdDigiFiller to DigiFillter
+    *
+------------------------------------------------------------
 User: echarles  Mon Sep 22 15:02:11 PDT 2008
 HepRepSvc/src
 
