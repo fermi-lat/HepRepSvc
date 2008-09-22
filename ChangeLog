@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: echarles  Mon Sep 22 15:02:11 PDT 2008
+HepRepSvc/src
+
+Modified Files:
+	AcdReconFiller.h AcdReconFiller.cxx 
+Log Message:
+re-wrote AcdReconFiller to show all the nice acd recon objects
+    *
+------------------------------------------------------------
 User: echarles  Mon Sep 22 15:01:35 PDT 2008
 HepRepSvc/src
 
