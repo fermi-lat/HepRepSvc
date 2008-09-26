@@ -2,6 +2,7 @@ package HepRepSvc
 version v0r27p2
 
 author Riccardo Giannitrapani <riccardo@fisica.uniud.it>
+author Leon Rochester <lsrea@slac.stanford.edu>
 
 use GlastPolicy
 use Event 
