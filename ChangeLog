@@ -1,4 +1,12 @@
 ------------------------------------------------------------
+User: glastrm  Fri Oct  3 14:30:33 PDT 2008
+HepRepSvc
+
+Modified Files:
+	SConscript 
+Log Message:
+    *
+------------------------------------------------------------
 TAG
 Tag name: v0r28, operation: add
 Package: HepRepSvc
