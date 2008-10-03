@@ -28,14 +28,14 @@ namespace {
     bool _drawDigisIfNoClusters = true;
 
     std::string getClusterColor(Event::TkrCluster* pCluster, bool isAcc) {
-        // comment out for now, will re-enable after next FSW installation
-
-        //if (isAcc) { return "red"; }
-        //else if (pCluster->isSet(Event::TkrCluster::maskGHOST)) { return "255,100,27"; } // orange
-        //else if (pCluster->isSet(Event::TkrCluster::maskSAMETRACK)) {return "yellow"; } 
-        //else {
-            return "green"; 
-        //}
+        if (isAcc) { return "red"; }
+        else if (pCluster->isSet(Event::TkrCluster::maskGHOST)) { 
+            return "255,100,27";  // orange
+        }
+        else if (pCluster->isSet(Event::TkrCluster::maskSAMETRACK)) {
+            return "yellow"; 
+        } 
+        else { return "green"; }
     }
 
 }
@@ -413,7 +413,7 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
                 double offset = -0.5*(m_nWaferAcross-1)*waferPitch;
                 for (int wafer=0;wafer<m_nWaferAcross; ++wafer) {
                     m_builder->addInstance("Strip", "ActiveStrip");
-                    if(isAcc) m_builder->addAttValue("LineStyle","Dashed","");
+                    if(clusterColor!="green") m_builder->addAttValue("LineStyle","Dashed","");
                     m_builder->addAttValue("Color", clusterColor, "");
                     double delta = offset + wafer*waferPitch;
                     x  = clusPos.x();
