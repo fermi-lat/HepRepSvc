@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: lsrea  Fri Oct  3 14:15:11 PDT 2008
+HepRepSvc/src/Tracker
+
+Modified Files:
+	ClusterFiller.cxx TrackFiller.cxx 
+Log Message:
+Put the "ghost" code back in
+
+    *
+------------------------------------------------------------
+User: lsrea  Fri Oct  3 14:15:11 PDT 2008
 HepRepSvc/doc
 
 Modified Files:
