@@ -89,6 +89,7 @@ void ClusterFiller::buildTypes()
     m_builder->addAttDef("View","Cluster View","Physics","");
     m_builder->addAttDef("First Strip","Cluster First Strip","Physics","");
     m_builder->addAttDef("Last Strip","Cluster Last Strip","Physics","");
+    m_builder->addAttDef("Status", "Cluster Low Status Bits","Physics","");
     m_builder->addAttDef("Position","Cluster Global Position","Physics","");
     m_builder->addAttDef("RawToT","Cluster Time over Threshold","Physics","");
     m_builder->addAttDef("Mips","ToT converted to Mips","Physics","");
@@ -243,6 +244,8 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
                 m_builder->addAttValue("First Strip", pCluster->firstStrip(),"");
                 m_builder->addAttValue("Last Strip",  pCluster->lastStrip(),"");
 
+                unsigned int status = pCluster->getStatusWord();
+                m_builder->addAttValue("Status",getBits(status, 15, 0),"");
                 m_builder->addAttValue("Position",
                     getPositionString(pCluster->position()),"");
 
