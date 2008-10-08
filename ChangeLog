@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: lsrea  Tue Oct  7 22:40:49 PDT 2008
+HepRepSvc/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+Add code to fill the merittuple
+
+    *
+------------------------------------------------------------
+User: lsrea  Tue Oct  7 22:40:49 PDT 2008
 HepRepSvc/HepRepSvc
 
 Modified Files:
