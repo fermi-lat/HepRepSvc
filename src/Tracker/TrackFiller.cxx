@@ -131,6 +131,7 @@ void TrackFiller::buildTypes()
     m_builder->addAttDef("View","Cluster View","Physics","");
     m_builder->addAttDef("First Strip","Cluster First Strip","Physics","");
     m_builder->addAttDef("Last Strip","Cluster Last Strip","Physics","");
+    m_builder->addAttDef("Status", "Cluster Low Status Bits","Physics","");
     m_builder->addAttDef("Position","Cluster Global Position","Physics","");
     m_builder->addAttDef("RawToT","Cluster Time over Threshold","Physics","");
     m_builder->addAttDef("Mips","ToT converted to Mips","Physics","");
@@ -217,7 +218,7 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
 
         //Build strings for status bits
         unsigned int statBits = track.getStatusBits();
-        m_builder->addAttValue("Status Low",getBits(statBits, 15, 0),"");
+        m_builder->addAttValue("Status",getBits(statBits, 15, 0),"");
 
         std::stringstream outString;
         m_builder->addAttValue("Status High",getBits(statBits, 31, 16),"");
@@ -385,15 +386,9 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
                 m_builder->addAttValue("First Strip", pCluster->firstStrip(),"");
                 m_builder->addAttValue("Last Strip",  pCluster->lastStrip(),"");
 
-                /*
-                //Build string for cluster position
-                std::stringstream clusterPosition;
-                clusterPosition.setf(std::ios::fixed);
-                clusterPosition.precision(3);
-                clusterPosition << " (" << pCluster->position().x()
-                << ","  << pCluster->position().y() 
-                << ","  << pCluster->position().z() << ")";
-                */
+                unsigned int status = pCluster->getStatusWord();
+                m_builder->addAttValue("Status Low",getBits(status, 15, 0),"");
+
                 m_builder->addAttValue("Position",
                     getPositionString(pCluster->position()),"");
 
