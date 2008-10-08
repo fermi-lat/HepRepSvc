@@ -1,13 +1,13 @@
-//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.61 2008/10/03 21:15:11 lsrea Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.62 2008/10/08 05:40:49 lsrea Exp $
 /*
  
- * v2r29   07-Oct-08   LSR  HepRepSvc can display the merittuple
- * v2r28   03-Oct-08   LSR  Reintroduce ghost stuff to the head
- * v2r27p2 18-Sep-08   LSR  Back out ghost stuff so this can go in faster
- * v2r27p1 17-Sep-08   LSR  Speed up large events by a large factor!
- * v2r27   15-Sep-08   LSR  Connect Clusters on track to the TkrTrackHit
- * v2r26p2 13-Sep-08   LSR  typo in requirements file
- * v2r26p1 13-Sep-08   LSR  Display ghosts, wide clusters, needs latest Event
+ * v0r29   07-Oct-08   LSR  HepRepSvc can display the merittuple
+ * v0r28   03-Oct-08   LSR  Reintroduce ghost stuff to the head
+ * v0r27p2 18-Sep-08   LSR  Back out ghost stuff so this can go in faster
+ * v0r27p1 17-Sep-08   LSR  Speed up large events by a large factor!
+ * v0r27   15-Sep-08   LSR  Connect Clusters on track to the TkrTrackHit
+ * v0r26p2 13-Sep-08   LSR  typo in requirements file
+ * v0r26p1 13-Sep-08   LSR  Display ghosts, wide clusters, needs latest Event
  * v0r25   11-Jun-08 LSR Refactoring of package: 
                             Implement Filler base class, and move common utils there
                          Also:
