@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: lsrea  Wed Oct  8 08:09:49 PDT 2008
+HepRepSvc/src/Tracker
+
+Modified Files:
+	ClusterFiller.cxx TrackFiller.cxx 
+Log Message:
+display cluster status in instance tree
+
+    *
+------------------------------------------------------------
+User: lsrea  Wed Oct  8 08:09:49 PDT 2008
 HepRepSvc/doc
 
 Modified Files:
