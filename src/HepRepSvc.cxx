@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.24 2008/09/18 04:59:28 lsrea Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.25 2008/09/22 22:05:53 echarles Exp $
 // 
 //  Original author: R.Giannitrapani
 //
@@ -36,6 +36,7 @@
 #include "ReconFiller.h"
 #include "GeometryFiller.h"
 #include "DigiFiller.h"
+#include "MeritTupleFiller.h"
 
 #include "FluxSvc/IFluxSvc.h"
 #include "FluxSvc/IFlux.h"
@@ -49,6 +50,8 @@
 #include "GlastSvc/GlastDetSvc/IGlastDetSvc.h"
 #include "TkrUtil/ITkrGeometrySvc.h"
 #include "AcdUtil/IAcdGeometrySvc.h"
+
+#include "ntupleWriterSvc/INTupleWriterSvc.h"
 
 // declare the service factories for the FluxSvc
 static SvcFactory<HepRepSvc> a_factory;
@@ -160,6 +163,13 @@ StatusCode HepRepSvc::initialize ()
       log << MSG::ERROR << "Could not find EventDataSvc" << endreq;
       return status;
     }
+        // get the RootTuple Service
+    INTupleWriterSvc* rtsvc = 0;
+    status = service("RootTupleSvc", rtsvc, true);
+    if( status.isFailure()) {
+      log << MSG::ERROR << "Could not find RootTupleSvc" << endreq;
+      return status;
+    }
 
     m_idpsvc = esvc;
     // get the Flux Service    
@@ -198,6 +208,8 @@ StatusCode HepRepSvc::initialize ()
     m_registry->registerFiller(new ReconFiller(hrisvc,gsvc,tgsvc,acdsvc,esvc,pps), "Event");
     // Register the mc filler
     m_registry->registerFiller(new MonteCarloFiller(hrisvc,gsvc,esvc,pps), "Event");
+    // Register the meritTuple filler
+    m_registry->registerFiller(new MeritTupleFiller(hrisvc,rtsvc), "Event");
 
     //----------------------------------------------------------------
     // most of  the following taken from FluxSvc

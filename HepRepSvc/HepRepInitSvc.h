@@ -16,7 +16,7 @@
  * 
  * @author Tracy Usher
  *
- * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/HepRepSvc/HepRepInitSvc.h,v 1.2 2008/08/12 05:03:38 lsrea Exp $
+ * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/HepRepSvc/HepRepInitSvc.h,v 1.3 2008/09/10 01:26:40 lsrea Exp $
  */
 
 
@@ -42,6 +42,7 @@ public:
 
     const bool getVertexFiller_dashes(){return m_vtx_dashes;}
     const bool getClusterFiller_showWide() { return m_cls_showWide;}
+    const bool getMeritTupleFiller_doIt()  { return m_merit_doIt; } 
 
  
 private:
@@ -50,6 +51,7 @@ private:
 
     bool m_vtx_dashes;
     bool m_cls_showWide;
+    bool m_merit_doIt;
 };
 
 #endif // __HEPREPINITSVC_H

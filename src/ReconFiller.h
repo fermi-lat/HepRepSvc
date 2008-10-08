@@ -27,7 +27,7 @@ class ReconFiller: public Filler{
   ReconFiller(HepRepInitSvc* hrisvc,
               IGlastDetSvc* gsvc,
               ITkrGeometrySvc* tgsvc,
-	      IAcdGeometrySvc* acdsvc,
+	          IAcdGeometrySvc* acdsvc,
               IDataProviderSvc* dpsvc,
               IParticlePropertySvc* ppsvc);
   
@@ -43,11 +43,11 @@ class ReconFiller: public Filler{
  private:
   std::vector<IFiller*> m_subFillers;
 
-  HepRepInitSvc* m_hrisvc;
-  IGlastDetSvc* m_gdsvc;
-  ITkrGeometrySvc* m_tgsvc;
-  IAcdGeometrySvc* m_acdsvc;
-  IDataProviderSvc* m_dpsvc;
+  HepRepInitSvc*        m_hrisvc;
+  IGlastDetSvc*         m_gdsvc;
+  ITkrGeometrySvc*      m_tgsvc;
+  IAcdGeometrySvc*      m_acdsvc;
+  IDataProviderSvc*     m_dpsvc;
   IParticlePropertySvc* m_ppsvc;
 };
 

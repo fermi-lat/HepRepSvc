@@ -16,6 +16,7 @@ Service(name, pSvcLocator)
     // Variables which can be modified in TkrControl
     declareProperty("VertexFiller_dashes",   m_vtx_dashes=true);
     declareProperty("ClusterFiler_showWide", m_cls_showWide=true);
+    declareProperty("MeritTupleFiller_doIt", m_merit_doIt=true);
 
     return; 
 }
