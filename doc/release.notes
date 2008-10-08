@@ -1,6 +1,7 @@
-//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.60 2008/09/18 14:29:24 lsrea Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.61 2008/10/03 21:15:11 lsrea Exp $
 /*
  
+ * v2r29   07-Oct-08   LSR  HepRepSvc can display the merittuple
  * v2r28   03-Oct-08   LSR  Reintroduce ghost stuff to the head
  * v2r27p2 18-Sep-08   LSR  Back out ghost stuff so this can go in faster
  * v2r27p1 17-Sep-08   LSR  Speed up large events by a large factor!

@@ -1,5 +1,5 @@
 package HepRepSvc
-version v0r28
+version v0r29
 
 author Riccardo Giannitrapani <riccardo@fisica.uniud.it>
 author Leon Rochester <lsrea@slac.stanford.edu>
@@ -13,6 +13,7 @@ use RootIo
 use flux
 use TkrUtil
 use Fred * IExternal
+use ntupleWriterSvc *
 
 
 
