@@ -1,5 +1,19 @@
 ------------------------------------------------------------
 User: lsrea  Wed Oct  8 23:13:17 PDT 2008
+HepRepSvc/src/Tracker
+
+Modified Files:
+	ClusterFiller.cxx ClusterFiller.h TrackFiller.cxx 
+	TrackFiller.h 
+Added Files:
+	ClusterUtil.cxx ClusterUtil.h 
+Log Message:
+Reformat ClusterFiller and TrackFiller
+  to use common code in new ClusterUtil
+
+    *
+------------------------------------------------------------
+User: lsrea  Wed Oct  8 23:13:17 PDT 2008
 HepRepSvc/doc
 
 Modified Files:
