@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: lsrea  Wed Oct  8 23:13:17 PDT 2008
+HepRepSvc/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+Reformat ClusterFiller and TrackFiller
+  to use common code in new ClusterUtil
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-29-01, operation: add
 Package: HepRepSvc
