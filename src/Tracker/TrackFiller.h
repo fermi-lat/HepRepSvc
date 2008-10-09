@@ -4,6 +4,8 @@
 #include <string>
 
 #include "src/Filler.h"
+#include "src/Tracker/ClusterUtil.h"
+
 #include "geometry/Vector.h"
 
 class IGlastDetSvc;
@@ -30,7 +32,7 @@ namespace Event {
  *  @author R.Giannitrapani
  */
 
-class TrackFiller: public Filler {
+class TrackFiller: public ClusterUtil {
   
  public:
   TrackFiller(HepRepInitSvc* hrisvc,
@@ -48,12 +50,13 @@ private:
   std::string getTkrIdString(const idents::TkrId& tkrId);
   std::string getSlopeString(const Event::TkrTrackParams& params);
 
-  HepRepInitSvc* m_hrisvc;
-  IGlastDetSvc* m_gdsvc;
+  //HepRepInitSvc* m_hrisvc;
+  //IGlastDetSvc* m_gdsvc;
   IDataProviderSvc* m_dpsvc;
   IParticlePropertySvc* m_ppsvc;
 
-      double m_siStripPitch; 
+    /*
+    double m_siStripPitch; 
     double m_stripLength;
     double m_siThickness;
     double m_siWaferSide;
@@ -64,6 +67,7 @@ private:
     int    m_numYTowers;
     double m_towerPitch;
     double m_activeWidth;
+    */
 
 };
 
