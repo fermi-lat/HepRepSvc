@@ -4,6 +4,7 @@
 #include <string>
 
 #include "src/Filler.h"
+#include "src/Tracker/ClusterUtil.h"
 
 class IGlastDetSvc;
 class ITkrGeometrySvc;
@@ -19,7 +20,8 @@ class HepRepInitSvc;
  *  @author R.Giannitrapani
  */
 
-class ClusterFiller: public Filler {
+class ClusterFiller: public ClusterUtil 
+{
   
  public:
   ClusterFiller(HepRepInitSvc* hrisvc,
@@ -35,12 +37,16 @@ class ClusterFiller: public Filler {
   virtual void fillInstances (std::vector<std::string>&);
 
  private:
-    HepRepInitSvc* m_hrisvc;
-    IGlastDetSvc* m_gdsvc;
+    //HepRepInitSvc* m_hrisvc;
+    //IGlastDetSvc* m_gdsvc;
     ITkrGeometrySvc* m_tgsvc;
     IDataProviderSvc* m_dpsvc;
     IParticlePropertySvc* m_ppsvc;
 
+    bool  m_drawDigisIfNoClusters; // = true;
+
+
+/*
     double m_siStripPitch; 
     double m_stripLength;
     double m_siThickness;
@@ -52,6 +58,7 @@ class ClusterFiller: public Filler {
     int    m_numYTowers;
     double m_towerPitch;
     double m_activeWidth;
+    */
 };
 
 #endif //ClusterFILLER_H
