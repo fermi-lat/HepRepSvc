@@ -1,6 +1,7 @@
-//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.65 2008/10/08 15:10:42 lsrea Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.66 2008/10/09 06:13:17 lsrea Exp $
 /*
 
+ * v0r29p3 21-Oct-08   LSR  Get the test job working again
  * v0r29p2 08-Oct-08   LSR  Refactor ClusterFiller and TrackFiller
                               to use common code in new ClusterUtil 
  * v0r29p1 08-Oct-08   LSR  Display cluster status in instance tree

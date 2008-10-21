@@ -4,17 +4,19 @@
 //
 ApplicationMgr.DLLs   = 
     { "GlastSvc", "HepRepSvc", "FluxSvc", 
-      "TkrUtil", 
+      "AcdUtil", "TkrUtil", 
       "G4Generator", 
       "G4Propagator", 
-      "CalibSvc"
+      "CalibSvc",
+      "ntupleWriterSvc"
       };
 
 ApplicationMgr.ExtSvc = { 
     "EventCnvSvc", 
     "GlastDetSvc",
     "HepRepSvc",
-    "HepRepInitSvc"
+    "HepRepInitSvc",
+    "RootTupleSvc"
     };
 
 
