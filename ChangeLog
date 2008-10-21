@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+TAG
+Tag name: v0r29p3, operation: mov
+Package: HepRepSvc
+User: glastrm  Tue Oct 21 12:30:24 2008
+Files:
+  HepRepSvc/SConscript  1.12
+
+    *
+------------------------------------------------------------
 User: glastrm  Tue Oct 21 12:30:18 PDT 2008
 HepRepSvc
 
