@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: lsrea  Tue Oct 21 11:49:26 PDT 2008
+HepRepSvc/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+Fix test jobOptions
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-29-02, operation: add
 Package: HepRepSvc
