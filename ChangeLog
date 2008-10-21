@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: lsrea  Tue Oct 21 11:49:26 PDT 2008
+HepRepSvc/src/test
+
+Modified Files:
+	jobOptions.txt 
+Log Message:
+Fix test jobOptions
+
+    *
+------------------------------------------------------------
+User: lsrea  Tue Oct 21 11:49:26 PDT 2008
 HepRepSvc/doc
 
 Modified Files:
