@@ -18,6 +18,8 @@ HepRepSvc = libEnv.SharedLibrary('HepRepSvc', listFiles(['src/*.cxx',
 progEnv.Tool('HepRepSvcLib')
 test_HepRepSvc = progEnv.GaudiProgram('test_HepRepSvc', listFiles(['src/test/*.cxx']), test =1)
 
-progEnv.Tool('registerObjects', package = 'HepRepSvc', libraries = [HepRepSvc], testApps = [test_HepRepSvc], 
-	includes = listFiles(['HepRepSvc/*.h']))
+progEnv.Tool('registerObjects', package = 'HepRepSvc',
+             libraries = [HepRepSvc],
+             testApps = [test_HepRepSvc], 
+             includes = listFiles(['HepRepSvc/*.h']))
 
