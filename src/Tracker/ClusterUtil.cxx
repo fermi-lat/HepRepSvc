@@ -9,6 +9,11 @@
 *
 */
 
+namespace {
+    const float _ToTScale = 64; // so maxToT = ~4mm
+    const float _ToT250Width = 5.0; // "saturated" ToT
+}
+
 ClusterUtil::ClusterUtil(HepRepInitSvc* hrisvc, IGlastDetSvc* gsvc) :
 m_hrisvc(hrisvc), m_gdsvc(gsvc)
 {
@@ -55,6 +60,16 @@ std::string ClusterUtil::getClusterColor(Event::TkrCluster* pCluster, bool isAcc
 
 void ClusterUtil::buildClusterTypes(IBuilder* builder)
 {
+    if(m_scalingMarker) {
+        builder->addAttValue("DrawAs", "Line", "");
+        builder->addAttValue("LineWidth", m_markerWidth, "");
+    } else {
+        //Here's the real marker 
+        builder->addAttValue("DrawAs", "Point", "");
+        builder->addAttValue("MarkerName", "Cross", "");
+        builder->addAttValue("MarkerSize", "1", "");
+    }
+
     builder->addType("TkrCluster", "Strip", "Strip", "");
     builder->addType("Strip", "ActiveStrip", "Active Part of Strip", "");
     builder->addAttValue("DrawAs","Prism","");
@@ -74,19 +89,7 @@ void ClusterUtil::buildClusterTypes(IBuilder* builder)
     builder->addAttValue("DrawAs","Line","");
     builder->addAttValue("Color","red","");
 
-    builder->addType("TkrCluster", "ClusterMarker", " ", "");
-    //builder->addAttValue("Color", "green", "");
-    if(m_scalingMarker) {
-        // Tracy hates the fixed-size marker, try again!
-        builder->addType("ClusterMarker", "MarkerArm", " ", "");
-        builder->addAttValue("DrawAs", "Line", "");
-        builder->addAttValue("LineWidth", m_markerWidth, "");
-    } else {
-        //Here's the real marker 
-        builder->addAttValue("DrawAs", "Point", "");
-        builder->addAttValue("MarkerName", "Cross", "");
-        builder->addAttValue("MarkerSize", "1", "");
-    }
+    //builder->addType("TkrCluster", "ClusterMarker", " ", "");
 }
 
 void ClusterUtil::buildClusterInstance(IBuilder* builder, Event::TkrCluster* pCluster)
@@ -115,15 +118,14 @@ void ClusterUtil::buildClusterInstance(IBuilder* builder, Event::TkrCluster* pCl
 
     int    view   = pCluster->getTkrId().getView();
     if (view == idents::TkrId::eMeasureY) {
-        dy   = 0.5 * pCluster->size() * m_siStripPitch;
-        dx   = 0.5 * m_stripLength;
+        std::swap(dx, dy);
+        std::swap(deltaX, deltaY);
         xToT = x - dx - markerOffset;
         yToT = y;
-        deltaY = markerSize;
-        deltaX = 0.0;
     }
 
-    double ToT  = pCluster->getRawToT() / 64.;       // So, max ToT = 4 mm
+    double rawToT = pCluster->getRawToT();
+    double ToT  = rawToT / _ToTScale;
 
 
     builder->addAttValue("Tower",       pCluster->tower(),"");
@@ -137,7 +139,6 @@ void ClusterUtil::buildClusterInstance(IBuilder* builder, Event::TkrCluster* pCl
     builder->addAttValue("Position",
         getPositionString(pCluster->position()),"");
 
-    int rawToT = pCluster->getRawToT();
     builder->addAttValue("RawToT",         (float) rawToT,"");
     builder->addAttValue("Mips",           (float)(pCluster->getMips()),"");
 
@@ -148,10 +149,37 @@ void ClusterUtil::buildClusterInstance(IBuilder* builder, Event::TkrCluster* pCl
     bool isAcc = (rawToT==255);
     std::string clusterColor = getClusterColor(pCluster,isAcc);
 
+    // quick and dirty wide cluster display.
+    bool isWide = (pCluster->size()>4)&&m_hrisvc->getClusterFiller_showWide();
+    if(m_scalingMarker) {
+        // make the cross in the measured view
+        //builder->addInstance("TkrCluster", "ClusterMarker");
+        if(isAcc) builder->addAttValue("LineStyle","Dashed","");
+        // the following is perhaps a bit too clever...
+        // it makes an "X" for normal clusters, and a bowtie for wide ones
+        builder->addAttValue("Color", clusterColor, "");
+        builder->addPoint(xToT+deltaX, yToT+deltaY, z+markerSize);
+        builder->addPoint(xToT-deltaX, yToT-deltaY, z-markerSize);
+        if(!isWide) builder->addPoint(xToT,yToT,z);
+        builder->addPoint(xToT-deltaX, yToT-deltaY, z+markerSize);
+        builder->addPoint(xToT+deltaX, yToT+deltaY, z-markerSize);
+        if(isWide) builder->addPoint(xToT+deltaX, yToT+deltaY, z+markerSize);
+    } else {
+        // Here's the code for the real marker
+        builder->addInstance("TkrCluster", "ClusterMarker");
+
+        if(isAcc) builder->addAttValue("LineStyle","Dashed","");
+        builder->addAttValue("Color", clusterColor, "");
+        builder->addPoint(xToT, yToT, z);       
+    }
+
     builder->addInstance("TkrCluster", "Strip");
     builder->setSubinstancesNumber("Strip",m_nWaferAcross);
     double waferPitch = m_siWaferSide + m_ssdGap;
     double offset = -0.5*(m_nWaferAcross-1)*waferPitch;
+    //builder->addInstance("Strip", "ActiveStrip");
+    //if(clusterColor!="green") builder->addAttValue("LineStyle","Dashed","");
+    //builder->addAttValue("Color", clusterColor, "");
     for (int wafer=0;wafer<m_nWaferAcross; ++wafer) {
         builder->addInstance("Strip", "ActiveStrip");
         if(clusterColor!="green") builder->addAttValue("LineStyle","Dashed","");
@@ -169,38 +197,12 @@ void ClusterUtil::buildClusterInstance(IBuilder* builder, Event::TkrCluster* pCl
         drawPrism(x, y, z, dx, dy, dz);
     }
 
-    // quick and dirty wide cluster display.
-    bool isWide = (pCluster->size()>4)&&m_hrisvc->getClusterFiller_showWide();
-    if(m_scalingMarker) {
-        // make the cross in the measured view
-        builder->addInstance("TkrCluster", "ClusterMarker");
-        builder->setSubinstancesNumber("ClusterMarker",2);
-        builder->addInstance("ClusterMarker", "MarkerArm");
-        if(isAcc) builder->addAttValue("LineStyle","Dashed","");
-        builder->addAttValue("Color", clusterColor, "");
-        builder->addPoint(xToT+deltaX, yToT+deltaY, z+markerSize);
-        builder->addPoint(xToT-deltaX, yToT-deltaY, z-markerSize);
-        if(isWide) builder->addPoint(xToT-deltaX, yToT-deltaY, z+markerSize);
-
-        builder->addInstance("ClusterMarker", "MarkerArm");
-        if(isAcc) builder->addAttValue("LineStyle","Dashed","");
-        builder->addAttValue("Color", clusterColor, "");
-        builder->addPoint(xToT-deltaX, yToT-deltaY, z+markerSize);
-        builder->addPoint(xToT+deltaX, yToT+deltaY, z-markerSize);
-        if(isWide) builder->addPoint(xToT+deltaX, yToT+deltaY, z+markerSize);
-    } else {
-        // Here's the code for the real marker
-        builder->addInstance("TkrCluster", "ClusterMarker");
-
-        if(isAcc) builder->addAttValue("LineStyle","Dashed","");
-        builder->addAttValue("Color", clusterColor, "");
-        builder->addPoint(xToT, yToT, z);       
-    }
-
     //Time over threshold add here
     if(m_hasTypeToT)
     {
         builder->addInstance("TkrCluster","TkrClusterToT");
+        if(rawToT>249) builder->addAttValue("LineWidth", _ToT250Width, "");
+        if(isAcc) builder->addAttValue("LineStyle", "Dashed", "");
         builder->addPoint(xToT,yToT,z);
         builder->addPoint(xToT,yToT,z+ToT);
     }
