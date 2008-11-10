@@ -1,5 +1,20 @@
 ------------------------------------------------------------
 User: lsrea  Mon Nov 10 13:28:40 PST 2008
+HepRepSvc/src/Tracker
+
+Modified Files:
+	ClusterUtil.cxx TrackFiller.cxx 
+Log Message:
+ClusterUtil: attach cluster info to (single) cluster marker
+             ToT thermometer now encodes saturated and ghost hits
+             thick line for saturated, dashed for ghost
+TrackFiller: attach trackhit info to new small blue box
+             hit error is now "sigma" = sqrt("chisq")
+             limited: 0.1 < sigma < sqrt(1000)
+
+    *
+------------------------------------------------------------
+User: lsrea  Mon Nov 10 13:28:40 PST 2008
 HepRepSvc/doc
 
 Modified Files:
