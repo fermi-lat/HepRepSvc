@@ -1,6 +1,13 @@
-//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.66 2008/10/09 06:13:17 lsrea Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.67 2008/10/21 18:49:26 lsrea Exp $
 /*
 
+ * v0r30   10-Nov-08   LSR  Add saturation and ghost info to ToT thermometer
+                            Mods for WIRED:
+                            Attach Cluster info to (single) cluster marker
+                            Attach TrackHit info to new small blue box
+                            Mods to TrackHit error marker
+                              now "sigma" = sqrt("chisq")
+                              limited: 0.1 < sigma < sqrt(1000)
  * v0r29p3 21-Oct-08   LSR  Get the test job working again
  * v0r29p2 08-Oct-08   LSR  Refactor ClusterFiller and TrackFiller
                               to use common code in new ClusterUtil 

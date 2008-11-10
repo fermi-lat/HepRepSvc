@@ -18,6 +18,11 @@
 #include <iostream>
 #include <algorithm>
 
+namespace {
+    const float _dH = 0.25; // size of TkrTrackHit box
+    const float _hE = 0.1;  //halfheight of caps on hit "sigmas"
+}
+
 // Constructor
 TrackFiller::TrackFiller(HepRepInitSvc* hrisvc,
                          IGlastDetSvc* gsvc,
@@ -56,7 +61,8 @@ void TrackFiller::buildTypes()
     m_builder->addAttDef("Start Position","Track start position","Physics","");
     m_builder->addAttDef("Start Direction","Track start direction","Physics","");
 
-    m_builder->addType("Track","TkrTrackHit", "Track Hits", "");
+    m_builder->addType("Track","TkrTrackHit", "Track Hit", "");
+    m_builder->addAttValue("DrawAs","Prism", "");
     m_builder->addAttDef("Sequence #", "Sequence of Hit on Track", "Physics", "");
     m_builder->addAttDef("Hit Volume","Volume containing this hit","Physics","");
     m_builder->addAttDef("Hit Status Low","Hit Low Status Bits","Physics","");
@@ -76,7 +82,9 @@ void TrackFiller::buildTypes()
     m_builder->addAttDef("ChiSquareSmooth","Smoother Chi Square Contribution",
         "Physics","");
 
-    m_builder->addType("TkrTrackHit","NoCluster","No Cluster","");
+    //m_builder->addType("TkrTrackHit","NoCluster","No Cluster","");
+    m_builder->addType("TkrTrackHit","HitSigma","Hit Sigma", "");
+    m_builder->addAttValue("DrawAs", "Line","");
 
     m_builder->addType("TkrTrackHit","TkrCluster","Reconstructed Cluster",""); 
 
@@ -172,47 +180,30 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
         lastHit  = --track.end();
         int hit = 0;
 
+        m_builder->setSubinstancesNumber("Track", track.size());
+ 
         for(hitIter=track.begin(); hitIter!=track.end(); ++hitIter, ++hit)
         {
             m_builder->addInstance("Track","TkrTrackHit");
-            m_builder->setSubinstancesNumber("TkrTrackHit", track.size());
             m_builder->addAttValue("LineWidth", (float)trackWid, "");
 
             Event::TkrTrackHit& plane = **hitIter;
 
-            double x0, y0, z0, xl, xr, yl, yr;
+            double x0, y0, z0;
             idents::TkrId tkrId = plane.getTkrId();
             x0 = plane.getTrackParams(typ).getxPosition();
             y0 = plane.getTrackParams(fit).getyPosition(); 
-            z0 = plane.getZPlane()+0.1;
-            if (tkrId.hasView()) {
-                double delta= 10. * plane.getChiSquareSmooth(); //Scale factor! We're in mm now!
-                if (plane.getTkrId().getView() == idents::TkrId::eMeasureX)
-                {
-                    xl = x0-0.5*delta;
-                    xr = x0+0.5*delta;
-                    yl = y0;
-                    yr = y0;
-                } 
-                else 
-                {
-                    xl = x0;
-                    xr = x0;
-                    yl = y0-0.5*delta;
-                    yr = y0+0.5*delta;
-                }       
-                m_builder->addPoint(xl,yl,z0);
-                m_builder->addPoint(xr,yr,z0);
-            } else {
-                m_builder->addPoint(x0, y0, z0);
-            }
+            z0 = plane.getZPlane();
+
+            // this is the prism that we pick
+            drawPrism(x0, y0, z0, _dH, _dH, _dH);
+
             m_builder->addAttValue("Sequence #", hit, "");
             m_builder->addAttValue("Hit Volume", 
                 getTkrIdString(plane.getTkrId()), "");
 
             //Build string for the measuring view
             std::stringstream hitView("No valid hit found");
-            //int clusterId = -1;
 
             bool hitOnFit = ((plane.getStatusBits() & Event::TkrTrackHit::HITONFIT)!=0);
             if(hitOnFit) 
@@ -222,7 +213,6 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
                 } else {                                                     
                     hitView << "This is a Y measuring plane";
                 }
-                //clusterId = -1; //plane.getClusterPtr()->id();
             }
 
             m_builder->addAttValue("Projection",hitView.str(),"");
@@ -261,6 +251,37 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
                 m_builder->addAttValue("Sequence",    hit, "");
 
                 buildClusterInstance(m_builder, pCluster);
+            }
+
+            bool doSigma = true;
+            if(doSigma) {
+
+                // now the "sigma"
+                m_builder->addInstance("TkrTrackHit", "HitSigma");
+                if (tkrId.hasView()) {
+                    // try something like sqrt, but min and max it.
+                    // with this choice, .01 < chisq < 1000.
+                    double delta1=  std::max(0.01, plane.getChiSquareSmooth());
+                    delta1 = sqrt(std::min(delta1, 1000.));
+                    double delta2 = 0.0;
+
+                    if( plane.getTkrId().getView() == idents::TkrId::eMeasureY) {
+                        std::swap(delta1, delta2);
+                    }
+
+                    double xl, xr, yl, yr;
+                    xl = x0 - delta1;
+                    xr = x0 + delta1;
+                    yl = y0 - delta2;
+                    yr = y0 + delta2;
+
+                    // this is all hidden inside the wafer...
+                    //   so for experts only!
+                    m_builder->addPoint(xl, yl, z0);
+                    m_builder->addPoint(xl, yl, z0-_hE);
+                    m_builder->addPoint(xr, yr, z0+_hE);
+                    m_builder->addPoint(xr, yr, z0);
+                }
             }
         }
     }
