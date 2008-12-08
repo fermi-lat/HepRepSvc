@@ -1,7 +1,8 @@
 # -*- python -*-
-# $Header
+# $Id$
 # Authors: Riccardo Giannitrapani <riccardo@fisica.uniud.it> 
-# Version: HepRepSvc-00-30-00
+# Version: HepRepSvc-00-29-02
+
 Import('baseEnv')
 Import('listFiles')
 Import('packages')
@@ -22,4 +23,7 @@ progEnv.Tool('registerObjects', package = 'HepRepSvc',
              libraries = [HepRepSvc],
              testApps = [test_HepRepSvc], 
              includes = listFiles(['HepRepSvc/*.h']))
+
+
+
 
