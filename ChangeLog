@@ -2,6 +2,16 @@
 TAG
 Tag name: HepRepSvc-00-29-02, operation: mov
 Package: HepRepSvc
+User: glast  Mon Dec  8 16:19:03 2008
+Files:
+  HepRepSvc/HepRepSvcLib.py  1.2
+  HepRepSvc/HepRepSvcLib.py  1.2
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: HepRepSvc-00-29-02, operation: mov
+Package: HepRepSvc
 User: glast  Mon Dec  8 14:41:25 2008
 Files:
   HepRepSvc/SConscript  1.15
