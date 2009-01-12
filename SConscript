@@ -1,7 +1,7 @@
 # -*- python -*-
-# $Id$
+# $Id: SConscript,v 1.15 2008/12/08 21:39:59 ecephas Exp $
 # Authors: Riccardo Giannitrapani <riccardo@fisica.uniud.it> 
-# Version: HepRepSvc-00-29-02
+# Version: HepRepSvc-00-31-00
 
 Import('baseEnv')
 Import('listFiles')
