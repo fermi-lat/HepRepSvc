@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.25 2008/09/22 22:05:53 echarles Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.26 2008/10/08 05:40:49 lsrea Exp $
 // 
 //  Original author: R.Giannitrapani
 //
@@ -410,11 +410,12 @@ bool HepRepSvc::previousEvent(int i)
   else return 0;
 }
 
-bool HepRepSvc::openFile(const char* mc, const char *digi, const char *rec, const char *gcr) 
+bool HepRepSvc::openFile(const char* mc, const char *digi, const char *rec, 
+                         const char* relation, const char *gcr) 
 {
   if (m_rootIoSvc)
   {
-    return m_rootIoSvc->setRootFile(mc, digi, rec, gcr);
+    return m_rootIoSvc->setRootFile(mc, digi, rec, relation, gcr);
   } 
   else return 0;
 }

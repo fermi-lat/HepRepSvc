@@ -72,9 +72,10 @@ bool SvcAdapter::setEventIndex(int index)
   return m_hrsvc->setEventIndex(index);
 }
 
-bool SvcAdapter::openFile(const char* mc, const char* digi, const char* rec, const char* gcr)
+bool SvcAdapter::openFile(const char* mc, const char* digi, const char* rec, 
+                          const char* relation, const char* gcr)
 {
-  return m_hrsvc->openFile(mc, digi, rec, gcr);
+  return m_hrsvc->openFile(mc, digi, rec, relation, gcr);
 }
 
 std::string SvcAdapter::getEventId()
