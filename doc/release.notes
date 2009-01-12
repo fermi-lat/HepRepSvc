@@ -1,6 +1,9 @@
-//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.67 2008/10/21 18:49:26 lsrea Exp $
-/*
+/* @file release.notes
+ * Package HepRepSvc
+ * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.68 2008/11/10 21:28:39 lsrea Exp $
+ *           EOH
 
+ * v0r31   12-Jan-09   HMK  Add support for input relation files
  * v0r30   10-Nov-08   LSR  Add saturation and ghost info to ToT thermometer
                             Mods for WIRED:
                             Attach Cluster info to (single) cluster marker
@@ -33,57 +36,53 @@
                          First one is bool VertexFiller_dashes, to draw
                             extrapolated vertices with dashed lines
 * v0r23p1  06-26-08 LSR Fixed bug that caused the ACD struck tiles not to be displayed
- 
-===========================================
-Start latest first starting above here
-===========================================
-
- * v0r1     20-09-02 RG Inital release of the package
- * v0r2     07-07-03 RG Complete refactoring of HepRepSvc	
- * v0r3     17-07-03 RG Fixed compilation problems
- * v0r5     04-06-03 RG Fixed all the OmniOrb compatibility problems
- * v0r5p1   14-06-04 TU Updated the TkrRecon fillers
- * v0r6     20-07-04 RG Updated to support random access to root files
- * v0r6p1   02-08-04 RG Fixed a bug that crash test.
- * v0r7     26-08-04 RG Added an Header Fillers with EventHeader info
- * v0r8     29-09-04 RG Lot of changes to support full name Type and new commands
- * v0r9     16-12-04 TU Change over to using new Tracker TDS classes
- * v0r10p1  27-12-04 LR remove TkrCluster id from fillers
- * v0r11    11-01-05 RG imported changes in EM branch to support back button in FRED
- * v0r12    18-01-05 RG Fixed a bug about previousEvent missing method
- * v0r12p1  18-01-05 LR Improved TrackFiller and VtxFiller
- * v0r12p2  26-01-05 LR Improved TrackFiller and ClusterFiller
- * v0r12p3  11-02-05 LR Add markers to clusters!
- * v0r12p4  26-02-05 LR Changed markers to little x's; added info to Vertex
- * v0r13    08-03-05 RG Added a jobOptions property to set a FRED directory for auto start
- * v0r13p1  15-06-05 LR TrackFiller: closer to old-style track picture
-                        ClusterFiller: re-org, and divide bars into 4 wafers
- * v0r14p0  23-06-05 TU Modifications for new CalRecon TDS
- * v0r14p1  Bastille TU Updates to Cal Display - draw entire hit xtal, add text to Clusters
- * v0r14p2  09-08-05 LR Add some info to clusters and track hits
- * v0r14p3  13-08-05 LR Change the color of the TkrEventParams axis
- * v0r14p4  19-08-05 jb Changes for compatibility with modified IGeometry interface 
- * v0r14p5  23-08-05 LR Display info for TkrTrackHits without clusters 
- * v0r14p6  02-09-05 LR Display truncated-hit info if available 
- * v0r14p7  22-09-05 LR Bullet-proof TrackFiller for bad TkrId's
- * v0r15    08-12-05 RG Corrected a very bad bug in rotations of volumes in the geometry filler
- * v0r16    11-01-06 HK Update to ACD representation, using new colors
-                        depending on discriminator settings.  Also update
+* v0r22    10-30-07 hmk use gr_app
+* v0r21    10-26-07 jrb Support trapezoidal prisms
+* v0r20p3  18-09-07 HMK Move intVector and floatVector from Event into
+                        Event namespace
+* v0r20p2  01-06-07 LSR Bail in MonteCarloFiller if there's no McParticleCol
+* v0r20p1  15-03-07 LSR Fix jobOptions so test program "runs"
+* v0r20    12-03-07 TU  Re-work MC part of display (when will we have a v1?)
+* v0r19p1  07-12-06 LSR invoke TkrGeometrySvc with "true" option
+* v0r19    07-12-06 CL  Modifications to add gcr ROOT file
+* v0r18p5  15-10-06 LSR Display the digis if the clusters are not present
+* v0r18p3  13-07-06 LSR Fixed a bug in AcdReconFiller. Seems to display all the events now!
+* v0r18p2  22-05-06 HMK Load EventDataSvc if it isn't already
+* v0r18p1  13-04-06 LSR remove hardwired "4", requested by Brian
+* v0r18    27-03-06 HMK Prepare for tag after merging DC2 branch
+* v0r17    23-03-06 TU Tagging for new externals (CLHEP, Gaudi, etc.)
+* v0r16p2  09-02-06 LR Beefed up MC text info
+* v0r16p1  18-01-06 LR Fixed decoding of tower in TrackFiller
+* v0r16    11-01-06 HK Update to ACD representation, using new colors
+                      depending on discriminator settings.  Also update
                         McPosHit to include volId and global entry position.
- * v0r16p1  18-01-06 LR Fixed decoding of tower in TrackFiller
- * v0r16p2  09-02-06 LR Beefed up MC text info
- * v0r17    23-03-06 TU Tagging for new externals (CLHEP, Gaudi, etc.)
- * v0r18    27-03-06 HMK Prepare for tag after merging DC2 branch
- * v0r18p1  13-04-06 LSR remove hardwired "4", requested by Brian
- * v0r18p2  22-05-06 HMK Load EventDataSvc if it isn't already
- * v0r18p3  13-07-06 LSR Fixed a bug in AcdReconFiller. Seems to display all the events now!
- * v0r18p5  15-10-06 LSR Display the digis if the clusters are not present
- * v0r19    07-12-06 CL  Modifications to add gcr ROOT file
- * v0r19p1  07-12-06 LSR invoke TkrGeometrySvc with "true" option
- * v0r20    12-03-07 TU  Re-work MC part of display (when will we have a v1?)
- * v0r20p1  15-03-07 LSR Fix jobOptions so test program "runs"
- * v0r20p2  01-06-07 LSR Bail in MonteCarloFiller if there's no McParticleCol
- * v0r20p3  18-09-07 HMK Move intVector and floatVector from Event into
-                         Event namespace
- * v0r21    10-26-07 jrb Support trapezoidal prisms
- * v0r22    10-30-07 hmk use gr_app
+* v0r15    08-12-05 RG Corrected a very bad bug in rotations of volumes in the geometry filler
+* v0r14p7  22-09-05 LR Bullet-proof TrackFiller for bad TkrId's
+* v0r14p6  02-09-05 LR Display truncated-hit info if available 
+* v0r14p5  23-08-05 LR Display info for TkrTrackHits without clusters 
+* v0r14p4  19-08-05 jb Changes for compatibility with modified IGeometry interface 
+* v0r14p3  13-08-05 LR Change the color of the TkrEventParams axis
+* v0r14p2  09-08-05 LR Add some info to clusters and track hits
+* v0r14p1  Bastille TU Updates to Cal Display - draw entire hit xtal, add text to Clusters
+* v0r14p0  23-06-05 TU Modifications for new CalRecon TDS
+* v0r13p1  15-06-05 LR TrackFiller: closer to old-style track picture
+                        ClusterFiller: re-org, and divide bars into 4 wafers
+* v0r13    08-03-05 RG Added a jobOptions property to set a FRED directory for auto start
+* v0r12p4  26-02-05 LR Changed markers to little x's; added info to Vertex
+* v0r12p3  11-02-05 LR Add markers to clusters!
+* v0r12p2  26-01-05 LR Improved TrackFiller and ClusterFiller
+* v0r12p1  18-01-05 LR Improved TrackFiller and VtxFiller
+* v0r12    18-01-05 RG Fixed a bug about previousEvent missing method
+* v0r11    11-01-05 RG imported changes in EM branch to support back button in FRED
+* v0r10p1  27-12-04 LR remove TkrCluster id from fillers
+* v0r9     16-12-04 TU Change over to using new Tracker TDS classes
+* v0r8     29-09-04 RG Lot of changes to support full name Type and new commands
+* v0r7     26-08-04 RG Added an Header Fillers with EventHeader info
+* v0r6p1   02-08-04 RG Fixed a bug that crash test.
+* v0r6     20-07-04 RG Updated to support random access to root files
+* v0r5p1   14-06-04 TU Updated the TkrRecon fillers
+* v0r5     04-06-03 RG Fixed all the OmniOrb compatibility problems
+* v0r3     17-07-03 RG Fixed compilation problems
+* v0r2     07-07-03 RG Complete refactoring of HepRepSvc	
+* v0r1     20-09-02 RG Inital release of the package
+*/
