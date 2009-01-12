@@ -1,5 +1,14 @@
 ------------------------------------------------------------
 User: heather  Mon Jan 12 07:54:43 PST 2009
+HepRepSvc/src
+
+Modified Files:
+	HepRepSvc.cxx HepRepSvc.h SvcAdapter.cxx SvcAdapter.h 
+Log Message:
+allow input relation file and reverse release.notes in prep for stag app
+    *
+------------------------------------------------------------
+User: heather  Mon Jan 12 07:54:43 PST 2009
 HepRepSvc/doc
 
 Modified Files:
