@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: heather  Mon Jan 12 07:54:43 PST 2009
+HepRepSvc/HepRepSvc
+
+Modified Files:
+	ISvcAdapter.h 
+Log Message:
+allow input relation file and reverse release.notes in prep for stag app
+    *
+------------------------------------------------------------
 TAG
 Tag name: GlastRelease-15-50-10, operation: del
 Package: HepRepSvc
