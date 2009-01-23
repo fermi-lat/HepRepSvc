@@ -1,8 +1,7 @@
 # -*- python -*-
-# $Id: SConscript,v 1.15 2008/12/08 21:39:59 ecephas Exp $
+# $Header
 # Authors: Riccardo Giannitrapani <riccardo@fisica.uniud.it> 
-# Version: HepRepSvc-00-31-00
-
+# Version: HepRepSvc-00-29-02
 Import('baseEnv')
 Import('listFiles')
 Import('packages')
@@ -23,6 +22,7 @@ progEnv.Tool('registerObjects', package = 'HepRepSvc',
              libraries = [HepRepSvc],
              testApps = [test_HepRepSvc], 
              includes = listFiles(['HepRepSvc/*.h']))
+
 
 
 
