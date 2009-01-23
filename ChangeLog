@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+TAG
+Tag name: HepRepSvc-00-29-02, operation: mov
+Package: HepRepSvc
+User: glastrm  Thu Jan 22 16:31:10 2009
+Files:
+  HepRepSvc/SConscript  1.17
+  HepRepSvc/SConscript  1.17
+  HepRepSvc/SConscript  1.17
+  HepRepSvc/HepRepSvcLib.py  1.2
+
+    *
+------------------------------------------------------------
 User: ecephas  Thu Jan 22 16:06:35 PST 2009
 GlastRelease-scons/HepRepSvc
 
