@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: ecephas  Thu Jan 22 16:06:35 PST 2009
+GlastRelease-scons/HepRepSvc
+
+Modified Files:
+	SConscript 
+Log Message:
+Check in for GlastRelease-15-49-00
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-31-00, operation: add
 Package: HepRepSvc
