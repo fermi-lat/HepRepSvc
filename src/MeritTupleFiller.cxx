@@ -90,13 +90,15 @@ void MeritTupleFiller::buildTypes()
         }
         m_builder->addAttDef(thisPrefix,thisName, "Physics", "");
 
-        if( thisName=="GltGemSummary" ||
-            thisName=="GltWord" ||
-            thisName=="Tkr1Type" ||
-            thisName=="Tkr2Type" ||
-            thisName=="VtxStatus" ||
-            thisName=="Vtx2Status") m_conversionFlags[i] = 1;
-        if(thisName.find("Status")!=std::string::npos) m_conversionFlags[i] = 2;
+        if( thisName=="GltGemSummary" || thisName=="GltWord")      { // F->lo
+            m_conversionFlags[i] = 1;
+        } else if (thisName=="Tkr1Type" || thisName=="Tkr2Type")   { // F->lo,hi
+            m_conversionFlags[i] = 2;
+        } else if (thisName=="VtxStatus" ||thisName=="Vtx2Status") { // F->lo
+            m_conversionFlags[i] = 1;
+        } else if (thisName.find("Status")!=std::string::npos)     { // Int-> lo,hi
+            m_conversionFlags[i] = 3;
+        }
     }
 }
 
@@ -126,6 +128,8 @@ void MeritTupleFiller::fillInstances (std::vector<std::string>& typesList)
             m_builder->addInstance("Merit",pref);
         }
 
+        std::string thisType = m_types[i];
+
         if(thisName=="PtPos") {
             Point pos = Point(*reinterpret_cast<float*>(ptr)*.001,
                 *(reinterpret_cast<float*>(ptr)+1)*.001,
@@ -134,24 +138,33 @@ void MeritTupleFiller::fillInstances (std::vector<std::string>& typesList)
             m_builder->addAttValue(thisName,stPos,"");
         }
 
-        //special case, floating pt -> 16 bit integer
+        //bit words, some encoded as floats!
+        //floating pt -> 16 bit integer
         if(m_conversionFlags[i]==1) {
             m_builder->addAttValue(thisName,
                 getBits( (unsigned)*reinterpret_cast<float*>(ptr),15,0),"");
             continue;
         }
 
-        // 32 bits
+        // 32 bits from int
+        if(m_conversionFlags[i]==3) {
+            m_builder->addAttValue(thisName+"-lo",
+                getBits( *reinterpret_cast<unsigned*>(ptr),15,0),"");
+            m_builder->addAttValue(thisName+"-hi",
+                getBits( *reinterpret_cast<unsigned*>(ptr),31,16),"");
+            continue;
+        }
+ 
+        // 32 bits from float
         if(m_conversionFlags[i]==2) {
             m_builder->addAttValue(thisName+"-lo",
-                getBits( reinterpret_cast<unsigned>(ptr),15,0),"");
+                getBits( *reinterpret_cast<float*>(ptr),15,0),"");
             m_builder->addAttValue(thisName+"-hi",
-                getBits( reinterpret_cast<unsigned>(ptr),31,16),"");
+                getBits( *reinterpret_cast<float*>(ptr),31,16),"");
             continue;
         }
 
         // Native HepRepTypes
-        std::string thisType = m_types[i];
         if(thisType=="Int_t") {
             m_builder->addAttValue(thisName, *reinterpret_cast<int*>(ptr),"");
         }else if (thisType=="Float_t") {
