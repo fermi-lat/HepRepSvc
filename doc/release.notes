@@ -1,8 +1,10 @@
 /* @file release.notes
  * Package HepRepSvc
- * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.68 2008/11/10 21:28:39 lsrea Exp $
+ * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.69 2009/01/12 15:54:43 heather Exp $
  *           EOH
 
+ * v0r31p1 16-Feb-2009 LSR  Fix the representation of the status words
+                              in MeritTupleFiller. 
  * v0r31   12-Jan-09   HMK  Add support for input relation files
  * v0r30   10-Nov-08   LSR  Add saturation and ghost info to ToT thermometer
                             Mods for WIRED:
