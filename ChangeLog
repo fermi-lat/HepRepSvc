@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: lsrea  Mon Feb 16 17:57:24 PST 2009
+HepRepSvc/src
+
+Modified Files:
+	MeritTupleFiller.cxx 
+Log Message:
+Representation of status words was incorrect. 
+    Tracy found some and then I found some others.
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-29-02, operation: mov
 Package: HepRepSvc
