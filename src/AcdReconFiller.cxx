@@ -293,7 +293,7 @@ void AcdReconFiller::addAcdTkrGapPoca( const Event::AcdTkrGapPoca& aPoca ) {
 
 /// Fill the HepRep for AcdTkrLocalCoords
 void AcdReconFiller::addAcdTkrLocalCoords( const Event::AcdTkrLocalCoords& local ) {  
-  m_builder->addAttValue("Region", local.getRegion(), "");
+  //m_builder->addAttValue("Region", local.getRegion(), "");
   m_builder->addAttValue("Active_X", local.getActiveX(), "");
   m_builder->addAttValue("Active_Y", local.getActiveY(), "");
   m_builder->addAttValue("Local_XXCov", local.getLocalXXCov(), "");
