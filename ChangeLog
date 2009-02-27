@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: echarles  Thu Feb 26 16:37:41 PST 2009
+HepRepSvc/src
+
+Modified Files:
+      Tag: GlastReleasev17r5
+	AcdReconFiller.cxx 
+Log Message:
+Changes for new Acd reconstruction
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-31-01, operation: add
 Package: HepRepSvc
