@@ -1,5 +1,18 @@
 ------------------------------------------------------------
 User: lsrea  Thu Apr  9 13:10:10 PDT 2009
+HepRepSvc/src
+
+Modified Files:
+	CalReconFiller.cxx HepRepInitSvc.cxx MonteCarloFiller.cxx 
+	MonteCarloFiller.h 
+Log Message:
+1) Color CAL Edep boxes yellow for "saturated" xtals
+2) New HepRepInitSvc param: MonteCarloFiller_useMcInfo (default = true)
+      to help deal with really big events
+
+    *
+------------------------------------------------------------
+User: lsrea  Thu Apr  9 13:10:10 PDT 2009
 HepRepSvc/doc
 
 Modified Files:
