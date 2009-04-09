@@ -17,7 +17,8 @@ Service(name, pSvcLocator)
     declareProperty("VertexFiller_dashes",   m_vtx_dashes=true);
     declareProperty("ClusterFiler_showWide", m_cls_showWide=true);
     declareProperty("MeritTupleFiller_doIt", m_merit_doIt=true);
-
+    declareProperty("MonteCarloFiller_useMcInfo",        m_useMcInfo=true);
+    
     return; 
 }
 

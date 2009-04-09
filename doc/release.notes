@@ -1,8 +1,12 @@
 /* @file release.notes
  * Package HepRepSvc
- * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.69 2009/01/12 15:54:43 heather Exp $
+ * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.70 2009/02/17 01:58:57 lsrea Exp $
  *           EOH
 
+ * v0r31p1 09-Apr-2009 LSR  1) color CAL Edep boxes yellow for "saturated" xtals
+                            2) New HepRepInitSvc param: MonteCarloFiller_useMcInfo
+                                  (default is true)
+                               This should help with really big MC events
  * v0r31p1 16-Feb-2009 LSR  Fix the representation of the status words
                               in MeritTupleFiller. 
  * v0r31   12-Jan-09   HMK  Add support for input relation files
