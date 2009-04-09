@@ -26,6 +26,8 @@
 // This method build the types for the HepRep
 void MonteCarloFiller::buildTypes()
 {
+    if(!m_hrisvc->getMonteCarloFiller_useMcInfo()) return;
+
     m_builder->addType("","MC","Monte Carlo Tree","");
     m_builder->addAttValue("Layer","Event","");
 
@@ -100,6 +102,8 @@ void MonteCarloFiller::buildTypes()
 void MonteCarloFiller::fillInstances (std::vector<std::string>& typesList)
 {
     
+    if(!m_hrisvc->getMonteCarloFiller_useMcInfo()) return;
+
     // quick fix for FRED crash on real data
     SmartDataPtr<Event::McParticleCol> mcPart(m_dpsvc, "/Event/MC/McParticleCol");
     if(!mcPart) return;

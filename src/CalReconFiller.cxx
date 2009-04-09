@@ -255,8 +255,24 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
                     // as the size corresponding to the maximum energy
                     //double s = 0.45*m_xtalHeight*eneXtal/emax;
                     double s = 2. * 0.45*m_xtalHalfHeight*pow(eneXtal/emax,0.333);
-                    drawPrism(x, y, z, s, s, s);
 
+                    // check for saturation... for now just use the energy, since
+                    // the individual xtal ends are not available in the recon class
+                    // so no orange boxes
+                    // we can do better by using the digi info (maybe)
+
+                    //double ePos = recData->getEnergy(0, idents::CalXtalId::POS);
+                    //double eNeg = recData->getEnergy(0, idents::CalXtalId::NEG);
+
+                    double eSat = 68000.0;
+                    //if(ePos>eSat) satCount++;
+                    //if(eNeg>eSat) satCount++;
+
+                    std::string satColor[3] = {"red", "orange", "yellow"};
+                    drawPrism(x, y, z, s, s, s);
+                    double energy = recData->getEnergy();
+                    int satCount = (energy>eSat ? 2 : 0);
+                    m_builder->addAttValue("Color", satColor[satCount],"");
                     // Draw the faint outline of the entire log
                     m_builder->addInstance("XtalCol", "XtalLog");
                     //if(eneXtal<0.01*emax) m_builder->addAttValue("LineStyle","Dashed","");

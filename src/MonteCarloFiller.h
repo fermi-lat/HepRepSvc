@@ -38,7 +38,7 @@ class MonteCarloFiller: public Filler{
                    IGlastDetSvc* gsvc,
                    IDataProviderSvc* dpsvc,
                    IParticlePropertySvc* ppsvc):
-    m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc){};
+    m_hrisvc(hrisvc), m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc){};
 
   /// This method init the type tree
   virtual void buildTypes ();
