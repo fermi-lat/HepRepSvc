@@ -1,9 +1,9 @@
 /* @file release.notes
  * Package HepRepSvc
- * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.70 2009/02/17 01:58:57 lsrea Exp $
+ * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.71 2009/04/09 20:10:10 lsrea Exp $
  *           EOH
 
- * v0r31p1 09-Apr-2009 LSR  1) color CAL Edep boxes yellow for "saturated" xtals
+ * v0r31p2 09-Apr-2009 LSR  1) color CAL Edep boxes yellow for "saturated" xtals
                             2) New HepRepInitSvc param: MonteCarloFiller_useMcInfo
                                   (default is true)
                                This should help with really big MC events
