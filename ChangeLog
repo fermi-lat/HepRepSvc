@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: echarles  Mon Jun  8 10:27:14 PDT 2009
+HepRepSvc/src
+
+Modified Files:
+      Tag: GlastReleasev17r31p1
+	ReconFiller.h ReconFiller.cxx 
+Log Message:
+cosmetic changes to ReconFiller
+    *
+------------------------------------------------------------
 User: echarles  Mon Jun  8 10:26:07 PDT 2009
 HepRepSvc/src
 
