@@ -5,6 +5,7 @@
 #include <string>
 
 #include "Filler.h"
+#include "CLHEP/Geometry/Point3D.h"
 
 class IAcdGeometrySvc;
 class IDataProviderSvc;
@@ -12,13 +13,19 @@ class IParticlePropertySvc;
 class HepRepInitSvc;
 
 namespace Event {
-  class AcdRecon;
+  class AcdReconV2;
   class AcdHit;
+  class AcdTkrAssoc;
   class AcdTkrGapPoca;
   class AcdTkrHitPoca;
-  class AcdTkrIntersection;
+  class AcdTkrPoint;
+  class AcdEventTopology;
   class AcdTkrLocalCoords;
   class AcdPocaData;
+}
+
+namespace idents {
+  class AcdId;
 }
 
 class AcdTileDim;
@@ -55,38 +62,70 @@ class AcdReconFiller: public Filler{
 
  protected:
 
+  /// Define the structure for AcdHit
+  void defineAcdHitType(const char* parent);
+
+  /// Define the structure for AcdTkrAssoc
+  void defineAcdTkrAssocType(const char* parent, const char* color);
+
+  /// Define the structure for AcdTkrAssoc
+  void defineAcdEventTopologyType(const char* parent);
+
+  /// Define the structure for AcdTkrHitPoca
+  void defineAcdTkrHitPocaType(const char* parent);
+    
+  /// Define the structure for AcdTkrGapPoca
+  void defineAcdTkrGapPocaType(const char* parent);
+
+  /// Define the structure for AcdTkrGapPoca
+  void defineAcdTkrPointType(const char* parent);
+  
+  /// Define the structure for AcdPocaData
+  void defineAcdPocaDataType(const char* parent, const char* color, const char* errColor);
+
+  /// Define the structure for AcdPocaData
+  void defineAcdPocaErrorType(const char* parent, const char* color);
+
+  /// Define the structure for AcdTkrLocalCoords
+  void defineAcdTkrLocalCoordsType(const char* parent, const char* color, const char* errColor);
+  
+  /// Define the structure for AcdLocalErrorAxis
+  void defineAcdLocalErrorAxisType(const char* parent, const char* color);  
+
   /// Fill the HepReps for the Recons stuff
   void fillAcdRecon(std::vector<std::string>& typesList);
-
-  /// Fill the HepReps for the AcdHitCol
-  void fillAcdHitCol( const Event::AcdRecon& recon );
-
-  /// Fill the HepReps for the AcdTkrHitPocaCol
-  void fillAcdTkrHitPocaCol( const Event::AcdRecon& recon );
-
-  /// Fill the HepReps for the AcdTkrGapPocaCol
-  void fillAcdTkrGapPocaCol( const Event::AcdRecon& recon );
   
-  /// Fill the HepReps for the AcdTkrIntersectionCol
-  void fillAcdTkrIntersectionCol( const Event::AcdRecon& recon );
+  /// Fill the HepReps for the AcdHitCol
+  void fillAcdHitCol( const Event::AcdReconV2& recon );
+
+  /// Fill the HepReps for the AcdTkrAssocCol
+  void fillAcdTkrAssocCol( const Event::AcdReconV2& recon );
+
+  /// Fill the HepReps for the AcdEventTopology
+  void fillAcdEventTopology( const Event::AcdReconV2& recon );  
 
   /// Fill the HepRep for a single AcdHit
-  void addAcdHit( const Event::AcdHit& aHit );
+  void addAcdHit( const char* parent, const Event::AcdHit& aHit );
+
+  /// Fill the HepRep for a single AcdTkrAssoc
+  void addAcdTkrAssoc( const char* parent, const Event::AcdTkrAssoc& anAssoc );
 
   /// Fill the HepRep for a AcdTkrHitPoca
-  void addAcdTkrHitPoca( const Event::AcdTkrHitPoca& aPoca );  
+  void addAcdTkrHitPoca( const char* parent, const Event::AcdTkrHitPoca& aPoca );  
 
   /// Fill the HepRep for a AcdTkrGapPoca
-  void addAcdTkrGapPoca( const Event::AcdTkrGapPoca& aPoca );  
+  void addAcdTkrGapPoca( const char* parent, const Event::AcdTkrGapPoca& aPoca );  
+
+  /// Fill the HepRep for a AcdTkrPoint
+  void addAcdTkrPoint( const char* parent, const Event::AcdTkrPoint& aPoint );
 
   /// Fill the HepRep for AcdTkrLocalCoords
-  void addAcdTkrLocalCoords( const Event::AcdTkrLocalCoords& local );
+  void addAcdTkrLocalCoords( const char* parent, 
+			     const idents::AcdId& acdId,
+			     const Event::AcdTkrLocalCoords& local );
 
   /// Fill the HepRep for AcdPocaData
-  void addAcdPocaData( const Event::AcdPocaData& pocaData );
-
-  /// Fill the HepRep for AcdTkrIntersection
-  void addAcdTkrIntersection( const Event::AcdTkrIntersection& inter );
+  void addAcdPocaData( const char* parent, const Event::AcdPocaData& pocaData );
 
 
 private:
