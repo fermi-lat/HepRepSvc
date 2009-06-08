@@ -28,7 +28,10 @@ class DigiFiller: public Filler{
               ITkrGeometrySvc* tgsvc,
 	     IAcdGeometrySvc* acdsvc,
               IDataProviderSvc* dpsvc);
+
+  virtual ~DigiFiller(){;}
   
+
   /// This method init the type tree
   virtual void buildTypes ();
   /// This method fill the instance tree, using the string vector to decide
