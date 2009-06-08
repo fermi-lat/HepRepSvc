@@ -1,4 +1,76 @@
 ------------------------------------------------------------
+TAG
+Tag name: v1r0p0gr2, operation: add
+Package: HepRepSvc
+User: echarles  Mon Jun  8 16:24:00 2009
+Files:
+  HepRepSvc/.cvsignore  1.3
+  HepRepSvc/ChangeLog  1.415
+  HepRepSvc/HepRepSvcLib.py  1.2
+  HepRepSvc/SConscript  1.18
+  HepRepSvc/HepRepSvc/IRegister.h  1.1
+  HepRepSvc/HepRepSvc/IBuilder.h  1.4
+  HepRepSvc/HepRepSvc/HepRepInitSvc.h  1.4
+  HepRepSvc/HepRepSvc/IHepRepSvc.h  1.2
+  HepRepSvc/HepRepSvc/ISvcAdapter.h  1.11
+  HepRepSvc/HepRepSvc/IServer.h  1.2
+  HepRepSvc/HepRepSvc/IFiller.h  1.4
+  HepRepSvc/HepRepSvc/IRegistry.h  1.4
+  HepRepSvc/HepRepSvc/mainpage.h  1.6
+  HepRepSvc/HepRepSvc/IStreamer.h  1.1
+  HepRepSvc/cmt/requirements  1.75.6.1.2.2
+  HepRepSvc/doc/release.notes  1.70.30.2
+  HepRepSvc/src/MeritTupleFiller.cxx  1.2
+  HepRepSvc/src/HeaderFiller.cxx  1.5
+  HepRepSvc/src/MeritTupleFiller.h  1.1
+  HepRepSvc/src/HepRepInitSvc.cxx  1.4
+  HepRepSvc/src/CalReconFiller.h  1.6
+  HepRepSvc/src/AcdPointFiller.h  1.1.128.1
+  HepRepSvc/src/Registry.cxx  1.3
+  HepRepSvc/src/AcdReconFiller.h  1.4.128.1
+  HepRepSvc/src/ReconFiller.cxx  1.10.128.1
+  HepRepSvc/src/AcdPointFiller.cxx  1.1.128.1
+  HepRepSvc/src/FilterFiller.h  1.1
+  HepRepSvc/src/MonteCarloFiller.h  1.6
+  HepRepSvc/src/SvcAdapter.cxx  1.11
+  HepRepSvc/src/AcdDigiFiller.h  1.1
+  HepRepSvc/src/HepRepGeometry.cxx  1.18
+  HepRepSvc/src/ReconFiller.h  1.6.128.1
+  HepRepSvc/src/HepRepSvc.cxx  1.27
+  HepRepSvc/src/FilterFiller.cxx  1.1
+  HepRepSvc/src/MonteCarloFiller.cxx  1.23
+  HepRepSvc/src/CalReconFiller.cxx  1.19
+  HepRepSvc/src/AcdReconFiller.cxx  1.8.74.1.2.1
+  HepRepSvc/src/DigiFiller.h  1.2.128.1
+  HepRepSvc/src/Filler.cxx  1.1.160.1
+  HepRepSvc/src/HepRepGeometry.h  1.8
+  HepRepSvc/src/GeometryFiller.cxx  1.5
+  HepRepSvc/src/Filler.h  1.1.160.2
+  HepRepSvc/src/SvcAdapter.h  1.11
+  HepRepSvc/src/HeaderFiller.h  1.3
+  HepRepSvc/src/DigiFiller.cxx  1.2
+  HepRepSvc/src/HepRepSvc.h  1.15
+  HepRepSvc/src/Registry.h  1.3
+  HepRepSvc/src/TkrReconFiller.h  1.5
+  HepRepSvc/src/TkrReconFiller.cxx  1.11
+  HepRepSvc/src/GeometryFiller.h  1.5
+  HepRepSvc/src/AcdDigiFiller.cxx  1.1
+  HepRepSvc/src/Dll/HepRepSvc_load.cxx  1.3
+  HepRepSvc/src/Dll/HepRepSvc_dll.cxx  1.2
+  HepRepSvc/src/Tracker/ClusterUtil.h  1.1
+  HepRepSvc/src/Tracker/TrackFiller.h  1.6.128.1
+  HepRepSvc/src/Tracker/TkrEventParamsFiller.h  1.3
+  HepRepSvc/src/Tracker/ClusterFiller.h  1.9
+  HepRepSvc/src/Tracker/VertexFiller.cxx  1.10
+  HepRepSvc/src/Tracker/ClusterUtil.cxx  1.2
+  HepRepSvc/src/Tracker/TrackFiller.cxx  1.19
+  HepRepSvc/src/Tracker/VertexFiller.h  1.5
+  HepRepSvc/src/Tracker/TkrEventParams.cxx  1.5
+  HepRepSvc/src/Tracker/ClusterFiller.cxx  1.24
+  HepRepSvc/src/test/jobOptions.txt  1.6
+
+    *
+------------------------------------------------------------
 User: echarles  Mon Jun  8 16:23:45 PDT 2009
 HepRepSvc/src/Tracker
 
