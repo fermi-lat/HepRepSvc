@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: echarles  Mon Jun  8 10:24:28 PDT 2009
+HepRepSvc/src
+
+Modified Files:
+      Tag: GlastReleasev17r31p1
+	Filler.h Filler.cxx 
+Log Message:
+added getPositionString() and getDirectionString() to Filler
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-31-02, operation: add
 Package: HepRepSvc
