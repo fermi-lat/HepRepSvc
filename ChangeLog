@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: echarles  Mon Jun  8 10:26:07 PDT 2009
+HepRepSvc/src
+
+Modified Files:
+      Tag: GlastReleasev17r31p1
+	AcdReconFiller.h AcdReconFiller.cxx 
+Log Message:
+Added drawing of AcdTkrPoint, AcdTkrHitPoca, AcdTkrGapPoca, AcdTkrAssoc, AcdTkrIntersection type objects
+    *
+------------------------------------------------------------
 User: echarles  Mon Jun  8 10:25:11 PDT 2009
 HepRepSvc/src
 
