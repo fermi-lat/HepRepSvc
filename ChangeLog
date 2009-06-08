@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: echarles  Mon Jun  8 16:23:44 PDT 2009
+HepRepSvc/doc
+
+Modified Files:
+      Tag: GlastReleasev17r31p1
+	release.notes 
+Log Message:
+tag v1r0p0gr2: Virtualize a couple of d'tor to stop compilation warnings
+    *
+------------------------------------------------------------
+User: echarles  Mon Jun  8 16:23:44 PDT 2009
 HepRepSvc/cmt
 
 Modified Files:
