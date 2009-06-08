@@ -40,6 +40,8 @@ class TrackFiller: public ClusterUtil {
               IDataProviderSvc* dpsvc,
               IParticlePropertySvc* ppsvc);
   
+  virtual ~TrackFiller() {;}
+
   /// This method init the type tree
   virtual void buildTypes ();
   /// This method fill the instance tree, using the string vector to decide

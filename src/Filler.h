@@ -5,7 +5,7 @@
 @brief header file for Filler.cxx
 @author Leon Rochester
 
-$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/Filler.h,v 1.1 2008/08/12 05:03:39 lsrea Exp $
+$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/Filler.h,v 1.1.160.1 2009/06/08 17:24:28 echarles Exp $
 */
 
 #include <string>
@@ -47,7 +47,7 @@ public:
 
     Filler();
     
-    ~Filler();
+    virtual ~Filler();
 
     virtual bool hasType(std::vector<std::string>& list, std::string type); 
     virtual std::string getTripleString(int precis, double x, double y, double z);
