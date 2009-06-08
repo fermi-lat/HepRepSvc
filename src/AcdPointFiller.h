@@ -5,6 +5,11 @@ class AcdTileDim;
 class AcdRibbonDim;
 class IBuilder;
 
+
+#include "CLHEP/Geometry/Vector3D.h"
+#include "CLHEP/Geometry/Point3D.h"
+
+
 namespace AcdHepRepPointFiller {
   
   /// Create the outline of a tile
@@ -21,6 +26,9 @@ namespace AcdHepRepPointFiller {
 
   /// Create the outline of a Ribbon
   void addPointsAcdRibbon( IBuilder& builder, const AcdRibbonDim& ribbon );
+  
+  /// Fill the error axes for a tile
+  void addErrors( IBuilder& builder, const HepPoint3D& center, const HepVector3D& vect);
 
 };
 
