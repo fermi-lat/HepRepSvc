@@ -21,7 +21,7 @@ class HepRepInitSvc;
 class HeaderFiller: public Filler{
   
  public:
-  HeaderFiller(HepRepInitSvc* hrisvc,
+  HeaderFiller(HepRepInitSvc* /*hrisvc*/,
                IDataProviderSvc* dpsvc):
     m_dpsvc(dpsvc){};
 

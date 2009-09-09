@@ -23,7 +23,7 @@ void HeaderFiller::buildTypes()
 
 
 // This method fill the instance tree Event/MC with the actual TDS content
-void HeaderFiller::fillInstances (std::vector<std::string>& typesList)
+void HeaderFiller::fillInstances (std::vector<std::string>& /*typesList*/)
 {
   std::stringstream sName;
  

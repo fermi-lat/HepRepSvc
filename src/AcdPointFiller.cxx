@@ -58,7 +58,7 @@ void AcdHepRepPointFiller::addPointsAcdTrapezoidTile ( IBuilder& builder, const 
 }
 
 /// Create the outline of a Ribbon
-void AcdHepRepPointFiller::addPointsAcdRibbon( IBuilder& builder, const AcdRibbonDim& /* ribbon */ ) {
+void AcdHepRepPointFiller::addPointsAcdRibbon( IBuilder& /*builder*/, const AcdRibbonDim& /* ribbon */ ) {
 
 }
 

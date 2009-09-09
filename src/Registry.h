@@ -25,6 +25,8 @@ class Registry: public IRegistry
 {
  public:
   
+  virtual ~Registry();
+
   /// This method register a new filler with a name
   virtual void registerFiller(IFiller*, std::string);
   

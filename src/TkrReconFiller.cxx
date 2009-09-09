@@ -34,7 +34,7 @@ TkrReconFiller::TkrReconFiller(HepRepInitSvc* hrisvc,
                                ITkrGeometrySvc* tgsvc,
                                IDataProviderSvc* dpsvc,
                                IParticlePropertySvc* ppsvc):
-  m_hrisvc(hrisvc),m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc), m_tgsvc(tgsvc)
+  m_hrisvc(hrisvc),m_gdsvc(gsvc),m_tgsvc(tgsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc)
 {
     fillVector.clear();
 

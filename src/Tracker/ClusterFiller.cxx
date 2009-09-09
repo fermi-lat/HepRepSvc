@@ -30,7 +30,7 @@ ClusterFiller::ClusterFiller(HepRepInitSvc* hrisvc,
                              ITkrGeometrySvc* tgsvc,
                              IDataProviderSvc* dpsvc,
                              IParticlePropertySvc* ppsvc) :
-ClusterUtil(hrisvc, gsvc), m_dpsvc(dpsvc),m_ppsvc(ppsvc), m_tgsvc(tgsvc)
+ClusterUtil(hrisvc, gsvc), m_tgsvc(tgsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc)
 {    
 
     m_drawDigisIfNoClusters = true;
@@ -263,12 +263,12 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
             const int status   = trunc.getStatus();
             if (status==0) continue;
             const Event::intVector& numStrips = trunc.getStripCount();
-            const Event::intVector& stripNumber = trunc.getStripNumber();
+            //const Event::intVector& stripNumber = trunc.getStripNumber();
             const Event::floatVector& localX = trunc.getLocalX();
             Event::SortId id = iter->first;
             int tower = id.getTower();
-            int tray  = id.getTray();
-            int face  = id.getFace();
+            //int tray  = id.getTray();
+            //int face  = id.getFace();
             int view  = id.getView();
 
             // need x,y limits and z-coordinate

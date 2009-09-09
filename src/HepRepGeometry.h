@@ -75,16 +75,17 @@ private:
 
     std::vector<HepGeom::Transform3D> m_actualTransform;
 
+    std::string m_mode;
+    Filler*   m_filler;
     unsigned int m_depth;
-    unsigned int m_actualDepth;
-    bool m_stopped;
     int m_geomType;
 
+    unsigned int m_actualDepth;
+    bool m_stopped;
+
     IBuilder* m_builder;
-    Filler*   m_filler;
 
     std::string m_hrMode;
-    std::string m_mode;
 };
 
 #endif //HepRepGeometry_H
