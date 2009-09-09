@@ -27,7 +27,9 @@ class GeometryFiller : public Filler {
 		 HepRepInitSvc* hrisvc,
 		 IGlastDetSvc* gsvc,
 		 int geomType );
-  
+
+  virtual ~GeometryFiller();  
+
   // needed to satisfy the abstract class 
   /// This method init the type tree
   virtual void buildTypes ();

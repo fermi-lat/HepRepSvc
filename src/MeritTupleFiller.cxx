@@ -118,7 +118,7 @@ void MeritTupleFiller::fillInstances (std::vector<std::string>& typesList)
     m_builder->setSubinstancesNumber("Merit", m_prefixCount);
 
     int i;
-    for(i=0;i<m_names.size();++i) {
+    for(i=0;i<(int)m_names.size();++i) {
         std::string thisName = m_names[i];
         void * ptr;
         m_rtsvc->getItem("MeritTuple",thisName, ptr);
@@ -158,9 +158,9 @@ void MeritTupleFiller::fillInstances (std::vector<std::string>& typesList)
         // 32 bits from float
         if(m_conversionFlags[i]==2) {
             m_builder->addAttValue(thisName+"-lo",
-                getBits( *reinterpret_cast<float*>(ptr),15,0),"");
+                getBits( (unsigned)*reinterpret_cast<float*>(ptr),15,0),"");
             m_builder->addAttValue(thisName+"-hi",
-                getBits( *reinterpret_cast<float*>(ptr),31,16),"");
+                getBits( (unsigned)*reinterpret_cast<float*>(ptr),31,16),"");
             continue;
         }
 
@@ -211,7 +211,7 @@ bool MeritTupleFiller::parseTree( TTree* tree)
         int index = leafName.find("[");
         dim = 1;
         dimStr = "1";
-        if(index!=std::string::npos) {
+        if((unsigned)index!=std::string::npos) {
             dim = -1;
             int index1 = leafName.find("]");
             dimStr = leafName.substr(index+1,index1-index-1);

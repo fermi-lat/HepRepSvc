@@ -8,7 +8,7 @@
 #include <algorithm>
 
 GeometryFiller::GeometryFiller( unsigned int depth,
-				HepRepInitSvc* hrisvc,
+				HepRepInitSvc* /* hrisvc */,
 				IGlastDetSvc* gsvc,
 				int geomType ):m_gsvc(gsvc)
 {

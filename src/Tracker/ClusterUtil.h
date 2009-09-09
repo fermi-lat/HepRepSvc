@@ -5,7 +5,7 @@
 @brief header file for ClusterUtil.cxx
 @author Leon Rochester
 
-$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/ClusterUtil.h,v 1.1 2008/08/12 05:03:39 lsrea Exp $
+$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/Tracker/ClusterUtil.h,v 1.1 2008/10/09 06:13:17 lsrea Exp $
 */
 
 #include <string>
@@ -62,8 +62,8 @@ protected:
 
     void ClusterUtil::buildClusterInstance(IBuilder* builder, Event::TkrCluster* pClus);
 
-    IGlastDetSvc* m_gdsvc;
     HepRepInitSvc* m_hrisvc;
+    IGlastDetSvc* m_gdsvc;
     
     double m_siStripPitch; 
     double m_stripLength;

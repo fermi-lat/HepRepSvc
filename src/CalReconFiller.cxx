@@ -323,9 +323,9 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
                     double yXtal = xtalCtr.y();
                     double zXtal = xtalCtr.z();
 
-                    double xHalf = m_xtalHalfWidth;
-                    double yHalf = m_xtalHalfLength;
-                    double zHalf = m_xtalHalfHeight;
+                    //double xHalf = m_xtalHalfWidth;
+                    //double yHalf = m_xtalHalfLength;
+                    //double zHalf = m_xtalHalfHeight;
 
 
 

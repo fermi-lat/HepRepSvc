@@ -25,7 +25,7 @@ ReconFiller::ReconFiller(HepRepInitSvc* hrisvc,
 	            		 IAcdGeometrySvc* acdsvc,
                          IDataProviderSvc* dpsvc,
                          IParticlePropertySvc* ppsvc):
-  m_hrisvc(hrisvc),m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc), m_tgsvc(tgsvc), m_acdsvc(acdsvc)
+  m_hrisvc(hrisvc),m_gdsvc(gsvc),m_tgsvc(tgsvc),m_acdsvc(acdsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc)
 {
   AcdReconFiller* acdRecon = new AcdReconFiller(m_hrisvc,m_acdsvc, m_dpsvc, m_ppsvc);
   CalReconFiller* calRecon = new CalReconFiller(m_hrisvc,m_gdsvc, m_dpsvc, m_ppsvc);

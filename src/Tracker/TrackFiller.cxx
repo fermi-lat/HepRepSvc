@@ -101,9 +101,9 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
         SmartDataPtr<Event::TkrTrackCol>(m_dpsvc,
         EventModel::TkrRecon::TkrTrackCol);
 
-    Event::TkrClusterCol* pClusters = 
-        SmartDataPtr<Event::TkrClusterCol>(m_dpsvc,
-        EventModel::TkrRecon::TkrClusterCol);
+    //Event::TkrClusterCol* pClusters = 
+    //    SmartDataPtr<Event::TkrClusterCol>(m_dpsvc,  
+    //    EventModel::TkrRecon::TkrClusterCol);
 
     //Now see if we can do the drawing
     if (!pTracks) return;
@@ -116,7 +116,7 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
     m_builder->setSubinstancesNumber("Tracks",numTracks);
 
     int trackId  = 0;
-    int trackWid = 2.0;
+    double trackWid = 2.0;
     Event::TkrTrackCol::iterator it = pTracks->begin();
 
     while(it != pTracks->end())

@@ -287,7 +287,7 @@ void MonteCarloFiller::fillMcParticle(std::vector<std::string>&     typesList,
         unsigned int statBits = mcPart->statusFlags();
         m_builder->addAttValue("Status Low",getBits(statBits, 15, 0),"");
 
-        if(ppty) setCharge(ppty->charge());
+        if(ppty) setCharge((int)ppty->charge());
         int numDaughters = (int)mcPart->daughterList().size();
         m_builder->addAttValue("NumDaughters", numDaughters, "");
 
@@ -434,7 +434,7 @@ void MonteCarloFiller::fillMcPositionHit(std::vector<std::string>& typesList, Ev
     }                  
 }
 
-void MonteCarloFiller::fillMcIntegratingHit(std::vector<std::string>& typesList, Event::McIntegratingHit* hit)
+void MonteCarloFiller::fillMcIntegratingHit(std::vector<std::string>& /*typesList*/, Event::McIntegratingHit* hit)
 {
     HepTransform3D global;
     idents::VolumeIdentifier id = hit->volumeID();

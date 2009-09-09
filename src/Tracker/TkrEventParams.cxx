@@ -23,7 +23,7 @@
 
 // Constructor
 TkrEventParamsFiller::TkrEventParamsFiller(
-    HepRepInitSvc* hrisvc,
+    HepRepInitSvc* /*hrisvc*/,
     IGlastDetSvc* gsvc,
     IDataProviderSvc* dpsvc,
     IParticlePropertySvc* ppsvc):
