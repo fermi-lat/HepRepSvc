@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: lsrea  Wed Sep  9 10:03:09 PDT 2009
+HepRepSvc
+
+Modified Files:
+	SConscript 
+Log Message:
+GoGui_auto-tag
+    *
+------------------------------------------------------------
 User: lsrea  Wed Sep  9 10:02:39 PDT 2009
 HepRepSvc/src/Tracker
 
