@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: lsrea  Thu Sep 10 14:27:28 PDT 2009
+HepRepSvc/src
+
+Modified Files:
+	GeometryFiller.h Registry.h 
+Log Message:
+Back out some "fixes"
+
+    *
+------------------------------------------------------------
 User: lsrea  Thu Sep 10 14:26:54 PDT 2009
 HepRepSvc/cmt
 
