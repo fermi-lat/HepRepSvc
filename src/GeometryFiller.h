@@ -28,7 +28,7 @@ class GeometryFiller : public Filler {
 		 IGlastDetSvc* gsvc,
 		 int geomType );
 
-  virtual ~GeometryFiller();  
+  //virtual ~GeometryFiller();  
 
   // needed to satisfy the abstract class 
   /// This method init the type tree
