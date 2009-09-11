@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: lsrea  Fri Sep 11 13:31:59 PDT 2009
+HepRepSvc/src
+
+Modified Files:
+	Registry.h 
+Log Message:
+Another fix
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-31-04, operation: add
 Package: HepRepSvc
