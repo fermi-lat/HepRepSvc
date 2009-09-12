@@ -1,8 +1,9 @@
 /* @file release.notes
  * Package HepRepSvc
- * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.73 2009/09/09 17:03:09 lsrea Exp $
+ * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.74 2009/09/10 21:29:55 lsrea Exp $
  *           EOH
 
+ HepRepSvc-00-31-05 12-Sep-2009  lsrea more fixes
  HepRepSvc-00-31-04 10-Sep-2009  lsrea back out some fixes
  HepRepSvc-00-31-03 09-Sep-2009  lsrea Fix unix warnings
  * v0r31p2 09-Apr-2009 LSR  1) color CAL Edep boxes yellow for "saturated" xtals
