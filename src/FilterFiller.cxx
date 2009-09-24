@@ -83,7 +83,7 @@ void FilterFiller::fillInstances (std::vector<std::string>& typesList)
             Point  grbPos = Point(xInt, yInt, zInt);
             m_builder->addInstance("Filter", "FilterTrack");
             m_builder->addAttValue("FilterTrack Dir", getDirectionString(grbDir), "");
-            Point grbEnd = grbPos - zInt/abs(zDir)*grbDir;
+            Point grbEnd = grbPos - zInt/fabs(zDir)*grbDir;
             m_builder->addAttValue("FilterTrack Pos", getPositionString(grbPos), "");
             m_builder->addPoint(xInt, yInt, zInt);
             m_builder->addPoint(grbEnd.x(), grbEnd.y(), grbEnd.z());

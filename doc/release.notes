@@ -1,6 +1,8 @@
-//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.59 2008/09/18 04:59:27 lsrea Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.60 2008/09/18 14:29:24 lsrea Exp $
 /*
+ EOH 
  
+ * v2r27p2gr1 23-Sep-09 HMK replace abs with fabs in src/FilterFillter.cxx
  * v2r27p2 18-Sep-08   LSR  Back out ghost stuff so this can go in faster
  * v2r27p1 17-Sep-08   LSR  Speed up large events by a large factor!
  * v2r27   15-Sep-08   LSR  Connect Clusters on track to the TkrTrackHit
