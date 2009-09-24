@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: heather  Thu Sep 24 10:29:38 PDT 2009
+HepRepSvc
+
+Modified Files:
+      Tag: GlastReleasev15r47p12
+	SConscript 
+Log Message:
+pick up change from abs to fabs and put on L1proc branch
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-31-05, operation: add
 Package: HepRepSvc
