@@ -4,6 +4,7 @@
 #include "Tracker/TrackFiller.h"
 #include "Tracker/VertexFiller.h"
 #include "Tracker/TkrEventParamsFiller.h"
+#include "Tracker/TrackElementsFiller.h"
 
 #include "HepRepSvc/IBuilder.h"
 #include "HepRepSvc/HepRepInitSvc.h"
@@ -42,6 +43,7 @@ TkrReconFiller::TkrReconFiller(HepRepInitSvc* hrisvc,
     fillVector.push_back(new TrackFiller(hrisvc,gsvc,dpsvc,ppsvc));
     fillVector.push_back(new VertexFiller(hrisvc,gsvc,dpsvc,ppsvc));
     fillVector.push_back(new TkrEventParamsFiller(hrisvc,gsvc,dpsvc,ppsvc));
+    fillVector.push_back(new TrackElementsFiller(hrisvc,gsvc,dpsvc,ppsvc));
 }
 
 TkrReconFiller::~TkrReconFiller()
