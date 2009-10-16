@@ -16,7 +16,7 @@
  * 
  * @author Tracy Usher
  *
- * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/HepRepSvc/HepRepInitSvc.h,v 1.4 2008/10/08 05:40:48 lsrea Exp $
+ * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/HepRepSvc/HepRepInitSvc.h,v 1.5 2009/04/09 20:10:10 lsrea Exp $
  */
 
 
@@ -40,10 +40,14 @@ public:
     /// return the service type
     const InterfaceID& type() const;
 
-    const bool getVertexFiller_dashes(){return m_vtx_dashes;}
-    const bool getClusterFiller_showWide() { return m_cls_showWide;}
+    const bool getVertexFiller_dashes()    { return m_vtx_dashes; }
+    const bool getClusterFiller_showWide() { return m_cls_showWide; }
     const bool getMeritTupleFiller_doIt()  { return m_merit_doIt; }
-    const bool getMonteCarloFiller_useMcInfo()      { return m_useMcInfo; }
+    const bool getMonteCarloFiller_useMcInfo() { return m_useMcInfo; }
+    const bool getClusterUtil_useTriggerInfo() { return m_useTriggerInfo; }
+    const bool getClusterUtil_useDiagnosticInfo() { return m_useDiagnosticInfo; }
+    const bool getClusterUtil_useToTInfo()        { return m_useToTInfo; }
+    const bool getCalReconFiller_useColors()      { return m_calRecon_useColors; }
 
  
 private:
@@ -54,6 +58,10 @@ private:
     bool m_cls_showWide;
     bool m_merit_doIt;
     bool m_useMcInfo;
+    bool m_useTriggerInfo;
+    bool m_useDiagnosticInfo;
+    bool m_useToTInfo;
+    bool m_calRecon_useColors;
 };
 
 #endif // __HEPREPINITSVC_H

@@ -14,11 +14,14 @@ Service(name, pSvcLocator)
     //HepRepControl* control = HepRepControl::getPtr();
 
     // Variables which can be modified in TkrControl
-    declareProperty("VertexFiller_dashes",   m_vtx_dashes=true);
-    declareProperty("ClusterFiler_showWide", m_cls_showWide=true);
-    declareProperty("MeritTupleFiller_doIt", m_merit_doIt=true);
-    declareProperty("MonteCarloFiller_useMcInfo",        m_useMcInfo=true);
-    
+    declareProperty("VertexFiller_dashes",           m_vtx_dashes=true);
+    declareProperty("ClusterFiler_showWide",         m_cls_showWide=true);
+    declareProperty("MeritTupleFiller_doIt",         m_merit_doIt=true);
+    declareProperty("MonteCarloFiller_useMcInfo",    m_useMcInfo=true);
+    declareProperty("ClusterUtil_useTriggerInfo",    m_useTriggerInfo=true);
+    declareProperty("ClusterUtil_useDiagnosticInfo", m_useDiagnosticInfo=true);
+    declareProperty("ClusterUtil_useToTInfo",        m_useToTInfo=true);
+    declareProperty("CalReconFiller_useColors",      m_calRecon_useColors=false);
     return; 
 }
 

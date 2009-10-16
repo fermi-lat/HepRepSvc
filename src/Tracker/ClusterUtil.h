@@ -52,8 +52,6 @@ public:
     
     ~ClusterUtil();
 
-
-
 protected:
 
     std::string ClusterUtil::getClusterColor(Event::TkrCluster* pCluster, bool isAcc);
@@ -62,8 +60,8 @@ protected:
 
     void ClusterUtil::buildClusterInstance(IBuilder* builder, Event::TkrCluster* pClus);
 
-    HepRepInitSvc* m_hrisvc;
     IGlastDetSvc* m_gdsvc;
+    HepRepInitSvc* m_hrisvc;
     
     double m_siStripPitch; 
     double m_stripLength;
@@ -78,6 +76,9 @@ protected:
     double m_activeWidth;
 
     bool m_hasTypeToT;
+    bool m_useTriggerInfo;
+    bool m_useDiagnosticInfo;
+    bool m_useToTInfo;
 
 private:
 
