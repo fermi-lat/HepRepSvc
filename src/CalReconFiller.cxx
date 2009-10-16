@@ -155,7 +155,7 @@ void CalReconFiller::buildTypes()
     m_builder->addAttValue("Color","green","");
     m_builder->addType("Cluster", "ClusterLayers", "Cal Cluster Layers center","");
     m_builder->addAttValue("DrawAs","Point","");
-    m_builder->addAttValue("Color","blue","");
+    m_builder->addAttValue("Color","blue",""); // default color for standard display
     m_builder->addAttValue("MarkerName","Cross","");  
     m_builder->addAttValue("MarkerSize", 2, "");
     m_builder->addType("Cluster", "ClusterDir", "Cal Cluster Direction","");
@@ -178,6 +178,11 @@ void CalReconFiller::buildTypes()
 void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
 {
     //bool printEnergy = false; // diagnostic
+
+    const int nColors = 6;
+    // 2nd is orange, 6th is "purple"
+    std::string clusterColor[nColors] = 
+    {"red", "255,100,27", "yellow", "green", "blue", "160,32,240"};
 
     if (!hasType(typesList, "Recon/CalRecon"))
         return;
@@ -401,7 +406,12 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
                     double x = (cl->getPosition()).x();
                     double y = (cl->getPosition()).y();
                     double z = (cl->getPosition()).z();
-                    m_builder->addPoint(x,y,z);            
+
+                    if(m_hrisvc->getCalReconFiller_useColors()) {
+                        int j = (ic>nColors-1 ? nColors-1 : ic);
+                        m_builder->addAttValue("Color",clusterColor[j],""); 
+                    }
+                    m_builder->addPoint(x,y,z);     
 
                     // Draw the layers reconstructed positions
                     m_builder->addInstance("Cluster", "ClusterLayers");    
@@ -419,7 +429,13 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
                     }
 
                     // drawing the reconstructed shower direction
-                    // as a green line
+
+                    // as a green or colored line
+                    if(m_hrisvc->getCalReconFiller_useColors()) {
+                        int j = (ic>nColors-1 ? nColors-1 : ic);
+                        m_builder->addAttValue("Color",clusterColor[j],""); 
+                    }
+
                     double dirX = (cl->getDirection()).x();
                     double dirY = (cl->getDirection()).y();
                     double dirZ = (cl->getDirection()).z();
@@ -429,6 +445,10 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
                     {
                         // Draw the cluster direction
                         m_builder->addInstance("Cluster", "ClusterDir");    
+                        if(m_hrisvc->getCalReconFiller_useColors()) {
+                            int j = (ic>nColors-1 ? nColors-1 : ic);
+                            m_builder->addAttValue("Color",clusterColor[j],""); 
+                        }
 
                         // calculate x and y coordinates for the beginning and the end
                         // of line in the top and bottom calorimeter layers

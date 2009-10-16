@@ -36,23 +36,42 @@ m_hrisvc(hrisvc), m_gdsvc(gsvc)
     m_gdsvc->getNumericConstByName("towerPitch",        &m_towerPitch);
 
     double deadWidth = m_siWaferSide - m_siWaferActiveSide;
-    m_stripLength = m_nWaferAcross*m_siWaferSide + (m_nWaferAcross-1)*m_ssdGap - deadWidth;
-    m_activeWidth = m_nWaferAcross*m_siWaferSide + (m_nWaferAcross-1)*ladderGap - deadWidth;
+    m_stripLength  = 
+        m_nWaferAcross*m_siWaferSide + (m_nWaferAcross-1)*m_ssdGap - deadWidth;
+    m_activeWidth  = 
+        m_nWaferAcross*m_siWaferSide + (m_nWaferAcross-1)*ladderGap - deadWidth;
     m_siStripPitch = m_siWaferActiveSide / ladderNStrips;
-
-
-
+    m_useToTInfo    = hrisvc->getClusterUtil_useToTInfo();
+    m_useTriggerInfo    = hrisvc->getClusterUtil_useTriggerInfo();
+    m_useDiagnosticInfo = hrisvc->getClusterUtil_useDiagnosticInfo();
 }
 
 ClusterUtil::~ClusterUtil() {}
 
 std::string ClusterUtil::getClusterColor(Event::TkrCluster* pCluster, bool isAcc) 
 {
-    if (isAcc) { return "red"; }
-    else if (pCluster->isSet(Event::TkrCluster::maskGHOST)) { 
+    bool showTriggerGhosts = 
+        (pCluster->isSet(Event::TkrCluster::maskGHOST)&&m_useTriggerInfo);
+    bool showDiagnosticGhosts = 
+        (pCluster->isSet(Event::TkrCluster::maskDIAGNOSTIC)&&m_useDiagnosticInfo);
+    if (isAcc && m_useToTInfo) { return "red"; }
+    else if (showTriggerGhosts&&showDiagnosticGhosts) 
+    {
+        return "160,32,240";  // purple (orange+blue!)
+    }
+    else if (showTriggerGhosts) 
+    {
         return "255,100,27";  // orange
     }
-    else if (pCluster->isSet(Event::TkrCluster::maskSAMETRACK)) {
+    else if (showDiagnosticGhosts)
+    {
+        return "blue";
+    }
+    else if (
+        pCluster->isSet(Event::TkrCluster::maskSAMETRACK&&m_useTriggerInfo&&!showDiagnosticGhosts)
+        || (pCluster->isSet(Event::TkrCluster::maskSAMETRACKD)&&m_useDiagnosticInfo)
+    )
+    {
         return "yellow"; 
     } 
     else { return "green"; }
@@ -80,7 +99,8 @@ void ClusterUtil::buildClusterTypes(IBuilder* builder)
     builder->addAttDef("View","Cluster View","Physics","");
     builder->addAttDef("First Strip","Cluster First Strip","Physics","");
     builder->addAttDef("Last Strip","Cluster Last Strip","Physics","");
-    builder->addAttDef("Status", "Cluster Low Status Bits","Physics","");
+    builder->addAttDef("Status-lo", "Cluster Low Status Bits","Physics","");
+    builder->addAttDef("Status-hi", "Cluster High Status Bits","Physics","");
     builder->addAttDef("Position","Cluster Global Position","Physics","");
     builder->addAttDef("RawToT","Cluster Time over Threshold","Physics","");
     builder->addAttDef("Mips","ToT converted to Mips","Physics","");
@@ -135,7 +155,8 @@ void ClusterUtil::buildClusterInstance(IBuilder* builder, Event::TkrCluster* pCl
     builder->addAttValue("Last Strip",  pCluster->lastStrip(),"");
 
     unsigned int status = pCluster->getStatusWord();
-    builder->addAttValue("Status",getBits(status, 15, 0),"");
+    builder->addAttValue("Status-lo",getBits(status, 15, 0),"");
+    builder->addAttValue("Status-hi",getBits(status, 31, 16),"");
     builder->addAttValue("Position",
         getPositionString(pCluster->position()),"");
 
