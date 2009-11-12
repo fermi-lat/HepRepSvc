@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: jrb  Wed Nov 11 18:00:30 PST 2009
+GlastRelease-scons/HepRepSvc
+
+Modified Files:
+	.cvsignore HepRepSvcLib.py SConscript 
+Log Message:
+
+    *
+------------------------------------------------------------
 User: lsrea  Fri Oct 16 10:31:44 PDT 2009
 HepRepSvc/src/Tracker
 
