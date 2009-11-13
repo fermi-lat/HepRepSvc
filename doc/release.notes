@@ -1,8 +1,9 @@
 /* @file release.notes
  * Package HepRepSvc
- * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.74 2009/09/10 21:29:55 lsrea Exp $
+ * $Header: /nfs/slac/g/glast/ground/cvs/GlastRelease-scons/HepRepSvc/doc/release.notes,v 1.75 2009/09/12 16:21:34 lsrea Exp $
  *           EOH
 
+ HepRepSvc-00-31-06 12-Nov-2009    jrb Updates for SCons
  HepRepSvc-00-31-05 12-Sep-2009  lsrea more fixes
  HepRepSvc-00-31-04 10-Sep-2009  lsrea back out some fixes
  HepRepSvc-00-31-03 09-Sep-2009  lsrea Fix unix warnings
