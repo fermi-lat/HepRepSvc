@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: usher  Sun Dec 13 17:03:49 PST 2009
+HepRepSvc/src
+
+Modified Files:
+	CalReconFiller.cxx CalReconFiller.h 
+Log Message:
+First set of updates for updated multiple clustering. Also, this change moves the hit crystals to be a sub display of the cluster they are associated with
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-31-06, operation: add
 Package: HepRepSvc
