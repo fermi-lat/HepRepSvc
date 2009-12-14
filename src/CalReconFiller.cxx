@@ -126,7 +126,7 @@ m_hrisvc(hrisvc),m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc)
     // Set up the color array
     static std::string colorArray[] = {"red", "white", "255,100,27", "yellow", "green", "160,32,240"};
 
-    m_maxColors  = sizeof(colorArray);
+    m_maxColors  = 6;
     m_colorIndex = 0;
     m_colorArray = colorArray;
 }
