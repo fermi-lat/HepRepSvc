@@ -14,6 +14,7 @@ class HepRepInitSvc;
 class Point;
 class Vector;
 
+#include "Event/Recon/CalRecon/CalCluster.h"
 /** 
  *  @class CalReconFiller
  *
@@ -40,6 +41,8 @@ class CalReconFiller: public Filler{
 
 
  private:
+
+  void drawXtals(std::vector<Event::CalClusterHitRel*>& xTalRelVec);
 
   HepRepInitSvc* m_hrisvc;
   IGlastDetSvc* m_gdsvc;
