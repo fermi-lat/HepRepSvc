@@ -122,6 +122,13 @@ m_hrisvc(hrisvc),m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc)
     m_xtalHalfHeight = 0.5 * xtalHeight;
     m_xtalHalfWidth  = 0.5 * xtalWidth;
     m_xtalHalfLength = 0.5 * xtalLength;
+
+    // Set up the color array
+    static std::string colorArray[] = {"red", "white", "255,100,27", "yellow", "green", "160,32,240"};
+
+    m_maxColors  = sizeof(colorArray);
+    m_colorIndex = 0;
+    m_colorArray = colorArray;
 }
 
 
@@ -195,166 +202,24 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
         // drawing the cross in the average position for each layer 
 
         //  get pointer to the cluster reconstructed collection
-        Event::CalClusterCol* cls = SmartDataPtr<Event::CalClusterCol>(m_dpsvc,
+        Event::CalClusterCol* clusterCol = SmartDataPtr<Event::CalClusterCol>(m_dpsvc,
             EventModel::CalRecon::CalClusterCol);
 
         // Recover the list of xTal to Cluster relations
         Event::CalClusterHitTabList* xTal2ClusTabList = 
             SmartDataPtr<Event::CalClusterHitTabList>(m_dpsvc, EventModel::CalRecon::CalClusterHitTab);
 
-        // Make the relational table
-        Event::CalClusterHitTab xTal2ClusTab(xTal2ClusTabList);
+        // Draw the clusters
+        drawClusters(clusterCol, xTal2ClusTabList);
 
-        // if pointer is not zero, start drawing
-        if(cls)
+        // Look for the case where no relations exist, then we need to explicitly draw the xTals. 
+        if (!xTal2ClusTabList && hasType(typesList, "Recon/CalRecon/XtalCol")) 
         {
-            int numClusters = cls->size();
-            m_builder->setSubinstancesNumber("ClusterCol", numClusters);
+            // get the pointer to CalXtalRecCol object in TDS
+            Event::CalXtalRecCol* cxrc = SmartDataPtr<Event::CalXtalRecCol>(m_dpsvc,
+                EventModel::CalRecon::CalXtalRecCol); 
 
-            // Color stuff
-            const int nColors = 6;
-
-            // In the following, the second is orange, 6th is purple
-            std::string clusterColor[nColors] = 
-                {"red", "255,100,27", "yellow", "green", "blue", "160,32,240"};
-
-            for (int ic=0; ic<numClusters; ic++) 
-            {
-                m_builder->addInstance("ClusterCol", "Cluster");  
-
-                // get pointer to the cluster 
-                Event::CalCluster* cl = (*cls)[ic]; 
-
-                // Specific vector of layer data
-                Event::CalClusterLayerDataVec& lyrDataVec = (*cl);
-
-                // get total energy in the calorimeter: 
-                // energySum is not filled when reading from Root!
-                double clusEnergy = cl->getCalParams().getEnergy();
-
-                m_builder->addAttValue("E", (float)clusEnergy, "");
-
-                // draw only if there is some energy in the calorimeter        
-                if(clusEnergy > 0)
-                {
-                    // Fill in the other output values 
-                    double rmsLong = cl->getRmsLong();
-                    double rmsTran = cl->getRmsTrans();
-                    double longAsy = cl->getRmsLongAsym();
-                    int    nTrunc  = cl->getNumTruncXtals();
-
-                    m_builder->addAttValue("rmsTrans",     (float)rmsTran, "");
-                    m_builder->addAttValue("rmsLong",      (float)rmsLong, "");
-                    m_builder->addAttValue("LongAsym",     (float)longAsy, "");
-                    //m_builder->addAttValue("numTotXtal",   cl->size(),     "");
-                    m_builder->addAttValue("numTruncXtal", nTrunc,         "");
-                    m_builder->addAttValue("Centroid",     
-                        getPositionString(cl->getCalParams().getCentroid()), "");
-                    m_builder->addAttValue("Axis",         
-                        getDirectionString(cl->getCalParams().getAxis()), "");
-
-                    // Draw the cluster center
-                    double x = (cl->getPosition()).x();
-                    double y = (cl->getPosition()).y();
-                    double z = (cl->getPosition()).z();
-
-                    // Use color options if asked for
-                    if (m_hrisvc->getCalReconFiller_useColors())
-                    {
-                        int j = (ic > nColors-1 ? nColors - 1 : ic);
-                        m_builder->addAttValue("Color", clusterColor[j], "");
-                    }
-                    m_builder->addPoint(x,y,z);            
-
-                    // Draw the layers reconstructed positions
-                    m_builder->addInstance("Cluster", "ClusterLayers");    
-                    // loop over calorimeter layers
-                    for( int l=0;l<m_nLayers;l++){
-
-                        // if energy in this layer is not zero - draw blue cross at
-                        // the average reconstructed position for this layer
-                        if (lyrDataVec[l].getEnergy() > 0) {            
-                            double x=lyrDataVec[l].getPosition().x();
-                            double y=lyrDataVec[l].getPosition().y();
-                            double z=lyrDataVec[l].getPosition().z();
-                            m_builder->addPoint(x,y,z);            
-                        }
-                    }
-
-                    // drawing the reconstructed shower direction
-                    // as a green line
-                    double dirX = (cl->getDirection()).x();
-                    double dirY = (cl->getDirection()).y();
-                    double dirZ = (cl->getDirection()).z();
-
-                    // non display for non-physical or horizontal direction
-                    if(dirZ >= -1. && dirZ != 0.)
-                    {
-                        // Draw the cluster direction
-                        m_builder->addInstance("Cluster", "ClusterDir");    
-
-                        // Use color options if asked for
-                        if (m_hrisvc->getCalReconFiller_useColors())
-                        {
-                            int j = (ic > nColors-1 ? nColors - 1 : ic);
-                            m_builder->addAttValue("Color", clusterColor[j], "");
-                        }
-
-                        // calculate x and y coordinates for the beginning and the end
-                        // of line in the top and bottom calorimeter layers
-                        double xTop = x+dirX*(m_calZtop-z)/dirZ;
-                        double yTop = y+dirY*(m_calZtop-z)/dirZ;
-                        double xBottom = x+dirX*(m_calZbottom-z)/dirZ;
-                        double yBottom = y+dirY*(m_calZbottom-z)/dirZ;
-
-                        m_builder->addPoint(xTop,yTop,m_calZtop);            
-                        m_builder->addPoint(xBottom,yBottom,m_calZbottom);                            
-                    }
-
-                    // One more to draw the "fit" axis
-                    double xFitPos = cl->getCalParams().getxPosxPos();
-                    double yFitPos = cl->getCalParams().getyPosyPos();
-                    double zFitPos = cl->getCalParams().getzPoszPos();
-
-                    double xFitDir = cl->getCalParams().getxDirxDir();
-                    double yFitDir = cl->getCalParams().getyDiryDir();
-                    double zFitDir = cl->getCalParams().getzDirzDir();
-
-                    // non display for non-physical or horizontal direction
-                    if(zFitDir >= -1. && zFitDir != 0.)
-                    {
-                        // Draw the cluster direction
-                        m_builder->addInstance("Cluster", "ClusterFit");    
-
-                        // Use color options if asked for
-                        if (m_hrisvc->getCalReconFiller_useColors())
-                        {
-                            int j = (ic > nColors-1 ? nColors - 1 : ic);
-                            m_builder->addAttValue("Color", clusterColor[j], "");
-                        }
-
-                        // calculate x and y coordinates for the beginning and the end
-                        // of line in the top and bottom calorimeter layers
-                        double xTop    = xFitPos + xFitDir * (m_calZtop    - zFitPos) / zFitDir;
-                        double yTop    = yFitPos + yFitDir * (m_calZtop    - zFitPos) / zFitDir;
-                        double xBottom = xFitPos + xFitDir * (m_calZbottom - zFitPos) / zFitDir;
-                        double yBottom = yFitPos + yFitDir * (m_calZbottom - zFitPos) / zFitDir;
-
-                        m_builder->addPoint(xTop, yTop, m_calZtop);            
-                        m_builder->addPoint(xBottom, yBottom, m_calZbottom);                            
-                    }
-
-                    // if we have more than one cluster then skip drawing crystals for the first one
-                    if (ic == 0 && numClusters > 1) continue;
-
-                    // Now draw the associated crystals. 
-                    // Start by getting the list for this cluster
-                    std::vector<Event::CalClusterHitRel*> xTal2ClusVec = xTal2ClusTab.getRelBySecond(cl);
-
-                    // Draw them
-                    drawXtals(xTal2ClusVec);
-                } 
-            }
+            drawXtals(cxrc);
         }
     }
 
@@ -367,146 +232,187 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
             SmartDataPtr<Event::CalMipTrackCol>(m_dpsvc, 
             EventModel::CalRecon::CalMipTrackCol);
 
-        // if pointer is not zero, start drawing
-        if(CalMipTrackCol)
-        {
-            // Retrieve the CalMIPs to CalXtalRecData relational table
-            //SmartDataPtr<Event::CalXtalMIPsTabList> 
-            //    CalXtalMipsTable(m_dpsvc, EventModel::CalRecon::CalXtalMIPsTab);
-            //Event::CalXtalMIPsTab* CalXtalMIPsTab 
-            //    = new Event::CalXtalMIPsTab(CalXtalMipsTable);
-
-            int numMIPs = CalMipTrackCol->size();
-            m_builder->setSubinstancesNumber("CalMipTrackCol", numMIPs);
-
-            Event::CalMipTrackColItr mipIter = CalMipTrackCol->begin();            
-            for(; mipIter != CalMipTrackCol->end(); mipIter++)
-            {
-                Event::CalMipTrack* calMipTrack = *mipIter;
-
-                m_builder->addInstance("CalMipTrackCol", "CalMipTrack");  
-
-                // Position and direction
-                Point  mipPos   = calMipTrack->getPoint();
-                Vector mipDir   = calMipTrack->getDir();
-
-                //                 // Number of crystals
-                //                 int    numXtals = calMipTrack->size();
-
-                // 		// Update the point
-                //  		double delta  = 2 * numXtals * m_xtalHeight;
-                //  		Point  topPos = mipPos + delta * mipDir;
-
-                // 		// Bottom point
-                // 		mipPos -= delta * mipDir;
-
-                //                  // Add the starting point to the display
-                //                  m_builder->addPoint(mipPos.x(), mipPos.y(), mipPos.z());
-
-                //                  // Add the endpoint
-                //                  m_builder->addPoint(topPos.x(), topPos.y(), topPos.z());
-
-
-                // 	      //projection of this hit on track
-                // 	      Point Hp=C+((Hit[hid].P-C)*dir)*dir;
-                // 	      for (int ihh=ih+1; ihh<tr[itr].nh; ihh++)
-                // 		{
-                // 		  int hidd=tr[itr].hid[ihh];
-                // 		  //projection of this hit on track
-                // 		  Point HHp=C+((Hit[hidd].P-C)*dir)*dir;
-                // 		  //vv=Hit[hid].P-Hit[hidd].P;
-                // 		  vv=HHp-Hp;
-                // 		  double d=sqrt(vv*vv);
-                // 		  if (d>tr[itr].length)
-                // 		    {
-                // 		      tr[itr].length=d;
-                // 		      tr[itr].H1=Hp;
-                // 		      tr[itr].H2=HHp;
-                // 		    }
-
-                Point startPos;
-                Point endPos;
-                double dmax=-1.;
-                // Find start and end of track
-                for(Event::CalMipXtalVec::iterator xTalIter1  = calMipTrack->begin(); 
-                    xTalIter1 != calMipTrack->end(); 
-                    xTalIter1++)
-                {
-                    Event::CalMipXtal& xTal1 = *xTalIter1;
-                    // get the vector of reconstructed position
-                    HepVector3D pXtal1 = xTal1.getXtal()->getPosition();
-                    Point H1=xTal1.getXtal()->getPosition();
-                    // projection on the track
-                    Point P1=mipPos+((H1-mipPos)*mipDir)*mipDir;
-                    for(Event::CalMipXtalVec::iterator xTalIter2  = calMipTrack->begin(); 
-                        xTalIter2 != calMipTrack->end(); 
-                        xTalIter2++)
-                    {
-                        Event::CalMipXtal& xTal2 = *xTalIter2;
-                        // get the vector of reconstructed position
-                        HepVector3D pXtal2 = xTal2.getXtal()->getPosition();
-                        Point H2=xTal2.getXtal()->getPosition();
-                        // projection on the track
-                        Point P2=mipPos+((H2-mipPos)*mipDir)*mipDir;			
-                        Vector vv=P2-P1;
-                        double dist=sqrt(vv*vv);
-                        if (dist>dmax)
-                        {
-                            startPos=P1;
-                            endPos=P2;
-                            dmax=dist;
-                        }
-                    }
-                }
-
-                // Add the starting point to the display
-                m_builder->addPoint(startPos.x(), startPos.y(), startPos.z());
-
-                // Add the endpoint
-                m_builder->addPoint(endPos.x(), endPos.y(), endPos.z());
-
-                // Draw these crystals
-                for(Event::CalMipXtalVec::iterator xTalIter  = calMipTrack->begin(); 
-                    xTalIter != calMipTrack->end(); 
-                    xTalIter++)
-                {
-                    Event::CalMipXtal& xTal = *xTalIter;
-
-                    // get reconstructed energy in the crystal
-                    double eneXtal = xTal.getXtal()->getEnergy();
-
-                    m_builder->addInstance("CalMipTrack", "Xtal");    
-                    m_builder->addAttValue("E", (float)eneXtal, "");
-
-                    // get the vector of reconstructed position
-                    HepVector3D pXtal = xTal.getXtal()->getPosition();
-
-                    // get reconstructed coordinates
-                    double x = pXtal.x();
-                    double y = pXtal.y();
-                    double z = pXtal.z();
-
-                    // calculate the half size of the box, 
-                    // taking the 90% of crystal half height
-                    // as the size corresponding to the maximum energy
-                    //double s = 0.45*m_xtalHalfHeight*eneXtal/emax;
-                    double s = m_xtalHalfHeight;
-                    drawPrism(x, y, z, s, s, s);
-                }
-            }
-        }
+        drawMips(CalMipTrackCol);
     }
 }
 
-void CalReconFiller::drawXtals(std::vector<Event::CalClusterHitRel*>& xTalRelVec)
+void CalReconFiller::drawClusters(Event::CalClusterCol* clusters, Event::CalClusterHitTabList* xTal2ClusTabList)
+{
+    // Make the relational table
+    Event::CalClusterHitTab* xTal2ClusTab = 0;
+    
+    if (xTal2ClusTabList) xTal2ClusTab = new Event::CalClusterHitTab(xTal2ClusTabList);
+
+    // if pointer is not zero, start drawing
+    if(clusters)
+    {
+        int numClusters = clusters->size();
+
+        m_builder->setSubinstancesNumber("ClusterCol", numClusters);
+
+        std::string clusColor = "blue";
+
+        for (int ic=0; ic<numClusters; ic++) 
+        {
+            m_builder->addInstance("ClusterCol", "Cluster");  
+
+            // Use color options if asked for
+            if (m_hrisvc->getCalReconFiller_useColors())
+            {
+                int j = ic % m_maxColors;
+
+                clusColor = m_colorArray[j];
+            }
+
+            // get pointer to the cluster 
+            Event::CalCluster* cl = (*clusters)[ic]; 
+
+            drawCluster(cl, clusColor);
+
+            // if we have more than one cluster then skip drawing crystals for the first one
+            if ((ic == 0 && numClusters > 1) || !xTal2ClusTab) continue;
+
+            // Now draw the associated crystals. 
+            // Start by getting the list for this cluster
+            std::vector<Event::CalClusterHitRel*> xTal2ClusVec = xTal2ClusTab->getRelBySecond(cl);
+
+            // Draw them
+            drawXtals(xTal2ClusVec, clusColor);
+        }
+    }
+
+    return;
+}
+    
+void CalReconFiller::drawCluster(Event::CalCluster* cluster, std::string color)
+{
+    // Specific vector of layer data
+    Event::CalClusterLayerDataVec& lyrDataVec = *cluster;
+
+    // get total energy in the calorimeter: 
+    // energySum is not filled when reading from Root!
+    double clusEnergy = cluster->getCalParams().getEnergy();
+
+    m_builder->addAttValue("E", (float)clusEnergy, "");
+
+    // draw only if there is some energy in the calorimeter        
+    if(clusEnergy > 0)
+    {
+        // Fill in the other output values 
+        double rmsLong = cluster->getRmsLong();
+        double rmsTran = cluster->getRmsTrans();
+        double longAsy = cluster->getRmsLongAsym();
+        int    nTrunc  = cluster->getNumTruncXtals();
+
+        m_builder->addAttValue("rmsTrans",     (float)rmsTran, "");
+        m_builder->addAttValue("rmsLong",      (float)rmsLong, "");
+        m_builder->addAttValue("LongAsym",     (float)longAsy, "");
+        //m_builder->addAttValue("numTotXtal",   cluster->size(),     "");
+        m_builder->addAttValue("numTruncXtal", nTrunc,         "");
+        m_builder->addAttValue("Centroid",     
+            getPositionString(cluster->getCalParams().getCentroid()), "");
+        m_builder->addAttValue("Axis",         
+            getDirectionString(cluster->getCalParams().getAxis()), "");
+
+        // Draw the cluster center
+        double x = (cluster->getPosition()).x();
+        double y = (cluster->getPosition()).y();
+        double z = (cluster->getPosition()).z();
+
+        // Use color options if asked for
+        if (m_hrisvc->getCalReconFiller_useColors())
+        {
+            m_builder->addAttValue("Color", color, "");
+        }
+        m_builder->addPoint(x,y,z);            
+
+        // Draw the layers reconstructed positions
+        m_builder->addInstance("Cluster", "ClusterLayers");    
+        // loop over calorimeter layers
+        for( int l=0;l<m_nLayers;l++){
+
+            // if energy in this layer is not zero - draw blue cross at
+            // the average reconstructed position for this layer
+            if (lyrDataVec[l].getEnergy() > 0) {            
+                double x=lyrDataVec[l].getPosition().x();
+                double y=lyrDataVec[l].getPosition().y();
+                double z=lyrDataVec[l].getPosition().z();
+                m_builder->addPoint(x,y,z);            
+            }
+        }
+
+        // drawing the reconstructed shower direction
+        // as a green line
+        double dirX = (cluster->getDirection()).x();
+        double dirY = (cluster->getDirection()).y();
+        double dirZ = (cluster->getDirection()).z();
+
+        // non display for non-physical or horizontal direction
+        if(dirZ >= -1. && dirZ != 0.)
+        {
+            // Draw the cluster direction
+            m_builder->addInstance("Cluster", "ClusterDir");    
+
+            // Use color options if asked for
+            if (m_hrisvc->getCalReconFiller_useColors())
+            {
+                m_builder->addAttValue("Color", color, "");
+            }
+
+            // calculate x and y coordinates for the beginning and the end
+            // of line in the top and bottom calorimeter layers
+            double xTop = x+dirX*(m_calZtop-z)/dirZ;
+            double yTop = y+dirY*(m_calZtop-z)/dirZ;
+            double xBottom = x+dirX*(m_calZbottom-z)/dirZ;
+            double yBottom = y+dirY*(m_calZbottom-z)/dirZ;
+
+            m_builder->addPoint(xTop,yTop,m_calZtop);            
+            m_builder->addPoint(xBottom,yBottom,m_calZbottom);                            
+        }
+
+        // One more to draw the "fit" axis
+        double xFitPos = cluster->getCalParams().getxPosxPos();
+        double yFitPos = cluster->getCalParams().getyPosyPos();
+        double zFitPos = cluster->getCalParams().getzPoszPos();
+
+        double xFitDir = cluster->getCalParams().getxDirxDir();
+        double yFitDir = cluster->getCalParams().getyDiryDir();
+        double zFitDir = cluster->getCalParams().getzDirzDir();
+
+        // non display for non-physical or horizontal direction
+        if(zFitDir >= -1. && zFitDir != 0.)
+        {
+            // Draw the cluster direction
+            m_builder->addInstance("Cluster", "ClusterFit");    
+
+            // Use color options if asked for
+            if (m_hrisvc->getCalReconFiller_useColors())
+            {
+                m_builder->addAttValue("Color", color, "");
+            }
+
+            // calculate x and y coordinates for the beginning and the end
+            // of line in the top and bottom calorimeter layers
+            double xTop    = xFitPos + xFitDir * (m_calZtop    - zFitPos) / zFitDir;
+            double yTop    = yFitPos + yFitDir * (m_calZtop    - zFitPos) / zFitDir;
+            double xBottom = xFitPos + xFitDir * (m_calZbottom - zFitPos) / zFitDir;
+            double yBottom = yFitPos + yFitDir * (m_calZbottom - zFitPos) / zFitDir;
+
+            m_builder->addPoint(xTop, yTop, m_calZtop);            
+            m_builder->addPoint(xBottom, yBottom, m_calZbottom);                            
+        }
+    }
+
+    return;
+}
+
+void CalReconFiller::drawXtals(std::vector<Event::CalClusterHitRel*>& xTalRelVec, std::string color)
 {
     // If list is empty there is nothing to do...
     if (!xTalRelVec.empty())
     {
         int    nXtals = xTalRelVec.size();
         double eTot   = 0.0;
-
-        const HepPoint3D p0(0.,0.,0.);  
 
         m_builder->addInstance("Cluster","XtalCol");    
         m_builder->setSubinstancesNumber("XtalCol", nXtals);
@@ -544,116 +450,306 @@ void CalReconFiller::drawXtals(std::vector<Event::CalClusterHitRel*>& xTalRelVec
                 // get poiner to the reconstructed data for individual crystal
                 Event::CalXtalRecData* recData = (*it)->getFirst();
 
-                // get reconstructed energy in the crystal
-                double eneXtal = recData->getEnergy();
+                drawXtal(recData, emax, color);
+            }
+        }
+    }
+    return;
+}
+    
+void CalReconFiller::drawXtals(Event::CalXtalRecCol* xTalCol, std::string color)
+{
+    if (xTalCol)
+    {
+        int nXtals = xTalCol->size();
+        double eTot = 0.0;
+        m_builder->addInstance("CalRecon","XtalCol");    
+        m_builder->setSubinstancesNumber("XtalCol", nXtals);
+        // drawing red box for each log with a size
+        // proportional to energy deposition
 
-                // draw crystals containing less than 1% of maximum energy dashed
-                m_builder->addInstance("XtalCol", "Xtal"); 
-                //if(eneXtal<0.01*emax) m_builder->addAttValue("LineStyle","Dashed","");
+        double emax = 0.; // reset maximum energy per crystal
+        Event::CalXtalRecCol::const_iterator it = xTalCol->begin();
+
+        // to find maximum energy per crystal
+        for (; it != xTalCol->end(); it++){
+
+            // get poiner to the reconstructed data for individual crystal
+            Event::CalXtalRecData* recData = *it;
+
+            // get reconstructed energy in the crystal
+            double eneXtal = recData->getEnergy();
+            //if(printEnergy) std::cout << eneXtal << std::endl;
+            eTot += eneXtal;
+
+            // if energy is bigger than current maximum - update the maximum 
+            if(eneXtal>emax)emax=eneXtal;
+        }
+        m_builder->addAttValue("#Xtals",nXtals,"");
+        m_builder->addAttValue("MaxEnergy",(float)emax,"");
+
+        // if maximum crystal energy isn't zero - start drawing 
+        if(emax>0)
+        {
+            // loop over all crystals in reconstructed collection
+            // to draw red boxes
+            for (Event::CalXtalRecCol::const_iterator it = xTalCol->begin();it!=xTalCol->end(); ++it)
+            {
+                // get poiner to the reconstructed data for individual crystal
+                Event::CalXtalRecData* recData = *it;
+
+                drawXtal(recData, emax);
+            }
+        }
+    }
+
+    return;
+}
+
+void CalReconFiller::drawXtal(Event::CalXtalRecData* recData, double eMax, std::string color)
+{
+    // This is really a constant for this method
+    static const HepPoint3D p0(0.,0.,0.);  
+
+    // get reconstructed energy in the crystal
+    double eneXtal = recData->getEnergy();
+
+    // draw crystals containing less than 1% of maximum energy dashed
+    m_builder->addInstance("XtalCol", "Xtal"); 
+    //if(eneXtal<0.01*emax) m_builder->addAttValue("LineStyle","Dashed","");
+    m_builder->addAttValue("E", (float)eneXtal, "");
+
+    // get the vector of reconstructed position
+    HepVector3D pXtal = recData->getPosition() - p0;
+
+    // get reconstructed coordinates
+    double x = pXtal.x();
+    double y = pXtal.y();
+    double z = pXtal.z();
+
+
+    // calculate the half size of the box, 
+    // taking the 90% of crystal half height
+    // as the size corresponding to the maximum energy
+    //double s = 0.45*m_xtalHeight*eneXtal/emax;
+    double s = 2. * 0.45*m_xtalHalfHeight*pow(eneXtal/eMax,0.333);
+
+    // check for saturation... for now just use the energy, since
+    // the individual xtal ends are not available in the recon class
+    // so no orange boxes
+    // we can do better by using the digi info (maybe)
+
+    //double ePos = recData->getEnergy(0, idents::CalXtalId::POS);
+    //double eNeg = recData->getEnergy(0, idents::CalXtalId::NEG);
+
+    double eSat = 68000.0;
+    //if(ePos>eSat) satCount++;
+    //if(eNeg>eSat) satCount++;
+
+    std::string satColor[3] = {"red", "orange", "yellow"};
+    double energy = recData->getEnergy();
+    int satCount = (energy>eSat ? 2 : 0);
+    m_builder->addAttValue("Color", satColor[satCount],"");
+    drawPrism(x, y, z, s, s, s);
+
+    // Draw the faint outline of the entire log
+    m_builder->addInstance("XtalCol", "XtalLog");
+    //if(eneXtal<0.01*emax) m_builder->addAttValue("LineStyle","Dashed","");
+    m_builder->addAttValue("Color", color, "");
+
+    // Get the volume identifier
+    const idents::CalXtalId xtalId = recData->getPackedId();
+
+    // unpack crystal identification into tower, layer and column number
+    int layer = xtalId.getLayer();
+    int tower = xtalId.getTower();
+    int col   = xtalId.getColumn();
+
+    // create Volume Identifier for segment 0 of this crystal
+    idents::VolumeIdentifier segm0Id;
+    segm0Id.append(m_eLATTowers);
+    segm0Id.append(tower/m_xNum);
+    segm0Id.append(tower%m_xNum);
+    segm0Id.append(m_eTowerCAL);
+    segm0Id.append(layer);
+    segm0Id.append(layer%2); 
+    segm0Id.append(col);
+    segm0Id.append(m_eXtal);
+    segm0Id.append(0);
+
+    HepTransform3D transf;
+
+    //get 3D transformation for segment 0 of this crystal
+    m_gdsvc->getTransform3DByID(segm0Id,&transf);
+    //get position of the center of the segment 0
+    CLHEP::Hep3Vector vect0 = transf.getTranslation();
+
+    // create Volume Identifier for the last segment of this crystal
+    idents::VolumeIdentifier segm11Id;
+    // copy all fields from segm0Id, except segment number
+    for(int ifield = 0; ifield < fSegment; ifield++)
+        segm11Id.append(segm0Id[ifield]);
+    segm11Id.append(m_nCsISeg-1); // set segment number for the last segment
+
+    //get 3D transformation for the last segment of this crystal
+    m_gdsvc->getTransform3DByID(segm11Id,&transf);
+    //get position of the center of the last segment
+    CLHEP::Hep3Vector vect1 = transf.getTranslation();
+
+    // Crystal center is what we want
+    CLHEP::Hep3Vector xtalCtr = 0.5 * (vect0 + vect1);
+
+    double xXtal = xtalCtr.x();
+    double yXtal = xtalCtr.y();
+    double zXtal = xtalCtr.z();
+
+    // Start drawing this side of the log. 
+    // How we do this depends on if x or y 
+    if (layer % 2 == 1) // y face is constant
+    {
+        drawPrism(xXtal, yXtal, zXtal,
+            m_xtalHalfWidth, m_xtalHalfLength, m_xtalHalfHeight);
+    }
+    else // x face is constant
+    {
+        drawPrism(xXtal, yXtal, zXtal,
+            m_xtalHalfLength, m_xtalHalfWidth, m_xtalHalfHeight);
+    }
+ 
+    return;
+}
+
+void CalReconFiller::drawMips(Event::CalMipTrackCol* CalMipTrackCol)
+{
+    // if pointer is not zero, start drawing
+    if(CalMipTrackCol)
+    {
+        // Retrieve the CalMIPs to CalXtalRecData relational table
+        //SmartDataPtr<Event::CalXtalMIPsTabList> 
+        //    CalXtalMipsTable(m_dpsvc, EventModel::CalRecon::CalXtalMIPsTab);
+        //Event::CalXtalMIPsTab* CalXtalMIPsTab 
+        //    = new Event::CalXtalMIPsTab(CalXtalMipsTable);
+
+        int numMIPs = CalMipTrackCol->size();
+        m_builder->setSubinstancesNumber("CalMipTrackCol", numMIPs);
+
+        Event::CalMipTrackColItr mipIter = CalMipTrackCol->begin();            
+        for(; mipIter != CalMipTrackCol->end(); mipIter++)
+        {
+            Event::CalMipTrack* calMipTrack = *mipIter;
+
+            m_builder->addInstance("CalMipTrackCol", "CalMipTrack");  
+
+            // Position and direction
+            Point  mipPos   = calMipTrack->getPoint();
+            Vector mipDir   = calMipTrack->getDir();
+
+            //                 // Number of crystals
+            //                 int    numXtals = calMipTrack->size();
+
+            // 		// Update the point
+            //  		double delta  = 2 * numXtals * m_xtalHeight;
+            //  		Point  topPos = mipPos + delta * mipDir;
+
+            // 		// Bottom point
+            // 		mipPos -= delta * mipDir;
+
+            //                  // Add the starting point to the display
+            //                  m_builder->addPoint(mipPos.x(), mipPos.y(), mipPos.z());
+
+            //                  // Add the endpoint
+            //                  m_builder->addPoint(topPos.x(), topPos.y(), topPos.z());
+
+
+            // 	      //projection of this hit on track
+            // 	      Point Hp=C+((Hit[hid].P-C)*dir)*dir;
+            // 	      for (int ihh=ih+1; ihh<tr[itr].nh; ihh++)
+            // 		{
+            // 		  int hidd=tr[itr].hid[ihh];
+            // 		  //projection of this hit on track
+            // 		  Point HHp=C+((Hit[hidd].P-C)*dir)*dir;
+            // 		  //vv=Hit[hid].P-Hit[hidd].P;
+            // 		  vv=HHp-Hp;
+            // 		  double d=sqrt(vv*vv);
+            // 		  if (d>tr[itr].length)
+            // 		    {
+            // 		      tr[itr].length=d;
+            // 		      tr[itr].H1=Hp;
+            // 		      tr[itr].H2=HHp;
+            // 		    }
+
+            Point startPos;
+            Point endPos;
+            double dmax=-1.;
+            // Find start and end of track
+            for(Event::CalMipXtalVec::iterator xTalIter1  = calMipTrack->begin(); 
+                xTalIter1 != calMipTrack->end(); 
+                xTalIter1++)
+            {
+                Event::CalMipXtal& xTal1 = *xTalIter1;
+                // get the vector of reconstructed position
+                HepVector3D pXtal1 = xTal1.getXtal()->getPosition();
+                Point H1=xTal1.getXtal()->getPosition();
+                // projection on the track
+                Point P1=mipPos+((H1-mipPos)*mipDir)*mipDir;
+                for(Event::CalMipXtalVec::iterator xTalIter2  = calMipTrack->begin(); 
+                    xTalIter2 != calMipTrack->end(); 
+                    xTalIter2++)
+                {
+                    Event::CalMipXtal& xTal2 = *xTalIter2;
+                    // get the vector of reconstructed position
+                    HepVector3D pXtal2 = xTal2.getXtal()->getPosition();
+                    Point H2=xTal2.getXtal()->getPosition();
+                    // projection on the track
+                    Point P2=mipPos+((H2-mipPos)*mipDir)*mipDir;			
+                    Vector vv=P2-P1;
+                    double dist=sqrt(vv*vv);
+                    if (dist>dmax)
+                    {
+                        startPos=P1;
+                        endPos=P2;
+                        dmax=dist;
+                    }
+                }
+            }
+
+            // Add the starting point to the display
+            m_builder->addPoint(startPos.x(), startPos.y(), startPos.z());
+
+            // Add the endpoint
+            m_builder->addPoint(endPos.x(), endPos.y(), endPos.z());
+
+            // Draw these crystals
+            for(Event::CalMipXtalVec::iterator xTalIter  = calMipTrack->begin(); 
+                xTalIter != calMipTrack->end(); 
+                xTalIter++)
+            {
+                Event::CalMipXtal& xTal = *xTalIter;
+
+                // get reconstructed energy in the crystal
+                double eneXtal = xTal.getXtal()->getEnergy();
+
+                m_builder->addInstance("CalMipTrack", "Xtal");    
                 m_builder->addAttValue("E", (float)eneXtal, "");
 
                 // get the vector of reconstructed position
-                HepVector3D pXtal = recData->getPosition() - p0;
+                HepVector3D pXtal = xTal.getXtal()->getPosition();
 
                 // get reconstructed coordinates
                 double x = pXtal.x();
                 double y = pXtal.y();
                 double z = pXtal.z();
 
-
                 // calculate the half size of the box, 
                 // taking the 90% of crystal half height
                 // as the size corresponding to the maximum energy
-                //double s = 0.45*m_xtalHeight*eneXtal/emax;
-                double s = 2. * 0.45*m_xtalHalfHeight*pow(eneXtal/emax,0.333);
-
-                // check for saturation... for now just use the energy, since
-                // the individual xtal ends are not available in the recon class
-                // so no orange boxes
-                // we can do better by using the digi info (maybe)
-
-                //double ePos = recData->getEnergy(0, idents::CalXtalId::POS);
-                //double eNeg = recData->getEnergy(0, idents::CalXtalId::NEG);
-
-                double eSat = 68000.0;
-                //if(ePos>eSat) satCount++;
-                //if(eNeg>eSat) satCount++;
-
-                std::string satColor[3] = {"red", "orange", "yellow"};
+                //double s = 0.45*m_xtalHalfHeight*eneXtal/emax;
+                double s = m_xtalHalfHeight;
                 drawPrism(x, y, z, s, s, s);
-                double energy = recData->getEnergy();
-                int satCount = (energy>eSat ? 2 : 0);
-                m_builder->addAttValue("Color", satColor[satCount],"");
-                // Draw the faint outline of the entire log
-                m_builder->addInstance("XtalCol", "XtalLog");
-                //if(eneXtal<0.01*emax) m_builder->addAttValue("LineStyle","Dashed","");
-
-                // Get the volume identifier
-                const idents::CalXtalId xtalId = recData->getPackedId();
-
-                // unpack crystal identification into tower, layer and column number
-                int layer = xtalId.getLayer();
-                int tower = xtalId.getTower();
-                int col   = xtalId.getColumn();
-
-                // create Volume Identifier for segment 0 of this crystal
-                idents::VolumeIdentifier segm0Id;
-                segm0Id.append(m_eLATTowers);
-                segm0Id.append(tower/m_xNum);
-                segm0Id.append(tower%m_xNum);
-                segm0Id.append(m_eTowerCAL);
-                segm0Id.append(layer);
-                segm0Id.append(layer%2); 
-                segm0Id.append(col);
-                segm0Id.append(m_eXtal);
-                segm0Id.append(0);
-
-                HepTransform3D transf;
-
-                //get 3D transformation for segment 0 of this crystal
-                m_gdsvc->getTransform3DByID(segm0Id,&transf);
-                //get position of the center of the segment 0
-                CLHEP::Hep3Vector vect0 = transf.getTranslation();
-
-                // create Volume Identifier for the last segment of this crystal
-                idents::VolumeIdentifier segm11Id;
-                // copy all fields from segm0Id, except segment number
-                for(int ifield = 0; ifield < fSegment; ifield++)
-                    segm11Id.append(segm0Id[ifield]);
-                segm11Id.append(m_nCsISeg-1); // set segment number for the last segment
-
-                //get 3D transformation for the last segment of this crystal
-                m_gdsvc->getTransform3DByID(segm11Id,&transf);
-                //get position of the center of the last segment
-                CLHEP::Hep3Vector vect1 = transf.getTranslation();
-
-                // Crystal center is what we want
-                CLHEP::Hep3Vector xtalCtr = 0.5 * (vect0 + vect1);
-
-                double xXtal = xtalCtr.x();
-                double yXtal = xtalCtr.y();
-                double zXtal = xtalCtr.z();
-
-                //double xHalf = m_xtalHalfWidth;
-                //double yHalf = m_xtalHalfLength;
-                //double zHalf = m_xtalHalfHeight;
-
-
-
-                // Start drawing this side of the log. 
-                // How we do this depends on if x or y 
-                if (layer % 2 == 1) // y face is constant
-                {
-                    drawPrism(xXtal, yXtal, zXtal,
-                        m_xtalHalfWidth, m_xtalHalfLength, m_xtalHalfHeight);
-                }
-                else // x face is constant
-                {
-                    drawPrism(xXtal, yXtal, zXtal,
-                        m_xtalHalfLength, m_xtalHalfWidth, m_xtalHalfHeight);
-                }
             }
         }
     }
+
     return;
 }
+
