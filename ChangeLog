@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: usher  Mon Dec 14 14:46:22 PST 2009
+HepRepSvc/src
+
+Modified Files:
+	CalReconFiller.cxx CalReconFiller.h 
+Log Message:
+fix crashing when no xtal to cluster relations
+    *
+------------------------------------------------------------
 User: usher  Sun Dec 13 17:03:49 PST 2009
 HepRepSvc/src
 
