@@ -250,27 +250,30 @@ void CalReconFiller::drawClusters(Event::CalClusterCol* clusters, Event::CalClus
 
         m_builder->setSubinstancesNumber("ClusterCol", numClusters);
 
-        std::string clusColor = "blue";
+        std::string clusColor = "";
 
-        for (int ic=0; ic<numClusters; ic++) 
+        m_colorIndex = 0;
+
+        Event::CalClusterCol::iterator clusIter = clusters->begin();
+        while(clusIter != clusters->end())
         {
             m_builder->addInstance("ClusterCol", "Cluster");  
 
             // Use color options if asked for
             if (m_hrisvc->getCalReconFiller_useColors())
             {
-                int j = ic % m_maxColors;
+                int j = m_colorIndex++ % m_maxColors;
 
                 clusColor = m_colorArray[j];
             }
 
             // get pointer to the cluster 
-            Event::CalCluster* cl = (*clusters)[ic]; 
+            Event::CalCluster* cl = *clusIter++; 
 
             drawCluster(cl, clusColor);
 
             // if we have more than one cluster then skip drawing crystals for the first one
-            if ((ic == 0 && numClusters > 1) || !xTal2ClusTab) continue;
+            if ((clusIter == clusters->end() && clusters->size() > 1) || !xTal2ClusTab) continue;
 
             // Now draw the associated crystals. 
             // Start by getting the list for this cluster
@@ -555,7 +558,7 @@ void CalReconFiller::drawXtal(Event::CalXtalRecData* recData, double eMax, std::
     // Draw the faint outline of the entire log
     m_builder->addInstance("XtalCol", "XtalLog");
     //if(eneXtal<0.01*emax) m_builder->addAttValue("LineStyle","Dashed","");
-    m_builder->addAttValue("Color", color, "");
+    if (color != "") m_builder->addAttValue("Color", color, "");
 
     // Get the volume identifier
     const idents::CalXtalId xtalId = recData->getPackedId();
