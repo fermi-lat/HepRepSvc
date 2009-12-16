@@ -5,7 +5,7 @@
 @brief header file for Filler.cxx
 @author Leon Rochester
 
-$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/Filler.h,v 1.1 2008/08/12 05:03:39 lsrea Exp $
+$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/Filler.h,v 1.2 2009/09/09 17:02:10 lsrea Exp $
 */
 
 #include <string>
@@ -53,6 +53,8 @@ public:
     virtual std::string getTripleString(int precis, double x, double y, double z);
     virtual std::string getPositionString(const Point& position);
     virtual std::string getDirectionString(const Vector& direction);
+    virtual std::string getPositionString(const HepPoint3D& position);
+    virtual std::string getDirectionString(const HepVector3D& direction);
     virtual std::string getBits(unsigned int statBits, int highBit, int lowBit);
     virtual void drawPrism(double x, double y, double z, 
         double dx, double dy, double dz);

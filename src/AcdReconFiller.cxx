@@ -16,11 +16,12 @@
 #include "AcdUtil/IAcdGeometrySvc.h"
 
 #include "Event/TopLevel/EventModel.h"
-#include "Event/Recon/AcdRecon/AcdRecon.h"
+#include "Event/Recon/AcdRecon/AcdReconV2.h"
 #include "Event/Recon/AcdRecon/AcdHit.h"
 #include "Event/Recon/AcdRecon/AcdTkrHitPoca.h"
 #include "Event/Recon/AcdRecon/AcdTkrGapPoca.h"
-#include "Event/Recon/AcdRecon/AcdTkrIntersection.h"
+#include "Event/Recon/AcdRecon/AcdEventTopology.h"
+#include "Event/Recon/AcdRecon/AcdTkrPoint.h"
 #include "Event/Digi/AcdDigi.h"
 
 #include "idents/VolumeIdentifier.h"
@@ -29,8 +30,7 @@
 
 #include "idents/VolumeIdentifier.h"
 
-
-#include <algorithm>
+#include <list>
 
 // Constructor
 AcdReconFiller::AcdReconFiller(HepRepInitSvc* hrisvc,
@@ -48,93 +48,16 @@ void AcdReconFiller::buildTypes() {
   m_builder->addType("Recon","AcdRecon","AcdRecon Tree","");
   // AcdHits
   m_builder->addType("AcdRecon", "AcdHitCol", "Collection of AcdHits (Calibrated signals)", "");  
-  m_builder->addType("AcdHitCol", "AcdHit","","");
-  m_builder->addAttValue("DrawAs","Line","");
-  m_builder->addAttDef("Mips_A","Calibrated Pulse Height of signal in PMT A","float","(mips)");
-  m_builder->addAttDef("Mips_B","Calibrated Pulse Height of signal in PMT B","float","(mips)");
-  m_builder->addAttDef("PHA_A","Raw Pulse Height of signal in PMT A","int","(PHA)");
-  m_builder->addAttDef("PHA_B","Raw Pulse Height of signal in PMT B","int","(PHA)");  
-  m_builder->addAttDef("AcceptMapBits","Above Zero-Suppress thresholds","string","(> pedestal + 25)");
-  m_builder->addAttDef("HitMapBits","Above VETO thresholds in PMT","string","(> 0.45 mips)");  
-  m_builder->addAttDef("Range","Readout Ranges for PMT","string","Low Range: 0-5 mips, High Range: 5-1000 Mips");
- 
-
-  // AcdTkrHitPocas
-  m_builder->addType("AcdRecon","AcdTkrHitPocaCol","Poca Collection","");  
-  m_builder->addType("AcdTkrHitPocaCol","AcdTkrHitPoca","Data about Track-Hit POCA","");  
-  m_builder->addAttValue("DrawAs","Line","");
-  m_builder->addAttValue("Color","red",""); 
-  m_builder->addAttDef("Id","ID of the ACD Detector element","","");
-  m_builder->addAttDef("TrackIndex","Index of associated track","","");
-  m_builder->addAttDef("Doca","Distance of closest approach","float","(mm)");  
-  m_builder->addAttDef("DocaErr","Error on Distance of closest approach project along the POCA vector","float","in (mm)");  
-  m_builder->addAttDef("ArcLength","Arclength along the track at which the POCA occurs","float","(mm)");  
-  m_builder->addAttDef("Poca_X","X value of POCA","float","(mm)");  
-  m_builder->addAttDef("Poca_Y","Y value of POCA","float","(mm)");  
-  m_builder->addAttDef("Poca_Z","Z value of POCA","float","(mm)");  
-  m_builder->addAttDef("PocaVector_X","X value of vector from POCA to element edge","float","(mm)");  
-  m_builder->addAttDef("PocaVector_Y","Y value of vector from POCA to element edge","float","(mm)");  
-  m_builder->addAttDef("PocaVector_Z","Z value of vector from POCA to element edge","float","(mm)");  
-  // Local coords
-  m_builder->addType("AcdTkrHitPoca","AcdTkrLocalCoords","Point where Track crosses plane of the tile","");  
-  m_builder->addAttDef("Region","Code that tells which part of the element was hit","int","");  
-  m_builder->addAttDef("Active_X","Active Distance in Local X","float","(mm)");
-  m_builder->addAttDef("Active_Y","Active Distance in Local Y","float","(mm)");
-  m_builder->addAttDef("Global_X","X value of point where track crosses element plane","float","(mm)");
-  m_builder->addAttDef("Global_Y","Y value of point where track crosses element plane","float","(mm)");
-  m_builder->addAttDef("Global_Z","Z value of point where track crosses element plane","float","(mm)");
-  m_builder->addAttDef("Local_XXCov","local X Error squared","float","(mm^2)");
-  m_builder->addAttDef("Local_YYCov","local Y Error squared","float","(mm^2)");
-  m_builder->addAttDef("Local_XYCov","correlation term of local X-Y Error","float","(mm^2)");
-
-  // AcdGapHitPocas
-  m_builder->addType("AcdRecon","AcdTkrGapPocaCol","GAP Poca Collection","");  
-  m_builder->addType("AcdTkrGapPocaCol","AcdTkrGapPoca","Data about Track-GAP POCA","");
-  m_builder->addAttValue("DrawAs","Line","");
-  m_builder->addAttValue("Color","yellow",""); 
-  m_builder->addAttDef("GapId","ID of the Gap in the ACD Detector","","");
-  m_builder->addAttDef("TrackIndex","Index of associated track","","");
-  m_builder->addAttDef("Doca","Distance of closest approach","float","(mm)");  
-  m_builder->addAttDef("DocaErr","Error on Distance of closest approach project along the POCA vector","float","in (mm)");  
-  m_builder->addAttDef("ArcLength","Arclength along the track at which the POCA occurs","float","(mm)");  
-  m_builder->addAttDef("Region","Code that tells which part of the element was hit","int","");  
-  m_builder->addAttDef("Active_X","Active Distance in Local X","float","(mm)");
-  m_builder->addAttDef("Active_Y","Active Distance in Local Y","float","(mm)");
-  m_builder->addAttDef("Poca_X","X value of POCA","float","(mm)");  
-  m_builder->addAttDef("Poca_Y","Y value of POCA","float","(mm)");  
-  m_builder->addAttDef("Poca_Z","Z value of POCA","float","(mm)");  
-  m_builder->addAttDef("PocaVector_X","X value of vector from POCA to element edge","float","(mm)");  
-  m_builder->addAttDef("PocaVector_Y","Y value of vector from POCA to element edge","float","(mm)");  
-  m_builder->addAttDef("PocaVector_Z","Z value of vector from POCA to element edge","float","(mm)");  
-  // Local coords
-  m_builder->addType("AcdTkrGapPoca","AcdTkrLocalCoords","Point where Track crosses plane of the tile","");  
-  m_builder->addAttDef("Global_X","X value of point where track crosses element plane","float","(mm)");
-  m_builder->addAttDef("Global_Y","Y value of point where track crosses element plane","float","(mm)");
-  m_builder->addAttDef("Global_Z","Z value of point where track crosses element plane","float","(mm)");
-  m_builder->addAttDef("Local_XXCov","local X Error squared","float","(mm^2)");
-  m_builder->addAttDef("Local_YYCov","local Y Error squared","float","(mm^2)");
-  m_builder->addAttDef("Local_XYCov","correlation term of local X-Y Error","float","(mm^2)");
+  defineAcdHitType("AcdHitCol");
   
+  // AcdTkrAssocs
+  m_builder->addType("AcdRecon","AcdTkrAssocCol","Track Assocication Collection","");  
+  defineAcdTkrAssocType("AcdTkrAssocCol","yellow");
 
-  // AcdTkrIntersections
-  m_builder->addType("AcdRecon","AcdTkrIntersectionCol","Collection of intersections between track an GEANT model","");  
-  m_builder->addType("AcdTkrIntersectionCol","AcdTkrIntersection","Intersection between track and GEANT model","");
-  m_builder->addAttValue("DrawAs","Point","");
-  m_builder->addAttValue("MarkerName","Circle","");  
-  m_builder->addAttValue("MarkerSize", 1, "");
-  m_builder->addAttDef("Id","ID of the ACD Detector element","","");
-  m_builder->addAttDef("TrackIndex","Index of associated track","","");
-  m_builder->addAttDef("Local_X","X Position of Intersection in Local frame","float","(mm)");  
-  m_builder->addAttDef("Local_Y","Y Position of Intersection in Local frame","float","(mm)");    
-  m_builder->addAttDef("ArcLength","Arclength along the track at which the POCA occurs","float","(mm)");  
-  m_builder->addAttDef("Pathlength","Pathlength of track through element","float","(mm)");  
-  m_builder->addAttDef("CosTheta","Angle of track w.r.t. detector plane","float","(mm)");  
-  m_builder->addAttDef("Global_X","X value of Point","float","(mm)");  
-  m_builder->addAttDef("Global_Y","Y value of Point","float","(mm)");  
-  m_builder->addAttDef("Global_Z","Z value of Point","float","(mm)");    
-  m_builder->addAttDef("Local_XXCov","local X Error squared","float","(mm^2)");
-  m_builder->addAttDef("Local_YYCov","local Y Error squared","float","(mm^2)");
-  m_builder->addAttDef("Local_XYCov","correlation term of local X-Y Error","float","(mm^2)");
+  // AcdEventTopology
+  m_builder->addType("AcdRecon","AcdEventTopology","Event level ACD data","");  
+  defineAcdEventTopologyType("AcdEventTopology");  
+
 }
 
 
@@ -148,87 +71,226 @@ void AcdReconFiller::fillInstances (std::vector<std::string>& typesList) {
   return;
 }
 
+/// Define the structure for AcdHit
+void AcdReconFiller::defineAcdHitType(const char* parent) {
+  m_builder->addType(parent, "AcdHit","","");
+  m_builder->addAttDef("Mips_A","Calibrated Pulse Height of signal in PMT A","float","(mips)");
+  m_builder->addAttDef("Mips_B","Calibrated Pulse Height of signal in PMT B","float","(mips)");
+  m_builder->addAttDef("PHA_A","Raw Pulse Height of signal in PMT A","int","(PHA)");
+  m_builder->addAttDef("PHA_B","Raw Pulse Height of signal in PMT B","int","(PHA)");  
+  m_builder->addAttDef("AcceptMapBits","Above Zero-Suppress thresholds","string","(> pedestal + 25)");
+  m_builder->addAttDef("HitMapBits","Above VETO thresholds in PMT","string","(> 0.45 mips)");  
+  m_builder->addAttDef("Range","Readout Ranges for PMT","string","Low Range: 0-5 mips, High Range: 5-1000 Mips");
+  m_builder->addAttValue("DrawAs","Line","");
+}
+
+void AcdReconFiller::defineAcdTkrAssocType(const char* parent, const char* color) {
+  m_builder->addType(parent, "AcdTkrAssoc","","");
+  m_builder->addAttDef("Index","Track Index","int","");
+  m_builder->addAttDef("Energy","Track Energy","float","(MeV)");
+  m_builder->addAttDef("Start","Track Start","string","(mm)");
+  m_builder->addAttDef("Dir","Track Dir","string","(mm)");
+  m_builder->addAttDef("ArcLength","Dist to Track End Point","float","(mm)");  
+  m_builder->addAttDef("VetoSigmaHit","Veto Esimator based on ACD hits","float","(sigma)");
+  m_builder->addAttDef("VetoSigmaGap","Veto Esimator based on ACD gaps","float","(sigma)");
+  m_builder->addAttValue("DrawAs","Line","");
+  m_builder->addAttValue("Color",color,"");  
+  
+  defineAcdTkrHitPocaType("AcdTkrAssoc");
+  defineAcdTkrGapPocaType("AcdTkrAssoc");  
+  defineAcdTkrPointType("AcdTkrAssoc");  
+}
+
+void AcdReconFiller::defineAcdEventTopologyType(const char* /* parent */) {
+  /// Define the structure for AcdTkrAssoc
+  m_builder->addAttDef("TileCount","Number of hit tiles","int","");
+  m_builder->addAttDef("RibbonCount","Number of hit ribbons","int","");
+  m_builder->addAttDef("TileVeto","Number of tiles with veto","int","");
+  m_builder->addAttDef("TileEnergy","Total Energy in tiles","float","(MeV)");
+  m_builder->addAttDef("RibbonEnergy","Total Energy in ribbons","float","(MeV)");
+  m_builder->addAttDef("NTilesByFace","Number of tiles by face","string","");
+  m_builder->addAttDef("NTilesByRow","Number of tiles by row","string","");
+  m_builder->addAttDef("EnergyByFace","Tile energy by face","string","(MeV)");
+  m_builder->addAttDef("EnergyByRow","Tile energy by row","string","(MeV)");
+  m_builder->addAttDef("NSidesHit","Number of sides with hits","int","");
+  m_builder->addAttDef("NSidesVeto","Number of sides with veto","int",""); 
+}
+
+
+/// Define the structure for AcdTkrHitPoca
+void AcdReconFiller::defineAcdTkrHitPocaType(const char* parent) {
+  m_builder->addType(parent,"AcdTkrHitPoca","Data about Track-Hit POCA","");  
+  m_builder->addAttDef("Id","ID of the ACD Detector element","int","");
+  m_builder->addAttDef("TrackIndex","Index of associated track","int","");
+  m_builder->addAttDef("Active_X","ActiveDistance in X","float","(mm)");
+  m_builder->addAttDef("Active_Y","ActiveDistance in Y","float","(mm)");  
+  m_builder->addAttDef("Mips_A","Calibrated Pulse Height of signal in PMT A","float","(mips)");
+  m_builder->addAttDef("Mips_B","Calibrated Pulse Height of signal in PMT B","float","(mips)");  
+  m_builder->addAttDef("VetoSigma","Veto Esimator","float","(sigma>0)");  
+  defineAcdPocaDataType("AcdTkrHitPoca","red","red");
+  defineAcdTkrLocalCoordsType("AcdTkrHitPoca","red","red");
+}
+/// Define the structure for AcdTkrGapPoca
+void AcdReconFiller::defineAcdTkrGapPocaType(const char* parent) {
+  m_builder->addType(parent,"AcdTkrGapPoca","Data about Track-GAP POCA","");
+  m_builder->addAttDef("GapId","ID of the Gap in the ACD Detector","int","");
+  m_builder->addAttDef("TrackIndex","Index of associated track","int","");
+  m_builder->addAttDef("VetoSigma","Veto Esimator","float","(sigma>0)");  
+  defineAcdPocaDataType("AcdTkrGapPoca","0,100,0","0,50,0");
+  defineAcdTkrLocalCoordsType("AcdTkrGapPoca","0,100,0","0,50,0");
+}
+
+/// Define the structure for AcdTkrGapPoca
+void AcdReconFiller::defineAcdTkrPointType(const char* parent) {
+  m_builder->addType(parent,"AcdTkrPoint","Data about POCA","");
+  m_builder->addAttDef("TrackIndex","which track","int","");
+  defineAcdTkrLocalCoordsType("AcdTkrPoint","0,100,0","0,50,0");
+}
+
+
+/// Define the structure for AcdPocaData
+void AcdReconFiller::defineAcdPocaDataType(const char* parent, const char* color, const char* errColor) {
+  m_builder->addType(parent,"AcdPocaData","Data about POCA","");
+  m_builder->addAttDef("Doca","Distance of closest approach","float","(mm)");  
+  m_builder->addAttDef("DocaErrProj","Error on DOCA from track projection","float","in (mm)");  
+  m_builder->addAttDef("DocaErrProp","Error on DOCA from Kalman Propagation","float","in (mm)");  
+  m_builder->addAttDef("ArcLength","Arclength along the track at which the POCA occurs","float","(mm)"); 
+  m_builder->addAttDef("Volume","Which volume used to get POCA","int","");  
+  m_builder->addAttDef("Region","Which region used to get POCA","int","");    
+  m_builder->addAttDef("Poca","Point of Closest Approach","string","(mm)");  
+  m_builder->addAttDef("Voca","Vector of Closest Approach","string","(mm)");  
+  m_builder->addAttValue("DrawAs","Line","");
+  m_builder->addAttValue("Color",color,"");  
+  m_builder->addAttValue("LineStyle","Dashed","");
+  defineAcdPocaErrorType("AcdPocaData",errColor);
+}
+
+/// Define the structure for AcdLocalErrorAxis
+void AcdReconFiller::defineAcdPocaErrorType(const char* parent, const char* color) {
+  m_builder->addType(parent,"AcdPocaError","","");
+  m_builder->addAttDef("Error","Size of error","float","(mm)");
+  m_builder->addAttValue("DrawAs","Line","");
+  m_builder->addAttValue("LineStyle","Solid","");
+  m_builder->addAttValue("Color",color,"");
+}
+
+
+/// Define the structure for AcdTkrLocalCoords
+void AcdReconFiller::defineAcdTkrLocalCoordsType(const char* parent, const char* color, const char* errColor) {
+  m_builder->addType(parent,"AcdTkrLocalCoords","Point where Track crosses plane of the tile","");  
+  m_builder->addAttDef("Region","Code that tells which part of the element was hit","int","");  
+  m_builder->addAttDef("ArcLength","Arclength along the track at which the POCA occurs","float","(mm)");  
+  m_builder->addAttDef("CosTheta","Angle of track w.r.t. detector plane","float","(mm)");  
+  m_builder->addAttDef("Global","Global Position of Point","string","(mm)");  
+  m_builder->addAttDef("Local_X","Distance in Local X","float","(mm)");
+  m_builder->addAttDef("Local_Y","Distance in Local Y","float","(mm)");
+  m_builder->addAttDef("Local_XXCov_Proj","local X Error squared","float","(mm^2)");
+  m_builder->addAttDef("Local_YYCov_Proj","local Y Error squared","float","(mm^2)");
+  m_builder->addAttDef("Local_XYCov_Proj","correlation term of local X-Y Error","float","(mm^2)");
+  m_builder->addAttDef("Local_XXCov_Prop","local X Error squared","float","(mm^2)");
+  m_builder->addAttDef("Local_YYCov_Prop","local Y Error squared","float","(mm^2)");
+  m_builder->addAttDef("Local_XYCov_Prop","correlation term of local X-Y Error","float","(mm^2)");
+  m_builder->addAttValue("DrawAs","Point","");
+  m_builder->addAttValue("MarkerName","Circle","");  
+  m_builder->addAttValue("MarkerSize", 1, "");
+  m_builder->addAttValue("Color",color,"");   
+  defineAcdLocalErrorAxisType("AcdTkrLocalCoords",errColor);
+}
+
+
+/// Define the structure for AcdLocalErrorAxis
+void AcdReconFiller::defineAcdLocalErrorAxisType(const char* parent, const char* color) {
+  m_builder->addType(parent,"AcdLocalErrorAxis","","");
+  m_builder->addAttDef("ErrorAxis","Error Axis","string","(mm)");
+  m_builder->addAttValue("DrawAs","Line","");
+  m_builder->addAttValue("Color",color,"");
+}
 
 
 void AcdReconFiller::fillAcdRecon(std::vector<std::string>& typesList ) {
   
-  SmartDataPtr<Event::AcdRecon> acdRec(m_dpsvc, EventModel::AcdRecon::Event);
-  if ( !acdRec ) return;
+  //SmartDataPtr<Event::AcdRecon> acdRec(m_dpsvc, EventModel::AcdRecon::Event);
+  //if ( !acdRec ) { 
+  Event::AcdReconV2* acdRec = Event::AcdReconV2::s_theAcdReconV2Ptr;
+  if ( acdRec == 0 ) {    
+    std::cout << "No AcdRecon " << EventModel::AcdRecon::Event << ' ' << m_dpsvc << std::endl;
+    return; 
+  }
+  
   m_builder->addInstance("Recon","AcdRecon");
   
   if ( hasType(typesList, "Recon/AcdRecon/AcdHitCol/AcdHit" ) ){
     fillAcdHitCol(*acdRec);
   }
-       
-  if ( hasType(typesList, "Recon/AcdRecon/AcdTkrHitPocaCol/AcdTkrHitPoca" ) ) {
-    fillAcdTkrHitPocaCol(*acdRec);
-  }
-  
-  if ( hasType(typesList, "Recon/AcdRecon/AcdTkrGapPocaCol/AcdTkrGapPoca" ) ) {
-    fillAcdTkrGapPocaCol(*acdRec);
-  }
 
-  if ( hasType(typesList, "Recon/AcdRecon/AcdTkrIntersectionCol/AcdTkrIntersection" ) ) {
-    fillAcdTkrIntersectionCol(*acdRec);
+  if ( hasType(typesList, "Recon/AcdRecon/AcdTkrAssocCol/AcdTkrAssoc" ) ){
+    fillAcdTkrAssocCol(*acdRec);
   }
+       
+  if ( hasType(typesList, "Recon/AcdRecon/AcdEventTopology" ) ) {
+    fillAcdEventTopology(*acdRec);
+  } 
 
 }
 
   /// Fill the HepReps for the AcdHitCol
-void AcdReconFiller::fillAcdHitCol( const Event::AcdRecon& recon ) {
-  const Event::AcdHitCol& col = recon.getAcdHitCol();
+void AcdReconFiller::fillAcdHitCol( const Event::AcdReconV2& recon ) {
+  const Event::AcdHitCol& col = recon.getHitCol();
   if ( col.size() == 0 ) return;
   m_builder->addInstance("AcdRecon","AcdHitCol");
   m_builder->setSubinstancesNumber("AcdHitCol", col.size());
   for ( Event::AcdHitCol::const_iterator itr = col.begin(); itr != col.end(); itr++ ) {
     const Event::AcdHit* obj = *itr;
-    addAcdHit(*obj);
+    addAcdHit("AcdHitCol",*obj);
   }
 }
 
-/// Fill the HepReps for the AcdTkrHitPocaCol
-void AcdReconFiller::fillAcdTkrHitPocaCol( const Event::AcdRecon& recon ) {
-  const Event::AcdTkrHitPocaCol& col = recon.getAcdTkrHitPocaCol();
+/// Fill the HepReps for the AcdTkrAssocCol
+void AcdReconFiller::fillAcdTkrAssocCol( const Event::AcdReconV2& recon ) {
+  const Event::AcdTkrAssocCol& col = recon.getTkrAssocCol();
   if ( col.size() == 0 ) return;
-  m_builder->addInstance("AcdRecon","AcdTkrHitPocaCol");
-  m_builder->setSubinstancesNumber("AcdTkrHitPocaCol", col.size());
-  for ( Event::AcdTkrHitPocaCol::const_iterator itr = col.begin(); itr != col.end(); itr++ ) {
-    const Event::AcdTkrHitPoca* obj = *itr;
-    addAcdTkrHitPoca(*obj);
+    
+  std::vector<const Event::AcdTkrAssoc*> toDraw;
+  for ( Event::AcdTkrAssocCol::const_iterator itr = col.begin(); itr != col.end(); itr++ ) {
+    const Event::AcdTkrAssoc* obj = *itr;
+    if ( obj->getTrackIndex() < 0 ) continue;
+    toDraw.push_back(obj);
+  }
+
+  m_builder->addInstance("AcdRecon","AcdTkrAssocCol");
+  m_builder->setSubinstancesNumber("AcdTkrAssocCol", toDraw.size() );
+
+  for ( std::vector<const Event::AcdTkrAssoc*>::const_iterator itrD = toDraw.begin(); itrD != toDraw.end(); itrD++ ) {
+    const Event::AcdTkrAssoc* obj = *itrD;
+    addAcdTkrAssoc("AcdTkrAssocCol",*obj);
   }
 }
 
-/// Fill the HepReps for the AcdTkrGapPocaCol
-void AcdReconFiller::fillAcdTkrGapPocaCol( const Event::AcdRecon& recon ) {
-  const Event::AcdTkrGapPocaCol& col = recon.getAcdTkrGapPocaCol();
-  if ( col.size() == 0 ) return;
-  m_builder->addInstance("AcdRecon","AcdTkrGapPocaCol");
-  m_builder->setSubinstancesNumber("AcdTkrGapPocaCol", col.size());
-  for ( Event::AcdTkrGapPocaCol::const_iterator itr = col.begin(); itr != col.end(); itr++ ) {
-    const Event::AcdTkrGapPoca* obj = *itr;
-    addAcdTkrGapPoca(*obj);
-  }
+/// Fill the HepReps for the AcdEventTopology
+void AcdReconFiller::fillAcdEventTopology( const Event::AcdReconV2& recon ) {
+  m_builder->addInstance("AcdRecon","AcdEventTopology");  
+  const Event::AcdEventTopology& topo = recon.getEventTopology();
+  m_builder->addAttValue("TileCount",(int)topo.getTileCount(),"");
+  m_builder->addAttValue("RibbonCount",(int)topo.getRibbonCount(),"");
+  m_builder->addAttValue("TileVeto",(int)topo.getTileVeto(),"");
+  m_builder->addAttValue("TileEnergy",(float)topo.getTileEnergy(),"");
+  m_builder->addAttValue("RibbonEnergy",(float)topo.getRibbonEnergy(),"");
+  m_builder->addAttValue("NTilesByFace","xxx","");
+  m_builder->addAttValue("NTilesByRow","xxx","");
+  m_builder->addAttValue("EnergyByFace","xxx","");
+  m_builder->addAttValue("EnergyByRow","xxx","");
+  m_builder->addAttValue("NSidesHit",(int)topo.getNSidesHit(),"");
+  m_builder->addAttValue("NSidesVeto",(int)topo.getNSidesVeto(),"");
 }
 
-/// Fill the HepReps for the AcdTkrIntersectionCol
-void AcdReconFiller::fillAcdTkrIntersectionCol( const Event::AcdRecon& recon ) {
-  const Event::AcdTkrIntersectionCol& col = recon.getAcdTkrIntersectionCol();
-  if ( col.size() == 0 ) return;
-  m_builder->addInstance("AcdRecon","AcdTkrIntersectionCol");
-  m_builder->setSubinstancesNumber("AcdTkrIntersectionCol", col.size());
-  for ( Event::AcdTkrIntersectionCol::const_iterator itr = col.begin(); itr != col.end(); itr++ ) {
-    const Event::AcdTkrIntersection* obj = *itr;
-    addAcdTkrIntersection(*obj);
-  }
-}
 
 /// Fill the HepRep for a single AcdHit
-void AcdReconFiller::addAcdHit( const Event::AcdHit& aHit ) {
+void AcdReconFiller::addAcdHit( const char* parent, const Event::AcdHit& aHit ) {
  
-  m_builder->addInstance("AcdHitCol","AcdHit");  
+  m_builder->addInstance(parent,"AcdHit");  
   idents::AcdId id = aHit.getAcdId();
 
-  m_builder->addAttValue("Id", (float)id.id(), "");
+  m_builder->addAttValue("Id", (int)id.id(), "");
 
   if (aHit.getHitMapBit(Event::AcdHit::A) || 
       aHit.getHitMapBit(Event::AcdHit::B))
@@ -268,83 +330,171 @@ void AcdReconFiller::addAcdHit( const Event::AcdHit& aHit ) {
   }
 }
 
-/// Fill the HepRep for a AcdTkrHitPoca
-void AcdReconFiller::addAcdTkrHitPoca( const Event::AcdTkrHitPoca& aPoca ) {
+/// Fill the HepRep for a single AcdTkrAssoc
+void AcdReconFiller::addAcdTkrAssoc( const char* parent, const Event::AcdTkrAssoc& anAssoc ) {
+  m_builder->addInstance(parent,"AcdTkrAssoc"); 
 
-  m_builder->addInstance("AcdTkrHitPocaCol","AcdTkrHitPoca");  
+  m_builder->addAttValue("Index",(int)anAssoc.getTrackIndex(),"");
+  m_builder->addAttValue("Energy",(float)anAssoc.getEnergy(),"");
+  m_builder->addAttValue("Start",getPositionString(anAssoc.getStart()),"");
+  m_builder->addAttValue("Dir",getDirectionString(anAssoc.getDir()),"");
+  m_builder->addAttValue("ArcLength",(float)anAssoc.getArcLength(),"");
+
+  const Event::AcdTkrHitPoca* bestHit = anAssoc.getHitPoca();
+  const Event::AcdTkrGapPoca* bestGap = anAssoc.getGapPoca();
+  const Event::AcdTkrPoint* trackPoint = anAssoc.getPoint();
+
+  float vetoHit = bestHit == 0 ? 50. : sqrt(bestHit->vetoSigma2());
+  float vetoGap = bestGap == 0 ? 50. : sqrt(bestGap->vetoSigma2());
+
+  m_builder->addAttValue("VetoSigmaHit",vetoHit,"");
+  m_builder->addAttValue("VetoSigmaGap",vetoGap,"");
+
+  HepPoint3D endPoint = anAssoc.getStart() + (anAssoc.getArcLength() * anAssoc.getDir());
+  m_builder->addPoint(anAssoc.getStart().x(),anAssoc.getStart().y(),anAssoc.getStart().z());
+  m_builder->addPoint(endPoint.x(),endPoint.y(),endPoint.z());
+  
+  if ( bestHit != 0 ) {
+    addAcdTkrHitPoca("AcdTkrAssoc",*bestHit);
+  }
+  if ( bestGap != 0 ) {
+    addAcdTkrGapPoca("AcdTkrAssoc",*bestGap);
+  }
+  if( trackPoint != 0 ) {
+    addAcdTkrPoint("AcdTkrAssoc",*trackPoint);
+  }
+
+}
+
+
+/// Fill the HepRep for a AcdTkrHitPoca
+void AcdReconFiller::addAcdTkrHitPoca( const char* parent, const Event::AcdTkrHitPoca& aPoca ) {
+  m_builder->addInstance(parent,"AcdTkrHitPoca");  
   idents::AcdId id = aPoca.getId();
-  m_builder->addAttValue("Id", (float)id.id(), "");
+  m_builder->addAttValue("Id", (int)id.id(), "");
   m_builder->addAttValue("TrackIndex", aPoca.trackIndex(), "");
-  addAcdPocaData(aPoca);  
-  m_builder->addInstance("AcdTkrHitPoca","AcdTkrLocalCoords");  
-  addAcdTkrLocalCoords(aPoca);
+  m_builder->addAttValue("Active_X",aPoca.getActiveX(),"");
+  m_builder->addAttValue("Active_Y",aPoca.getActiveY(),"");
+  m_builder->addAttValue("Mips_A",aPoca.mipsPmtA(),"");
+  m_builder->addAttValue("Mips_B",aPoca.mipsPmtB(),"");
+  m_builder->addAttValue("VetoSigma",(float)sqrt(aPoca.vetoSigma2()),"");
+
+  addAcdPocaData("AcdTkrHitPoca",aPoca);  
+  addAcdTkrLocalCoords("AcdTkrHitPoca",id,aPoca);
+  
 }
 
 /// Fill the HepRep for a AcdTkrGapPoca
-void AcdReconFiller::addAcdTkrGapPoca( const Event::AcdTkrGapPoca& aPoca ) {
-  m_builder->addInstance("AcdTkrGapPocaCol","AcdTkrGapPoca");  
+void AcdReconFiller::addAcdTkrGapPoca( const char* parent, const Event::AcdTkrGapPoca& aPoca ) {
+  m_builder->addInstance(parent,"AcdTkrGapPoca");  
   idents::AcdGapId id = aPoca.getId();
   m_builder->addAttValue("GapId", (int)id.asShort(), "");
   m_builder->addAttValue("TrackIndex", aPoca.trackIndex(), "");
-  addAcdPocaData(aPoca);  
-  m_builder->addInstance("AcdTkrGapPoca","AcdTkrLocalCoords");  
-  addAcdTkrLocalCoords(aPoca);
+  m_builder->addAttValue("VetoSigma",(float)sqrt(aPoca.vetoSigma2()),"");
+
+  addAcdPocaData("AcdTkrGapPoca",aPoca);  
+  idents::AcdId tid(0,id.face(),id.row(),id.col()); 
+  std::cout << "Gap " << id.asShort() << ' ' << tid.id() << std::endl;
+  addAcdTkrLocalCoords("AcdTkrGapPoca",tid,aPoca);
 }
 
+void AcdReconFiller::addAcdTkrPoint( const char* parent, const Event::AcdTkrPoint& aPoint ) {
+  static const idents::AcdId nullId;
+  m_builder->addInstance(parent,"AcdTkrPoint");  
+  m_builder->addAttValue("TrackIndex", aPoint.getTrackIndex(), "");
+  //addAcdTkrLocalCoords("AcdTkrPoint",nullId,aPoint);
+}
+
+
 /// Fill the HepRep for AcdTkrLocalCoords
-void AcdReconFiller::addAcdTkrLocalCoords( const Event::AcdTkrLocalCoords& local ) {  
-  m_builder->addAttValue("Region", local.getRegion(), "");
-  m_builder->addAttValue("Active_X", local.getActiveX(), "");
-  m_builder->addAttValue("Active_Y", local.getActiveY(), "");
-  m_builder->addAttValue("Local_XXCov", local.getLocalXXCov(), "");
-  m_builder->addAttValue("Local_YYCov", local.getLocalYYCov(), "");
-  m_builder->addAttValue("Local_XYCov", local.getLocalXYCov(), "");
+void AcdReconFiller::addAcdTkrLocalCoords( const char* parent, 
+					   const idents::AcdId& acdId,
+					   const Event::AcdTkrLocalCoords& local ) {    
+  m_builder->addInstance(parent,"AcdTkrLocalCoords");  
+  const HepPoint3D& global = local.getGlobalPosition();
+  m_builder->addAttValue("Region", local.getLocalVolume(), "");
+  m_builder->addAttValue("ArcLength",local.getArclengthToPlane(),"");
+  m_builder->addAttValue("CosTheta",local.getCosTheta(),"");
+  m_builder->addAttValue("Global", getPositionString(global), "");
+  m_builder->addAttValue("Local_X", local.getLocalX(), "");
+  m_builder->addAttValue("Local_Y", local.getLocalY(), "");
+  m_builder->addAttValue("Local_XXCovProj", (float)local.getLocalCovProj()(1,1), "");
+  m_builder->addAttValue("Local_YYCovProj", (float)local.getLocalCovProj()(2,2), "");
+  m_builder->addAttValue("Local_XYCovProj", (float)local.getLocalCovProj()(1,2), "");
+  m_builder->addAttValue("Local_XXCovProp", (float)local.getLocalCovProp()(1,1), "");
+  m_builder->addAttValue("Local_YYCovProp", (float)local.getLocalCovProp()(2,2), "");
+  m_builder->addAttValue("Local_XYCovProp", (float)local.getLocalCovProp()(1,2), "");
+  HepVector3D v1_proj;
+  HepVector3D v2_proj;
+  HepVector3D v1_prop;
+  HepVector3D v2_prop;
+  if ( acdId.tile() ) {
+    const AcdTileDim* tile = m_acdsvc->geomMap().getTile(acdId,*m_acdsvc);
+    int whichVol = local.getLocalVolume();
+    AcdFrameUtil::getErrorAxes(tile->getSection(whichVol)->m_invTrans,local.getLocalCovProj(),v1_proj,v2_proj);
+    AcdFrameUtil::getErrorAxes(tile->getSection(whichVol)->m_invTrans,local.getLocalCovProp(),v1_prop,v2_prop);
+  } else {
+    //const AcdRibbonDim* ribbon = m_acdsvc->geomMap().getRibbon(acdId,*m_acdsvc);
+    //int whichVol = local.getLocalVolume();
+    //AcdFrameUtil::getErrorAxes(ribbon->inverseTransformation(whichVol),local.getLocalCovProj(),v1_proj,v2_proj);
+    //AcdFrameUtil::getErrorAxes(ribbon->inverseTransformation(whichVol),local.getLocalCovProp(),v1_prop,v2_prop);    
+  }
+  m_builder->addPoint(global.x(),global.y(),global.z());  
+  m_builder->setSubinstancesNumber("AcdTkrLocalCoords", 4);
+  m_builder->addInstance("AcdTkrLocalCoords","AcdLocalErrorAxis");
+  AcdHepRepPointFiller::addErrors(*m_builder,global,v1_proj);
+  m_builder->addInstance("AcdTkrLocalCoords","AcdLocalErrorAxis");      
+  AcdHepRepPointFiller::addErrors(*m_builder,global,v2_proj);    
+  m_builder->addInstance("AcdTkrLocalCoords","AcdLocalErrorAxis");
+  AcdHepRepPointFiller::addErrors(*m_builder,global,v1_prop);
+  m_builder->addInstance("AcdTkrLocalCoords","AcdLocalErrorAxis");      
+  AcdHepRepPointFiller::addErrors(*m_builder,global,v2_prop);    
 }
 
 /// Fill the HepRep for AcdPocaData
-void AcdReconFiller::addAcdPocaData( const Event::AcdPocaData& pocaData ) {
-  if ( pocaData.getArcLength() < 0. ) {
-    m_builder->addAttValue("LineStyle", "Dashed", "");
-    m_builder->addAttValue("LineWidth", 1, "");
+void AcdReconFiller::addAcdPocaData( const char* parent, const Event::AcdPocaData& pocaData ) {
+  m_builder->addInstance(parent,"AcdPocaData");  
+
+  const Point& poca = pocaData.getPoca();
+  const Vector& voca = pocaData.getPocaVector();
+
+  const HepPoint3D global(poca.x(),poca.y(),poca.z());
+
+  Vector vErrProj = voca;
+  if ( pocaData.getDocaErrProj() > 0 ) {
+    vErrProj.setMag( pocaData.getDocaErrProj() );    
+  } else {
+    vErrProj.setMag( 0.01 );
   }
+  Vector vErrProp = voca;
+  if ( pocaData.getDocaErrProp() > 0 ) {
+    vErrProp.setMag( pocaData.getDocaErrProp() );    
+  } else {
+    vErrProp.setMag( 0.01 );
+  }
+
   m_builder->addPoint(pocaData.getPoca().x(),pocaData.getPoca().y(),pocaData.getPoca().z());
   m_builder->addPoint(pocaData.getPoca().x()-pocaData.getPocaVector().x(),
 		      pocaData.getPoca().y()-pocaData.getPocaVector().y(),
 		      pocaData.getPoca().z()-pocaData.getPocaVector().z());
   m_builder->addAttValue("Doca",pocaData.getDoca(),"");
-  m_builder->addAttValue("DocaErr",pocaData.getDocaErr(),"");
+  m_builder->addAttValue("DocaErrProj",pocaData.getDocaErrProj(),"");
+  m_builder->addAttValue("DocaErrProp",pocaData.getDocaErrProp(),"");
   m_builder->addAttValue("ArcLength",pocaData.getArcLength(),"");
-  m_builder->addAttValue("Poca_X",(float)pocaData.getPoca().x(),"");
-  m_builder->addAttValue("Poca_Y",(float)pocaData.getPoca().y(),"");
-  m_builder->addAttValue("Poca_Z",(float)pocaData.getPoca().z(),"");
-  m_builder->addAttValue("PocaVector_X",(float)pocaData.getPocaVector().x(),"");
-  m_builder->addAttValue("PocaVector_Y",(float)pocaData.getPocaVector().y(),"");
-  m_builder->addAttValue("PocaVector_Z",(float)pocaData.getPocaVector().z(),"");
+  m_builder->addAttValue("Poca",getPositionString(pocaData.getPoca()),"");
+  m_builder->addAttValue("Voca",getDirectionString(pocaData.getPocaVector()),"");
+
+  m_builder->setSubinstancesNumber("AcdPocaError", 2);
+
+  m_builder->addInstance("AcdPocaData","AcdPocaError");
+  m_builder->addAttValue("Error",pocaData.getDocaErrProj(),"");
+  AcdHepRepPointFiller::addErrors(*m_builder,global,vErrProj);
+
+  m_builder->addInstance("AcdPocaData","AcdPocaError");      
+  m_builder->addAttValue("Error",pocaData.getDocaErrProp(),"");
+  AcdHepRepPointFiller::addErrors(*m_builder,global,vErrProp);
 }
 
-/// Fill the HepRep for AcdTkrIntersection
-void AcdReconFiller::addAcdTkrIntersection( const Event::AcdTkrIntersection& inter ) {
-  m_builder->addInstance("AcdTkrIntersectionCol","AcdTkrIntersection");  
-  m_builder->addAttValue("Id", (int)inter.getTileId().id(), "");
-  m_builder->addAttValue("TrackIndex", inter.getTrackIndex(), "");
-  m_builder->addAttValue("Local_X", (float)inter.getLocalX(), "");
-  m_builder->addAttValue("Local_Y", (float)inter.getLocalY(), "");
-  m_builder->addAttValue("ArcLength", (float)inter.getArcLengthToIntersection(),"");
-  m_builder->addAttValue("Pathlength", (float)inter.getPathLengthInTile(), "");
-  m_builder->addAttValue("CosTheta", (float)inter.getCosTheta(), "");
-  m_builder->addAttValue("Global_X", (float)inter.getGlobalPosition().x(), "");
-  m_builder->addAttValue("Global_Y", (float)inter.getGlobalPosition().y(), "");
-  m_builder->addAttValue("Global_Z", (float)inter.getGlobalPosition().z(), "");
-  m_builder->addAttValue("Local_XXCov", (float)inter.getLocalXXCov(), "");
-  m_builder->addAttValue("Local_YYCov", (float)inter.getLocalYYCov(), "");
-  m_builder->addAttValue("Local_XYCov", (float)inter.getLocalXYCov(), "");  
-  m_builder->addPoint(inter.getGlobalPosition().x(),inter.getGlobalPosition().y(),inter.getGlobalPosition().z());
-  if ( inter.getArcLengthToIntersection() < 0. ) {
-    m_builder->addAttValue("Color","green","");
-  } else {
-    m_builder->addAttValue("Color","blue","");
-  }
-}
 
 
 /// Check to see if a type is in the list of known types
