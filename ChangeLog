@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: heather  Tue Dec 15 19:44:21 PST 2009
+HepRepSvc/src
+
+Modified Files:
+	AcdPointFiller.cxx AcdPointFiller.h AcdReconFiller.cxx 
+	AcdReconFiller.h DigiFiller.h Filler.cxx Filler.h 
+	ReconFiller.cxx ReconFiller.h 
+Log Message:
+merge in Eric's updates for AcdRecon
+    *
+------------------------------------------------------------
 User: heather  Tue Dec 15 19:44:20 PST 2009
 HepRepSvc/doc
 
