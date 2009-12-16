@@ -50,31 +50,27 @@ ClusterUtil::~ClusterUtil() {}
 
 std::string ClusterUtil::getClusterColor(Event::TkrCluster* pCluster, bool isAcc) 
 {
-    bool showTriggerGhosts = 
-        (pCluster->isSet(Event::TkrCluster::maskGHOST)&&m_useTriggerInfo);
-    bool showDiagnosticGhosts = 
-        (pCluster->isSet(Event::TkrCluster::maskDIAGNOSTIC)&&m_useDiagnosticInfo);
+    bool isGhost = (pCluster->isSet(Event::TkrCluster::maskGHOST));
+    bool showTriggerGhosts = (isGhost&&m_useTriggerInfo);
+    bool isDiag  = (pCluster->isSet(Event::TkrCluster::maskDIAGNOSTIC));
+    bool showDiagnosticGhosts = (isDiag&&m_useDiagnosticInfo);
     if (isAcc && m_useToTInfo) { return "red"; }
-    else if (showTriggerGhosts&&showDiagnosticGhosts) 
-    {
+    if (showTriggerGhosts&&showDiagnosticGhosts) {
         return "160,32,240";  // purple (orange+blue!)
     }
-    else if (showTriggerGhosts) 
-    {
+    if (showTriggerGhosts) {
         return "255,100,27";  // orange
     }
-    else if (showDiagnosticGhosts)
-    {
+    if (showDiagnosticGhosts) {
         return "blue";
     }
-    else if (
-        pCluster->isSet(Event::TkrCluster::maskSAMETRACK&&m_useTriggerInfo&&!showDiagnosticGhosts)
-        || (pCluster->isSet(Event::TkrCluster::maskSAMETRACKD)&&m_useDiagnosticInfo)
-    )
-    {
+    if (
+        (pCluster->isSet(Event::TkrCluster::maskSAMETRACK) && m_useTriggerInfo) ||
+        (pCluster->isSet(Event::TkrCluster::maskSAMETRACKD)&& m_useDiagnosticInfo)
+    ) {
         return "yellow"; 
     } 
-    else { return "green"; }
+    return "green";
 }
 
 void ClusterUtil::buildClusterTypes(IBuilder* builder)
