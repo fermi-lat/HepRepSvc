@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: lsrea  Tue Dec 15 21:59:18 PST 2009
+HepRepSvc/src/Tracker
+
+Modified Files:
+	ClusterUtil.cxx 
+Log Message:
+Fix logic in coloring clusters
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-32-01, operation: add
 Package: HepRepSvc
