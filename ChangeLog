@@ -1,5 +1,14 @@
 ------------------------------------------------------------
 User: heather  Tue Dec 15 19:44:20 PST 2009
+HepRepSvc/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+merge in Eric's updates for AcdRecon
+    *
+------------------------------------------------------------
+User: heather  Tue Dec 15 19:44:20 PST 2009
 HepRepSvc
 
 Modified Files:
