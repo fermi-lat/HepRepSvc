@@ -1,8 +1,10 @@
 /* @file release.notes
  * Package HepRepSvc
- * $Header: /nfs/slac/g/glast/ground/cvs/GlastRelease-scons/HepRepSvc/doc/release.notes,v 1.75 2009/09/12 16:21:34 lsrea Exp $
+ * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.76 2009/11/13 01:38:20 jrb Exp $
  *           EOH
 
+ HepRepSvc-00-32-06 14-Dec-2009    hmk Merge in changes from Eric on 
+               GlastReleasev17r31p1 branch
  HepRepSvc-00-31-06 12-Nov-2009    jrb Updates for SCons
  HepRepSvc-00-31-05 12-Sep-2009  lsrea more fixes
  HepRepSvc-00-31-04 10-Sep-2009  lsrea back out some fixes
@@ -11,6 +13,10 @@
                             2) New HepRepInitSvc param: MonteCarloFiller_useMcInfo
                                   (default is true)
                                This should help with really big MC events
+ END GlastReleasev17r31p1 branch
+ * v1r0p0gr2 08-Jun-2009 EAC Virtualize a couple of d'tor to stop compilation warnings
+ * v1r0p0gr1 08-Jun-2009 EAC Display New AcdRecon Objects
+ START GlastReleasev17r31p1 branch
  * v0r31p1 16-Feb-2009 LSR  Fix the representation of the status words
                               in MeritTupleFiller. 
  * v0r31   12-Jan-09   HMK  Add support for input relation files

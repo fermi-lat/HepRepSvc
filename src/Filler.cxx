@@ -44,6 +44,18 @@ std::string Filler::getDirectionString(const Vector& direction)
     return getTripleString(precis, direction.x(), direction.y(), direction.z());
 }
 
+std::string Filler::getPositionString(const HepPoint3D& position)
+{
+    int precis = 3;
+    return getTripleString(precis, position.x(), position.y(), position.z());
+}
+
+std::string Filler::getDirectionString(const HepVector3D& direction)
+{
+    int precis = 5;
+    return getTripleString(precis, direction.x(), direction.y(), direction.z());
+}
+
 std::string Filler::getBits(unsigned int statBits, int highBit, int lowBit)
 {                    
     std::stringstream outString;
