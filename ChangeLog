@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: echarles  Sat Dec 19 07:45:56 PST 2009
+HepRepSvc/src
+
+Modified Files:
+      Tag: GlastReleasev17r31p2
+	AcdReconFiller.cxx 
+Log Message:
+remove static self referencing data member in AcdReconV2
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-32-02, operation: add
 Package: HepRepSvc
