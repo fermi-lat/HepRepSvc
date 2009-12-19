@@ -1,14 +1,4 @@
 ------------------------------------------------------------
-User: echarles  Sat Dec 19 12:00:38 PST 2009
-HepRepSvc/src
-
-Modified Files:
-	AcdReconFiller.cxx 
-Log Message:
-get AcdReconV2 from tds not static
-
-    *
-------------------------------------------------------------
 User: echarles  Sat Dec 19 07:45:56 PST 2009
 HepRepSvc/src
 
