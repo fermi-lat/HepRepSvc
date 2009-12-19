@@ -1,8 +1,9 @@
 /* @file release.notes
  * Package HepRepSvc
- * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.77 2009/12/16 03:44:20 heather Exp $
+ * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.78 2009/12/16 06:00:07 lsrea Exp $
  *           EOH
 
+ HepRepSvc-00-32-03 19-Dec-2009  eac get AcdReconV2 from tds not static
  HepRepSvc-00-32-02 15-Dec-2009  lsrea Fix logic for coloring TKR clusters
  HepRepSvc-00-32-06 14-Dec-2009    hmk Merge in changes from Eric on 
                GlastReleasev17r31p1 branch
