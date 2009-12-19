@@ -209,9 +209,7 @@ void AcdReconFiller::defineAcdLocalErrorAxisType(const char* parent, const char*
 
 void AcdReconFiller::fillAcdRecon(std::vector<std::string>& typesList ) {
   
-  //SmartDataPtr<Event::AcdRecon> acdRec(m_dpsvc, EventModel::AcdRecon::Event);
-  //if ( !acdRec ) { 
-  Event::AcdReconV2* acdRec = Event::AcdReconV2::s_theAcdReconV2Ptr;
+  SmartDataPtr<Event::AcdReconV2> acdRec(m_dpsvc, EventModel::AcdReconV2::Event);
   if ( acdRec == 0 ) {    
     std::cout << "No AcdRecon " << EventModel::AcdRecon::Event << ' ' << m_dpsvc << std::endl;
     return; 
