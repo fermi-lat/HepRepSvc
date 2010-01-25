@@ -1,8 +1,9 @@
 /* @file release.notes
  * Package HepRepSvc
- * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.78 2009/12/16 06:00:07 lsrea Exp $
+ * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.79 2009/12/19 20:01:09 echarles Exp $
  *           EOH
 
+ HepRepSvc-00-32-04 24-Jan-2010  TU  Modify CalReconFiller to handle new CalCluster, fix colors, etc.
  HepRepSvc-00-32-03 19-Dec-2009  eac get AcdReconV2 from tds not static
  HepRepSvc-00-32-02 15-Dec-2009  lsrea Fix logic for coloring TKR clusters
  HepRepSvc-00-32-06 14-Dec-2009    hmk Merge in changes from Eric on 
