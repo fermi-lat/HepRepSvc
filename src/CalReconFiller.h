@@ -43,10 +43,10 @@ public:
 
 private:
     void drawClusters(Event::CalClusterCol* clusters, Event::CalClusterHitTabList* xTal2ClusTabList);
-    void drawCluster(Event::CalCluster* cluster, std::string color = "white");
-    void drawXtals(std::vector<Event::CalClusterHitRel*>& xTalRelVec, std::string color="white");
-    void drawXtals(Event::CalXtalRecCol* xTalCol, std::string color = "white");
-    void drawXtal(Event::CalXtalRecData* xTal, double eMax, std::string color="white");
+    void drawCluster(Event::CalCluster* cluster, std::string color = "");
+    void drawXtals(std::vector<Event::CalClusterHitRel*>& xTalRelVec, std::string color="");
+    void drawXtals(Event::CalXtalRecCol* xTalCol, std::string color = "");
+    void drawXtal(Event::CalXtalRecData* xTal, double eMax, std::string color="");
     void drawMips(Event::CalMipTrackCol* mipCol);
 
     HepRepInitSvc* m_hrisvc;
@@ -65,6 +65,8 @@ private:
     std::string* m_colorArray;
     int          m_maxColors;
     int          m_colorIndex;
+    /// Minimum energy for colors in display
+    float m_minEnergy;
 
     /// crystal half height
     float m_xtalHalfHeight;
@@ -83,19 +85,19 @@ private:
     //-- XML GEOMETRY CONSTANTS --//
   
     /// number of x towers
-    int m_xNum;    
+    int   m_xNum;    
     /// number of y towers
-    int m_yNum;    
+    int   m_yNum;    
     /// the value of fTowerObject field, defining calorimeter module 
-    int m_eTowerCAL;
+    int   m_eTowerCAL;
     /// the value of fLATObjects field, defining LAT towers 
-    int m_eLATTowers; 
+    int   m_eLATTowers; 
     /// the value of fCellCmp field defining CsI crystal
-    int m_eXtal;      
+    int   m_eXtal;      
     /// number of geometric segments per Xtal
-    int m_nCsISeg;
+    int   m_nCsISeg;
     /// number of layers
-    int m_nLayers;
+    int   m_nLayers;
 };
 
 #endif //CALRECONFILLER_H
