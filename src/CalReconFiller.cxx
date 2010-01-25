@@ -124,11 +124,14 @@ m_hrisvc(hrisvc),m_gdsvc(gsvc),m_dpsvc(dpsvc),m_ppsvc(ppsvc)
     m_xtalHalfLength = 0.5 * xtalLength;
 
     // Set up the color array
-    static std::string colorArray[] = {"red", "white", "255,100,27", "yellow", "green", "160,32,240"};
+//    static std::string colorArray[] = {"white", "255,100,27", "yellow", "green", "red", "160,32,240"};
+    static std::string colorArray[] = {"0,0,128", "0,0,255", "65,105,225", "106,90,205", "160,32,240", "148,0,211", "255,153,255"};
 
     m_maxColors  = 6;
     m_colorIndex = 0;
     m_colorArray = colorArray;
+
+    m_minEnergy  = 10.;
 }
 
 
@@ -158,11 +161,30 @@ void CalReconFiller::buildTypes()
     m_builder->addAttValue("DrawAs","Line","");
     m_builder->addAttValue("Color","blue","");
     m_builder->addAttValue("LineWidth", 2,"");
-    m_builder->addType("Cluster", "ClusterDir", "Cal Cluster Direction","");
+    m_builder->addAttDef("Centroid","Fit Centroid","Physics","");
+    m_builder->addAttDef("Axis","Fit Axis","Physics","");
+    m_builder->addAttDef("nFitLayers","# Fit layers","Physics","MeV");
+    m_builder->addAttDef("chiSquare","chi-square of fit","Physics","MeV");
+    m_builder->addType("Cluster", "ClusterDir", "Cal Cluster Moments Direction","");
     m_builder->addAttValue("DrawAs","Line","");
     m_builder->addAttValue("Color","green","");
+    m_builder->addAttDef("Centroid","Moments Centroid","Physics","");
+    m_builder->addAttDef("Axis","Moments Axis","Physics","");
 
+    // Add XtalCol as subset of Cluster to associate xtals in a cluster
     m_builder->addType("Cluster","XtalCol","Crystal Collection","");
+    m_builder->addAttDef("#Xtals", "number of Xtals fired","Physics","");
+    m_builder->addAttDef("MaxEnergy", "highest energy in any xtal", "Physics", "");
+    m_builder->addType("XtalCol", "Xtal", "Crystal reconstruction", "");
+    m_builder->addAttDef("E","Energy reconstructed","Physics","MeV");
+    m_builder->addAttValue("DrawAs","Prism","");
+    m_builder->addAttValue("Color","red","");
+    m_builder->addType("XtalCol", "XtalLog", "Crystal Log", "");
+    m_builder->addAttValue("DrawAs","Prism","");
+    m_builder->addAttValue("Color","white","");
+
+    // Add XtalCol as subset of CalRecon in event relations between cluster and xtal don't exist
+    m_builder->addType("CalRecon","XtalCol","Crystal Collection","");
     m_builder->addAttDef("#Xtals", "number of Xtals fired","Physics","");
     m_builder->addAttDef("MaxEnergy", "highest energy in any xtal", "Physics", "");
     m_builder->addType("XtalCol", "Xtal", "Crystal reconstruction", "");
@@ -259,16 +281,21 @@ void CalReconFiller::drawClusters(Event::CalClusterCol* clusters, Event::CalClus
         {
             m_builder->addInstance("ClusterCol", "Cluster");  
 
+            // get pointer to the cluster 
+            Event::CalCluster* cl = *clusIter++; 
+
             // Use color options if asked for
             if (m_hrisvc->getCalReconFiller_useColors())
             {
-                int j = m_colorIndex++ % m_maxColors;
+                int j = std::min(m_colorIndex++,m_maxColors-1);
+
+                // Special cases, first see if we have "uber" cluster
+                if (clusIter == clusters->end() && clusters->size() > 1) j = m_maxColors;
+                // Check that energy is low
+                else if (cl->getCalParams().getEnergy() < m_minEnergy) j = m_maxColors - 1;
 
                 clusColor = m_colorArray[j];
             }
-
-            // get pointer to the cluster 
-            Event::CalCluster* cl = *clusIter++; 
 
             drawCluster(cl, clusColor);
 
@@ -331,6 +358,13 @@ void CalReconFiller::drawCluster(Event::CalCluster* cluster, std::string color)
 
         // Draw the layers reconstructed positions
         m_builder->addInstance("Cluster", "ClusterLayers");    
+
+        // Use color options if asked for
+        if (m_hrisvc->getCalReconFiller_useColors())
+        {
+            m_builder->addAttValue("Color", color, "");
+        }
+
         // loop over calorimeter layers
         for( int l=0;l<m_nLayers;l++){
 
@@ -355,54 +389,66 @@ void CalReconFiller::drawCluster(Event::CalCluster* cluster, std::string color)
         {
             // Draw the cluster direction
             m_builder->addInstance("Cluster", "ClusterDir");    
+            m_builder->addAttValue("Centroid",     
+                getPositionString(cluster->getCalParams().getCentroid()), "");
+            m_builder->addAttValue("Axis",         
+                getDirectionString(cluster->getCalParams().getAxis()), "");
 
-            // Use color options if asked for
-            if (m_hrisvc->getCalReconFiller_useColors())
+            // No point in drawing if moments not done
+            if (rmsTran > 0. && rmsLong > 0.)
             {
-                m_builder->addAttValue("Color", color, "");
+                // Use color options if asked for
+                if (m_hrisvc->getCalReconFiller_useColors()) m_builder->addAttValue("Color", color, "");
+
+                // calculate x and y coordinates for the beginning and the end
+                // of line in the top and bottom calorimeter layers
+                double xTop = x+dirX*(m_calZtop-z)/dirZ;
+                double yTop = y+dirY*(m_calZtop-z)/dirZ;
+                double xBottom = x+dirX*(m_calZbottom-z)/dirZ;
+                double yBottom = y+dirY*(m_calZbottom-z)/dirZ;
+
+                m_builder->addPoint(xTop,yTop,m_calZtop);            
+                m_builder->addPoint(xBottom,yBottom,m_calZbottom);
             }
-
-            // calculate x and y coordinates for the beginning and the end
-            // of line in the top and bottom calorimeter layers
-            double xTop = x+dirX*(m_calZtop-z)/dirZ;
-            double yTop = y+dirY*(m_calZtop-z)/dirZ;
-            double xBottom = x+dirX*(m_calZbottom-z)/dirZ;
-            double yBottom = y+dirY*(m_calZbottom-z)/dirZ;
-
-            m_builder->addPoint(xTop,yTop,m_calZtop);            
-            m_builder->addPoint(xBottom,yBottom,m_calZbottom);                            
         }
 
         // One more to draw the "fit" axis
-        double xFitPos = cluster->getCalParams().getxPosxPos();
-        double yFitPos = cluster->getCalParams().getyPosyPos();
-        double zFitPos = cluster->getCalParams().getzPoszPos();
+        double xFitPos = cluster->getFitParams().getCentroid().x();
+        double yFitPos = cluster->getFitParams().getCentroid().y();
+        double zFitPos = cluster->getFitParams().getCentroid().z();
 
-        double xFitDir = cluster->getCalParams().getxDirxDir();
-        double yFitDir = cluster->getCalParams().getyDiryDir();
-        double zFitDir = cluster->getCalParams().getzDirzDir();
+        double xFitDir = cluster->getFitParams().getAxis().x();
+        double yFitDir = cluster->getFitParams().getAxis().y();
+        double zFitDir = cluster->getFitParams().getAxis().z();
 
         // non display for non-physical or horizontal direction
         if(zFitDir >= -1. && zFitDir != 0.)
         {
             // Draw the cluster direction
             m_builder->addInstance("Cluster", "ClusterFit");    
+            m_builder->addAttValue("Centroid",     
+                getPositionString(cluster->getFitParams().getCentroid()), "");
+            m_builder->addAttValue("Axis",         
+                getDirectionString(cluster->getFitParams().getAxis()), "");
+            m_builder->addAttValue("nFitLayers",  (float)cluster->getFitParams().getFitLayers(), "");
+            m_builder->addAttValue("chiSquare",   (float)cluster->getFitParams().getChiSquare(), "");
 
-            // Use color options if asked for
-            if (m_hrisvc->getCalReconFiller_useColors())
+            // Don't bother drawing if the fit was not performed
+            if (cluster->getFitParams().getFitLayers() >= 4)
             {
-                m_builder->addAttValue("Color", color, "");
+                // Use color options if asked for
+                if (m_hrisvc->getCalReconFiller_useColors()) m_builder->addAttValue("Color", color, "");
+
+                // calculate x and y coordinates for the beginning and the end
+                // of line in the top and bottom calorimeter layers
+                double xTop    = xFitPos + xFitDir * (m_calZtop    - zFitPos) / zFitDir;
+                double yTop    = yFitPos + yFitDir * (m_calZtop    - zFitPos) / zFitDir;
+                double xBottom = xFitPos + xFitDir * (m_calZbottom - zFitPos) / zFitDir;
+                double yBottom = yFitPos + yFitDir * (m_calZbottom - zFitPos) / zFitDir;
+
+                m_builder->addPoint(xTop, yTop, m_calZtop);            
+                m_builder->addPoint(xBottom, yBottom, m_calZbottom);                            
             }
-
-            // calculate x and y coordinates for the beginning and the end
-            // of line in the top and bottom calorimeter layers
-            double xTop    = xFitPos + xFitDir * (m_calZtop    - zFitPos) / zFitDir;
-            double yTop    = yFitPos + yFitDir * (m_calZtop    - zFitPos) / zFitDir;
-            double xBottom = xFitPos + xFitDir * (m_calZbottom - zFitPos) / zFitDir;
-            double yBottom = yFitPos + yFitDir * (m_calZbottom - zFitPos) / zFitDir;
-
-            m_builder->addPoint(xTop, yTop, m_calZtop);            
-            m_builder->addPoint(xBottom, yBottom, m_calZbottom);                            
         }
     }
 
