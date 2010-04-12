@@ -116,7 +116,7 @@ void VertexFiller::fillInstances (std::vector<std::string>& typesList)
                 m_builder->addPoint(ex,ey,ez);
 
                 color     = "gray";
-                lineWidth = 1;
+                lineWidth = 3;
 	        }
 	    }
   
