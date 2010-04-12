@@ -1,8 +1,9 @@
 /* @file release.notes
  * Package HepRepSvc
- * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.79 2009/12/19 20:01:09 echarles Exp $
+ * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.80 2010/01/25 18:20:08 usher Exp $
  *           EOH
 
+ HepRepSvc-00-32-05 12-Apr-2010  lsrea Make the line for the 2ndary vertex thicker; hard to see now
  HepRepSvc-00-32-04 24-Jan-2010  TU  Modify CalReconFiller to handle new CalCluster, fix colors, etc.
  HepRepSvc-00-32-03 19-Dec-2009  eac get AcdReconV2 from tds not static
  HepRepSvc-00-32-02 15-Dec-2009  lsrea Fix logic for coloring TKR clusters
