@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: lsrea  Mon Apr 12 06:55:20 PDT 2010
+HepRepSvc/src/Tracker
+
+Modified Files:
+	VertexFiller.cxx 
+Log Message:
+Make the line for the secondary vertices thicker... very hard to see now
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-32-04, operation: add
 Package: HepRepSvc
