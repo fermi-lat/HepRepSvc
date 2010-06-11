@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: jrb  Thu Jun 10 17:37:47 PDT 2010
+GlastRelease-scons/HepRepSvc
+
+Modified Files:
+	SConscript 
+Log Message:
+updates for SCons build
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-32-05, operation: add
 Package: HepRepSvc
