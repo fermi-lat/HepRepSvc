@@ -1,8 +1,9 @@
 /* @file release.notes
  * Package HepRepSvc
- * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.80 2010/01/25 18:20:08 usher Exp $
+ * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.81 2010/04/12 13:56:29 lsrea Exp $
  *           EOH
 
+ HepRepSvc-00-32-06 12-Jun-2010    jrb upgrades for SCons builds
  HepRepSvc-00-32-05 12-Apr-2010  lsrea Make the line for the 2ndary vertex thicker; hard to see now
  HepRepSvc-00-32-04 24-Jan-2010  TU  Modify CalReconFiller to handle new CalCluster, fix colors, etc.
  HepRepSvc-00-32-03 19-Dec-2009  eac get AcdReconV2 from tds not static
