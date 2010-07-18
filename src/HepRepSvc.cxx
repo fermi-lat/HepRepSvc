@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.26 2008/10/08 05:40:49 lsrea Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.27 2009/01/12 15:54:43 heather Exp $
 // 
 //  Original author: R.Giannitrapani
 //
@@ -164,8 +164,8 @@ StatusCode HepRepSvc::initialize ()
       return status;
     }
         // get the RootTuple Service
-    INTupleWriterSvc* rtsvc = 0;
-    status = service("RootTupleSvc", rtsvc, true);
+    m_rtsvc = 0;
+    status = service("RootTupleSvc", m_rtsvc, true);
     if( status.isFailure()) {
       log << MSG::ERROR << "Could not find RootTupleSvc" << endreq;
       return status;
@@ -185,7 +185,7 @@ StatusCode HepRepSvc::initialize ()
       sc = theSvc->queryInterface(IRootIoSvc::interfaceID(), (void**)&m_rootIoSvc);
     }
     else m_rootIoSvc = 0;
-    
+
     // use the incident service to register begin, end events
     IIncidentSvc* incsvc = 0;
     status = service ("IncidentSvc", incsvc, true);
@@ -201,7 +201,7 @@ StatusCode HepRepSvc::initialize ()
     m_registry->registerFiller(new GeometryFiller(m_geomDepth, hrisvc, gsvc, geomType), "Geometry3D");
 
     // Register the header filler
-    m_registry->registerFiller(new HeaderFiller(hrisvc, esvc), "Event");
+    m_registry->registerFiller(new HeaderFiller(hrisvc, esvc, m_rootIoSvc), "Event");
     // Register the digi filler
     m_registry->registerFiller(new DigiFiller(hrisvc, gsvc, tgsvc,acdsvc,esvc), "Event");
     // Register the Recon filler 
@@ -209,7 +209,7 @@ StatusCode HepRepSvc::initialize ()
     // Register the mc filler
     m_registry->registerFiller(new MonteCarloFiller(hrisvc,gsvc,esvc,pps), "Event");
     // Register the meritTuple filler
-    m_registry->registerFiller(new MeritTupleFiller(hrisvc,rtsvc), "Event");
+    m_registry->registerFiller(new MeritTupleFiller(hrisvc,m_rtsvc), "Event");
 
     //----------------------------------------------------------------
     // most of  the following taken from FluxSvc
@@ -294,8 +294,17 @@ void HepRepSvc::endEvent()
   // a temporary hack that set the name as Event-xxx, with xxx an
   // increasing integer
   static int temp = 0;
+  //unsigned temp1;
   sName << "Event-" << temp;
   temp++;
+
+  // I'm guessing that FRED (?) expects a fixed format for the string sName
+  // so it can't be modified arbitrarily
+
+  //if(m_rootIoSvc) {
+  //    temp1 = m_rootIoSvc->index()-1;
+  //    sName << " (" << temp1 << ")";
+  //}
 
   // This is to retrive event and run number from the event, but seems to be
   // broken .. so I comment it out for now
@@ -395,9 +404,18 @@ std::string HepRepSvc::getSources(){
 // This method set the Event ID to a pair Run/Event
 bool HepRepSvc::setEventId(int run, int event)
 {
-  // Make sure Index is set to -1
-  m_rootIoSvc->setIndex(-1);
-  return m_rootIoSvc->setRunEventPair(std::pair<int, int>(run, event));
+    // Make sure Index is set to -1
+    if(m_rootIoSvc) {
+        m_rootIoSvc->setIndex(-1);
+        bool ret =  m_rootIoSvc->setRunEventPair(std::pair<int, int>(run, event));
+        long long newIndex = m_rootIoSvc->getIndexByEventID(run, event);
+        if((int)newIndex!=-1) {
+            m_rootIoSvc->setIndex(newIndex);
+            if(m_rtsvc) m_rtsvc->setIndex(newIndex);
+        }
+        return ret;
+    }
+    return false;
 }
 
 
@@ -405,9 +423,15 @@ bool HepRepSvc::previousEvent(int i)
 {
   if (m_rootIoSvc)
   {
-    return m_rootIoSvc->setIndex(m_rootIoSvc->index() - i);
+      // "-1" added by LSR... works, but not sure why
+      // I'm guessing that heprep is already set up for the next event
+      long long newIndex = m_rootIoSvc->index() - i - 1;
+      if((int)newIndex<0) newIndex = 0;
+      bool ret =  m_rootIoSvc->setIndex(newIndex);
+      if(m_rtsvc) m_rtsvc->setIndex(newIndex);
+      return ret;
   }
-  else return 0;
+  else return false;
 }
 
 bool HepRepSvc::openFile(const char* mc, const char *digi, const char *rec, 
@@ -417,7 +441,7 @@ bool HepRepSvc::openFile(const char* mc, const char *digi, const char *rec,
   {
     return m_rootIoSvc->setRootFile(mc, digi, rec, relation, gcr);
   } 
-  else return 0;
+  else return false;
 }
 
 // This is to retrive event and run number from the event
@@ -430,7 +454,8 @@ std::string HepRepSvc::getEventId()
    {
      unsigned int evtRun = evt->run();
      unsigned int evtEvent = evt->event();
-     sName << "Event-" << evtRun << "-" << evtEvent << "\0"; 
+     unsigned int index = m_rootIoSvc->index();
+     sName << "Event-" << evtRun << "-" << evtEvent << " (" << index-1 << ")\0"; 
      return sName.str();     
    }
   else
@@ -441,7 +466,9 @@ std::string HepRepSvc::getEventId()
 // This method set the Event index
 bool HepRepSvc::setEventIndex(int index)
 {
-  return m_rootIoSvc->setIndex(index);
+    if(m_rtsvc) m_rtsvc->setIndex(index);
+    return m_rootIoSvc->setIndex(index);
+
 }
 
 // This method set the actual source
