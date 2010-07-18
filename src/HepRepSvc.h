@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.h,v 1.14 2008/09/22 22:05:54 echarles Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.h,v 1.15 2009/01/12 15:54:43 heather Exp $
 // 
 //  Original author: R.Giannitrapani
 
@@ -24,6 +24,7 @@ class IAppMgrUI;
 class SvcAdapter;
 class IFluxSvc;
 class IRootIoSvc;
+class INTupleWriterSvc;
 class IDataProviderSvc;
 class IAlgManager;
 
@@ -159,6 +160,9 @@ private:
     /// The RootIoSvc used to set event Run/Event for random access from Root
     ///files
     IRootIoSvc* m_rootIoSvc;
+
+    /// for the RootTupleSvc
+    INTupleWriterSvc* m_rtsvc;
 
     /// The Data Provider Service Interface.
     IDataProviderSvc* m_idpsvc;

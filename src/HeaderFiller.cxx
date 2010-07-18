@@ -8,6 +8,9 @@
 
 #include "Event/TopLevel/Event.h"
 #include "Event/TopLevel/EventModel.h"
+
+#include "RootIo/IRootIoSvc.h"
+
 #include <sstream>
 #include <algorithm>
 
@@ -37,7 +40,11 @@ void HeaderFiller::fillInstances (std::vector<std::string>& /*typesList*/)
 
      unsigned int evtRun = evt->run();
      unsigned int evtEvent = evt->event();
-     sName << evtRun << "-" << evtEvent; 
+     sName << evtRun << "-" << evtEvent;
+     if(m_rootIoSvc) {
+         unsigned index = m_rootIoSvc->index();
+         sName << " (" << index-1 << ")";
+     }
 
      double hpos = 0.05;
      double vpos = 0.1;
