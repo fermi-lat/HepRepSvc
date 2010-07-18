@@ -1,4 +1,17 @@
 ------------------------------------------------------------
+User: lsrea  Sat Jul 17 17:29:58 PDT 2010
+HepRepSvc/src
+
+Modified Files:
+	HeaderFiller.cxx HeaderFiller.h HepRepSvc.cxx HepRepSvc.h 
+	MeritTupleFiller.cxx 
+Log Message:
+Fix the back button
+Attach the ntuple to the back button and the next-event box
+Add the index to the event ID display
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-32-06, operation: add
 Package: HepRepSvc
