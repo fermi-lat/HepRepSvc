@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.27 2009/01/12 15:54:43 heather Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.28 2010/07/18 00:29:57 lsrea Exp $
 // 
 //  Original author: R.Giannitrapani
 //
@@ -66,6 +66,7 @@ HepRepSvc::HepRepSvc(const std::string& name,ISvcLocator* svc)
   declareProperty("autoStream" , m_autoStream=""); 
   declareProperty("streamPath"   , m_streamPath="");
   declareProperty("startFred"   , m_startFred="");
+  declareProperty("startWired"  , m_startWired="");
   declareProperty("geometryDepth", m_geomDepth=4);
   declareProperty("geometryType", m_geomType="FullGeom");
   

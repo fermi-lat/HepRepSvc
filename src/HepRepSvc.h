@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.h,v 1.15 2009/01/12 15:54:43 heather Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.h,v 1.16 2010/07/18 00:29:57 lsrea Exp $
 // 
 //  Original author: R.Giannitrapani
 
@@ -102,6 +102,7 @@ class HepRepSvc : virtual public Service,
   /// This method return a dir with a FRED installation, if set so in the
   /// jobOptions file; otherwise it returns (by default) an empty string
   std::string getStartFred(){return m_startFred;}; 
+  std::string getStartWired() {return m_startWired;};
   
 protected: 
     
@@ -125,6 +126,8 @@ private:
     /// If not empty, the server can use this string to launch FRED and attach
     /// it to the server itself.
     std::string m_startFred;
+    /// same for WIRED
+    std::string m_startWired;
     /// A property to be used to set the saving of XML HepRep files to
     /// true or false by setting the name of a streamer; by default it
     /// is a null string, so autostream is disabled
