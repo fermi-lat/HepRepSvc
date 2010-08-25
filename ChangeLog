@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: lsrea  Wed Aug 25 14:55:12 PDT 2010
+HepRepSvc/src
+
+Modified Files:
+	HepRepSvc.cxx HepRepSvc.h SvcAdapter.cxx SvcAdapter.h 
+Log Message:
+Add code to allow starting WIRED from Gleam
+
+    *
+------------------------------------------------------------
+User: lsrea  Wed Aug 25 14:55:12 PDT 2010
 HepRepSvc/HepRepSvc
 
 Modified Files:
