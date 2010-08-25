@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: lsrea  Wed Aug 25 14:55:12 PDT 2010
+HepRepSvc/HepRepSvc
+
+Modified Files:
+	ISvcAdapter.h 
+Log Message:
+Add code to allow starting WIRED from Gleam
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-33-00, operation: add
 Package: HepRepSvc
