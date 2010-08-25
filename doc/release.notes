@@ -1,8 +1,9 @@
 /* @file release.notes
  * Package HepRepSvc
- * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.82 2010/06/12 17:28:38 jrb Exp $
+ * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.83 2010/07/18 00:30:41 lsrea Exp $
  *           EOH
 
+ HepRepSvc-00-34-00 25-Aug-2010  lsrea Add code to start WIRED using jobOptions
  HepRepSvc-00-33-00 17-Jul-2010  lsrea get the buttons working with merit, etc.
  HepRepSvc-00-32-06 12-Jun-2010    jrb upgrades for SCons builds
  HepRepSvc-00-32-05 12-Apr-2010  lsrea Make the line for the 2ndary vertex thicker; hard to see now
