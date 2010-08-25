@@ -120,4 +120,9 @@ std::string SvcAdapter::getStartFred()
 {
   return m_hrsvc->getStartFred();
 } 
+// Same for WIRED
+std::string SvcAdapter::getStartWired()
+{
+  return m_hrsvc->getStartWired();
+} 
 
