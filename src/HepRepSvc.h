@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.h,v 1.15 2009/01/12 15:54:43 heather Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.h,v 1.16 2010/07/18 00:29:57 lsrea Exp $
 // 
 //  Original author: R.Giannitrapani
 
@@ -12,6 +12,7 @@
 #include "GaudiKernel/IIncidentListener.h"
 #include "GaudiKernel/IRunable.h"
 #include "HepRepSvc/IHepRepSvc.h"
+#include "HepRepObs.h"
 
 //forward declarations
 template <class TYPE> class SvcFactory;
@@ -169,6 +170,9 @@ private:
 
     /// The interface to the Algorithms manager
     IAlgManager* m_AlgMgr;
+
+    IToolSvc *m_toolSvc; // to handle observer
+    HepRepObs *m_heprepObs;
 };
 
 
