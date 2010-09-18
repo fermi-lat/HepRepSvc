@@ -1,5 +1,18 @@
 ------------------------------------------------------------
 User: heather  Fri Sep 17 20:46:49 PDT 2010
+HepRepSvc/src
+
+Modified Files:
+      Tag: GlastReleasev18r6p1
+	HepRepInitSvc.cxx HepRepSvc.cxx HepRepSvc.h SvcAdapter.cxx 
+Added Files:
+      Tag: GlastReleasev18r6p1
+	HepRepObs.cxx HepRepObs.h 
+Log Message:
+Gaudi v21r7 updates
+    *
+------------------------------------------------------------
+User: heather  Fri Sep 17 20:46:49 PDT 2010
 HepRepSvc/cmt
 
 Modified Files:
