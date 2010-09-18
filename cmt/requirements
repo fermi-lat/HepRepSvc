@@ -21,7 +21,7 @@ apply_pattern packageShr
 apply_pattern package_include
 
 private 
-
+use RootmapPolicy * GlastPolicy
 use gr_app
 use OnboardFilterTds 
 
@@ -32,10 +32,10 @@ macro source "*.cxx" WIN32 "*.h *.cxx"
 
 library HepRepSvc $(HepRepSvc_headers) \
          *.cxx \
-        -s=Dll $(source)\
         -s=Tracker $(source)\
         -s=xml $(source)
- 
+
+apply_pattern generate_rootmap library=HepRepSvc 
 
 # test program, using local joboptions
 # test program doesn't actually do anything, but the test
