@@ -9,6 +9,11 @@ class IDataProviderSvc;
 class IParticlePropertySvc;
 class HepRepInitSvc;
 
+namespace Event
+{
+    class TkrVecNode;
+}
+
 #include <string>
 
 //class Point;
@@ -36,6 +41,11 @@ public:
   virtual void fillInstances (std::vector<std::string>&);
 
 private:
+
+  void drawVectorPoints();
+  void drawVectorLinks();
+  void drawNodeTrees();
+  void drawNode(const Event::TkrVecNode* vecNode, std::string lineColor = "yellow", int lineWidth = 2);
 
   IDataProviderSvc*     m_dpsvc;
   IParticlePropertySvc* m_ppsvc;
