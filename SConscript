@@ -10,10 +10,10 @@ libEnv = baseEnv.Clone()
 
 libEnv.Tool('addLinkDeps', package='HepRepSvc', toBuild='component')
 
-HepRepSvc = libEnv.SharedLibrary('HepRepSvc', listFiles(['src/*.cxx',
-                                                         'src/Dll/*.cxx',
-                                                         'src/Tracker/*.cxx',
-                                                         'src/xml/*.cxx']))
+HepRepSvc = libEnv.ComponentLibrary('HepRepSvc',
+                                    listFiles(['src/*.cxx',
+                                               'src/Tracker/*.cxx',
+                                               'src/xml/*.cxx']))
 
 progEnv.Tool('HepRepSvcLib')
 
