@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: jrb  Wed Oct 20 11:26:13 PDT 2010
+GlastRelease-scons/HepRepSvc
+
+Modified Files:
+      Tag: GlastReleasev18r7p1
+	SConscript 
+Log Message:
+Get SCons to make rootmap
+    *
+------------------------------------------------------------
 User: usher  Fri Sep 24 09:19:05 PDT 2010
 HepRepSvc/src/Tracker
 
