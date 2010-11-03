@@ -1,13 +1,4 @@
 ------------------------------------------------------------
-User: usher  Wed Nov  3 12:30:17 PDT 2010
-HepRepSvc/src/Tracker
-
-Modified Files:
-	TrackElementsFiller.cxx 
-Log Message:
-Small change to display
-    *
-------------------------------------------------------------
 User: jrb  Wed Oct 20 11:26:13 PDT 2010
 GlastRelease-scons/HepRepSvc
 
