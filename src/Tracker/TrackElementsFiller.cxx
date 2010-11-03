@@ -34,6 +34,7 @@ TrackElementsFiller::TrackElementsFiller(HepRepInitSvc*        hrisvc,
 void TrackElementsFiller::buildTypes()
 {
     m_builder->addType("TkrRecon","TkrVecPoints", "Vector Points","");
+    m_builder->addAttDef("NumVecPoints", "Number of Vector Points", "Physics", "");
 
     m_builder->addType("TkrVecPoints","TkrVecPoint","Vector Point collection","");
     m_builder->addAttValue("DrawAs","Prism","");
@@ -42,6 +43,7 @@ void TrackElementsFiller::buildTypes()
     m_builder->addAttDef("Position", "Position", "Physics", "");
 
     m_builder->addType("TkrRecon","TkrVecPointsLinks", "Vector links","");
+    m_builder->addAttDef("NumVecLinks", "Number of Vector Links", "Physics", "");
 
     m_builder->addType("TkrVecPointsLinks","TkrVecPointsLink","Vector link collection","");
     m_builder->addAttValue("DrawAs","Line","");
@@ -120,6 +122,8 @@ void TrackElementsFiller::drawVectorPoints()
 
     // Figure out how many we have and tell the display what to expect
     int numVecPoints = vecPointsCol->size();
+        
+    m_builder->addAttValue("NumVecPoints", (float)(numVecPoints), "");
 
     m_builder->setSubinstancesNumber("TkrVecPoints", numVecPoints);
 
@@ -171,8 +175,10 @@ void TrackElementsFiller::drawVectorLinks()
     m_builder->addInstance("TkrRecon","TkrVecPointsLinks");
 
     int numVecLinks = vecPointsLinkCol->size();
+        
+    m_builder->addAttValue("NumVecLinks", (float)(numVecLinks), "");
 
-    if (numVecLinks == 0) return;
+    if (numVecLinks == 0 || numVecLinks > 25000) return;
 
     m_builder->setSubinstancesNumber("TkrVecPointsLinks", numVecLinks);
 
