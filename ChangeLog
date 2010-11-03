@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: usher  Wed Nov  3 12:52:28 PDT 2010
+HepRepSvc
+
+Modified Files:
+	SConscript 
+Log Message:
+preparing to tag HepRepSvc-00-35-00
+    *
+------------------------------------------------------------
 User: usher  Wed Nov  3 12:30:17 PDT 2010
 HepRepSvc/src/Tracker
 
