@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: usher  Fri Nov  5 08:19:38 PDT 2010
+HepRepSvc
+
+Modified Files:
+	SConscript 
+Log Message:
+Preparing to tag HepRepSvc-00-35-01
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-35-00, operation: add
 Package: HepRepSvc
