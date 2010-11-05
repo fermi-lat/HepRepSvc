@@ -1,8 +1,9 @@
 /* @file release.notes
  * Package HepRepSvc
- * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.83 2010/07/18 00:30:41 lsrea Exp $
+ * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.84 2010/08/25 21:58:58 lsrea Exp $
  *           EOH
 
+ HepRepSvc-00-35-01 05-Nov-2010 TU Updates to draw tree stuff
  HepRepSvc-00-34-00 25-Aug-2010  lsrea Add code to start WIRED using jobOptions
  HepRepSvc-00-33-00 17-Jul-2010  lsrea get the buttons working with merit, etc.
  HepRepSvc-00-32-06 12-Jun-2010    jrb upgrades for SCons builds
