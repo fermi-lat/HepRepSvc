@@ -12,6 +12,7 @@ class HepRepInitSvc;
 namespace Event
 {
     class TkrVecNode;
+    class TkrVecPointsLink;
 }
 
 #include <string>
@@ -45,7 +46,8 @@ private:
   void drawVectorPoints();
   void drawVectorLinks();
   void drawNodeTrees();
-  void drawNode(const Event::TkrVecNode* vecNode, std::string lineColor = "yellow", int lineWidth = 2);
+  void drawNode(const Event::TkrVecNode* vecNode, std::string& lineColor, int lineWidth = 2);
+  void drawSingleVectorLink(const Event::TkrVecPointsLink* vecLink, std::string& lineColor);
 
   IDataProviderSvc*     m_dpsvc;
   IParticlePropertySvc* m_ppsvc;
