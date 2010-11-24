@@ -1,12 +1,4 @@
 ------------------------------------------------------------
-User: usher  Wed Nov 24 08:36:47 PST 2010
-HepRepSvc/src/Tracker
-
-Modified Files:
-	TrackElementsFiller.cxx TrackElementsFiller.h TrackFiller.cxx 
-Log Message:
-    *
-------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-35-02, operation: add
 Package: HepRepSvc
