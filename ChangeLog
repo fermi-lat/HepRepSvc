@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: lsrea  Tue Nov 23 16:17:29 PST 2010
+HepRepSvc/src/Tracker
+
+Modified Files:
+	ClusterFiller.cxx 
+Log Message:
+Fix a bug to make the truncated regions visible in the display
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-35-01, operation: add
 Package: HepRepSvc
