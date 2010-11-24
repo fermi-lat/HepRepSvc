@@ -1,8 +1,9 @@
 /* @file release.notes
  * Package HepRepSvc
- * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.84 2010/08/25 21:58:58 lsrea Exp $
+ * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.85 2010/11/05 15:19:38 usher Exp $
  *           EOH
 
+ HepRepSvc-00-35-02 23-Nov-2010  lsrea Make the truncated regions visible
  HepRepSvc-00-35-01 05-Nov-2010 TU Updates to draw tree stuff
  HepRepSvc-00-34-00 25-Aug-2010  lsrea Add code to start WIRED using jobOptions
  HepRepSvc-00-33-00 17-Jul-2010  lsrea get the buttons working with merit, etc.
