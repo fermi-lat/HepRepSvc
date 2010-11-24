@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: jrb  Wed Nov 24 12:43:18 PST 2010
+GlastRelease-scons/HepRepSvc/src
+
+Modified Files:
+      Tag: GlastReleasev18r7p1
+	HepRepInitSvc.cxx HepRepSvc.cxx HepRepSvc.h SvcAdapter.cxx 
+Log Message:
+committing gaudi updates from v18r6p1 branch
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-35-03, operation: add
 Package: HepRepSvc
