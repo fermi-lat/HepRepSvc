@@ -89,9 +89,15 @@ void ClusterFiller::buildTypes()
 
     //add in truncation ranges... these block out the truncated portions of the plane
     m_builder->addType("TkrRecon", "TruncationMap", "map of TruncationRanges", "");
+    m_builder->addAttDef("numTrunc", "# of Truncated planes", "Physics", "");
     m_builder->addType("TruncationMap", "PlaneInfo", "Plane Info", "");
+    m_builder->addAttDef("trunc Type", "trunc Type", "Physics", "");
+    m_builder->addAttDef("lowEdge", "low X", "Physics", "");
+    m_builder->addAttDef("highEdge", "high X", "Physics", "");
+    
     m_builder->addAttValue("DrawAs", "Prism","");
     m_builder->addAttValue("Color", "gray", "");
+    //m_builder->addAttValue("FillColor", "gray", "");  // doesn't do anything
 }
 
 // This method fill the instance tree Event with the actual TDS content
@@ -257,8 +263,9 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
             if (status!=0) numTrunc++;
         }
         m_builder->setSubinstancesNumber("TruncationMap",numTrunc);
+        m_builder->addAttValue("numTrunc", numTrunc, "");
 
-        for(; iter!=truncMap->end(); ++iter) {
+        for(iter=truncMap->begin(); iter!=truncMap->end(); ++iter) {
             Event::TkrTruncatedPlane trunc = iter->second;
             const int status   = trunc.getStatus();
             if (status==0) continue;
@@ -302,6 +309,9 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
                 y += offsetY;
 
                 m_builder->addInstance("TruncationMap", "PlaneInfo");
+                m_builder->addAttValue("trunc Type", "internal","");
+                m_builder->addAttValue("low X", (float)xLow, "");
+                m_builder->addAttValue("high X", (float)xHigh, "");
                 drawPrism(x, y, z, dx, dy, dz);
             }
             if((status&Event::TkrTruncatedPlane::CC1SET)>0 && numStrips[1]>0){
@@ -319,6 +329,9 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
                 y += offsetY;
 
                 m_builder->addInstance("TruncationMap", "PlaneInfo");
+                m_builder->addAttValue("trunc Type", "edge", "");
+                m_builder->addAttValue("low X",(float)xLow, "");
+                m_builder->addAttValue("high X",(float)xHigh, "");
                 drawPrism(x, y, z, dx, dy, dz);
             }
         }
