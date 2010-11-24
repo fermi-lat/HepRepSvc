@@ -4,8 +4,9 @@
 #include "HepRepSvc/HepRepInitSvc.h"
 //#include "src/HepRepControl.h"
 
-static const SvcFactory<HepRepInitSvc> s_factory;
-const ISvcFactory& HepRepInitSvcFactory = s_factory;
+//static const SvcFactory<HepRepInitSvc> s_factory;
+//const ISvcFactory& HepRepInitSvcFactory = s_factory;
+DECLARE_SERVICE_FACTORY(HepRepInitSvc);
 
 HepRepInitSvc::HepRepInitSvc(const std::string& name, ISvcLocator* pSvcLocator) :
 Service(name, pSvcLocator)
@@ -54,7 +55,7 @@ StatusCode HepRepInitSvc::finalize()
 
 StatusCode  HepRepInitSvc::queryInterface (const InterfaceID& riid, void **ppvIF)
 {
-    if (IID_HepRepInitSvc == riid) {
+    if (HepRepInitSvc::interfaceID() == riid) {
         *ppvIF = dynamic_cast<HepRepInitSvc*> (this);
         return StatusCode::SUCCESS;
     }
@@ -66,5 +67,5 @@ StatusCode  HepRepInitSvc::queryInterface (const InterfaceID& riid, void **ppvIF
 // access the type of this service
 
 const InterfaceID&  HepRepInitSvc::type () const {
-    return IID_HepRepInitSvc;
+    return HepRepInitSvc::interfaceID();
 }
