@@ -11,14 +11,14 @@
 
 #include "Event/TopLevel/EventModel.h"
 #include "Event/Recon/TkrRecon/TkrTrackElements.h"
-#include "Event/Recon/TkrRecon/TkrVecNodes.h"
+#include "Event/Recon/TkrRecon/TkrTree.h"
 
 #include <sstream>
 #include <iostream>
 #include <algorithm>
 
 namespace {
-    const float _dH = 0.25; // size of TkrVecPoint hit
+    const float _dH = 0.225; // size of TkrVecPoint hit
 }
 
 // Constructor
@@ -33,19 +33,73 @@ TrackElementsFiller::TrackElementsFiller(HepRepInitSvc*        hrisvc,
 // This method build the types for the HepRep
 void TrackElementsFiller::buildTypes()
 {
+    // Define the collection of TkrVecPoints objects
     m_builder->addType("TkrRecon","TkrVecPoints", "Vector Points","");
     m_builder->addAttDef("NumVecPoints", "Number of Vector Points", "Physics", "");
 
+    // Define the TkrVecPoints objects themselves
     m_builder->addType("TkrVecPoints","TkrVecPoint","Vector Point collection","");
     m_builder->addAttValue("DrawAs","Prism","");
     m_builder->addAttValue("Color","red","");
+    m_builder->addAttValue("FillColor", "red", "");
+    m_builder->addAttValue("FillType", "NonZero", "");
+    m_builder->addAttValue("Fill", true, "");
     m_builder->addAttDef("BiLayer", "Bi-layer of point", "Physics", "");
     m_builder->addAttDef("Position", "Position", "Physics", "");
 
+    // Now the TkrVecPointsLinks collection
     m_builder->addType("TkrRecon","TkrVecPointsLinks", "Vector links","");
     m_builder->addAttDef("NumVecLinks", "Number of Vector Links", "Physics", "");
 
+    // And, in particular, a single TkrVecPointsLink
     m_builder->addType("TkrVecPointsLinks","TkrVecPointsLink","Vector link collection","");
+    m_builder->addAttValue("DrawAs","Line","");
+    m_builder->addAttValue("Color","white","");
+//    m_builder->addAttValue("LineStyle", "Dashed","");
+    m_builder->addAttDef("Status Low", "Vector Low Status Bits","Physics","");
+    m_builder->addAttDef("Status High","Vector High Status Bits","Physics","");
+    m_builder->addAttDef("MaxScatAngle","Maximum expected scattering angle","Physics","");
+    m_builder->addAttDef("Angle2NextLink","Angle to next link","Physics","");
+    m_builder->addAttDef("Start Position","Track start position","Physics","");
+    m_builder->addAttDef("Start Direction","Track start direction","Physics","");
+    // Here we define the prisms at each end of the links
+    m_builder->addType("TkrVecPointsLink","TkrVecPointsLinkPos","TkrVecPointsLink Position","");
+    m_builder->addAttValue("DrawAs","Prism","");
+    m_builder->addAttValue("Color","white","");
+    m_builder->addAttDef("BiLayer", "Bi-layer of point", "Physics", "");
+    m_builder->addAttDef("Position", "Position", "Physics", "");
+
+    // Now define the TkrTree collection
+    m_builder->addType("TkrRecon", "Candidate Trees", "Track Candidate Trees", "");
+    m_builder->addAttDef("NumTrees", "Number of Trees", "Physics", "");
+
+    // And the TkrTree objects which are the "parents" of the actual nodes 
+    m_builder->addType("Candidate Trees", "Candidate Tree", "Track Candidate Tree", "");
+    m_builder->addAttDef("Depth", "Depth of Candidate Tree", "Physics", "");
+    m_builder->addAttDef("Leaves", "Number of Leaves in Tree", "Physics", "");
+    m_builder->addAttDef("Links", "Number of links in Tree", "Physics", "");
+    m_builder->addAttDef("Number Daughters", "Number daughters", "Physics", "");
+    m_builder->addAttDef("Best RMS angle", "RMS deviations of best branch", "Physics", "");
+    m_builder->addAttDef("Best Bi Layers", "Number bi layers of best branch", "physics", "");
+    m_builder->addAttDef("Number Tracks", "Number of Tracks associated to this Tree", "physics", "");
+
+    m_builder->addType("Candidate Tree", "TkrVecNodes", "TkrVecNodes in Tree", "");
+    m_builder->addAttDef("Number Nodes", "Number of Nodes in Tree", "Physics", "");
+
+    // Start with info from the node
+    m_builder->addType("TkrVecNodes", "TkrVecNode", "TkrVecNode", "");
+    m_builder->addAttDef("Nodes below", "Depth of node tree", "Physics", "");
+    m_builder->addAttDef("Leaves below", "Number leaves below this node", "Physics", "");
+    m_builder->addAttDef("Links below", "Number links below this node", "Physics", "");
+    m_builder->addAttDef("RMS angle", "RMS deviations to this node", "Physics", "");
+    m_builder->addAttDef("Number Daughters", "Number daughters", "Physics", "");
+    m_builder->addAttDef("Best RMS angle", "RMS deviations of best branch", "Physics", "");
+    m_builder->addAttDef("Best Bi Layers", "Number bi layers of best branch", "physics", "");
+    m_builder->addAttDef("Dist to Main", "Distance to Main Branch", "physics", "");
+    m_builder->addAttDef("Num in Best RMS", "Number in Best RMS Angle", "physics", "");
+
+    // Now continue with information specific to the link
+    m_builder->addType("TkrVecNode", "TkrVecPointsLink", "TkrVecPointsLink", "");
     m_builder->addAttValue("DrawAs","Line","");
     m_builder->addAttValue("Color","white","");
     m_builder->addAttDef("Status Low", "Vector Low Status Bits","Physics","");
@@ -54,36 +108,12 @@ void TrackElementsFiller::buildTypes()
     m_builder->addAttDef("Angle2NextLink","Angle to next link","Physics","");
     m_builder->addAttDef("Start Position","Track start position","Physics","");
     m_builder->addAttDef("Start Direction","Track start direction","Physics","");
+    // Here we define the prisms at each end of the links
     m_builder->addType("TkrVecPointsLink","TkrVecPointsLinkPos","TkrVecPointsLink Position","");
     m_builder->addAttValue("DrawAs","Prism","");
     m_builder->addAttValue("Color","white","");
     m_builder->addAttDef("BiLayer", "Bi-layer of point", "Physics", "");
     m_builder->addAttDef("Position", "Position", "Physics", "");
-
-    m_builder->addType("TkrRecon", "Candidate Trees", "Track Candidate Trees", "");
-
-    m_builder->addType("Candidate Trees", "Candidate Tree", "Track Candidate Tree", "");
-    m_builder->addAttDef("Depth", "Depth of Candidate Tree", "Physics", "");
-    m_builder->addAttDef("Leaves", "Number of Leaves in Tree", "Physics", "");
-    m_builder->addAttDef("Links", "Number of links in Tree", "Physics", "");
-    m_builder->addAttDef("Number Daughters", "Number daughters", "Physics", "");
-    m_builder->addAttDef("Best RMS angle", "RMS deviations of best branch", "Physics", "");
-    m_builder->addAttDef("Best Bi Layers", "Number bi layers of best branch", "physics", "");
-
-    m_builder->addType("Candidate Tree", "Tree Links", "Vector Links in Tree", "");
-    m_builder->addAttValue("DrawAs","Line","");
-    m_builder->addAttValue("Color","white","");
-    m_builder->addAttDef("Nodes below", "Depth of node tree", "Physics", "");
-    m_builder->addAttDef("Leaves below", "Number leaves below this node", "Physics", "");
-    m_builder->addAttDef("Links below", "Number links below this node", "Physics", "");
-    m_builder->addAttDef("RMS angle", "RMS deviations to this node", "Physics", "");
-    m_builder->addAttDef("Number Daughters", "Number daughters", "Physics", "");
-    m_builder->addAttDef("Status Low", "Vector Low Status Bits","Physics","");
-    m_builder->addAttDef("Status High","Vector High Status Bits","Physics","");
-    m_builder->addAttDef("Start Position","Track start position","Physics","");
-    m_builder->addAttDef("Start Direction","Track start direction","Physics","");
-    m_builder->addAttDef("Best RMS angle", "RMS deviations of best branch", "Physics", "");
-    m_builder->addAttDef("Best Bi Layers", "Number bi layers of best branch", "physics", "");
 }
 
 
@@ -137,16 +167,18 @@ void TrackElementsFiller::drawVectorPoints()
         // Get the two attributes: position and layer
         Point position = vecPoint->getPosition();
         int   layer    = vecPoint->getLayer();
+        float xClusWid = 0.5*vecPoint->getXCluster()->size()*_dH;
+        float yClusWid = 0.5*vecPoint->getYCluster()->size()*_dH;
 
         // Add an instance of TkrVecPoint
         m_builder->addInstance("TkrVecPoints","TkrVecPoint");
 
         // Display the attributes
-        m_builder->addAttValue("BiLayer",  (float)(layer),              "");
-        m_builder->addAttValue("Position", getPositionString(position), "");
+        m_builder->addAttValue("BiLayer",   (float)(layer),              "");
+        m_builder->addAttValue("Position",  getPositionString(position), "");
 
         // this is the prism that we pick
-        drawPrism(position.x(), position.y(), position.z(), _dH, _dH, _dH);
+        drawPrism(position.x(), position.y(), position.z(), xClusWid, yClusWid, _dH);
     }
 
     return;
@@ -200,6 +232,10 @@ void TrackElementsFiller::drawVectorLinks()
         std::vector<Event::TkrTrackElemToLinksRel*> elemToLinksVec = elemsToLinksTab.getRelBySecond(vecLink);
         std::string linkColor = "white";
 
+        if      (vecLink->skip1Layer()) linkColor  = "204,204,204";
+        else if (vecLink->skip2Layer()) linkColor  = "153,153,153";
+        else if (vecLink->skipsLayers()) linkColor = "102,102,102";
+
         if (!elemToLinksVec.empty()) 
         {
             std::vector<Event::TkrTrackElemToLinksRel*>::iterator trkElemItr;
@@ -214,51 +250,60 @@ void TrackElementsFiller::drawVectorLinks()
                 break;
             }
         }
+        else if (vecLink->associated()) continue;
 
-        //m_builder->addAttValue("LineWidth",          (float)trackWid, "");
-        m_builder->addAttValue("Color", linkColor, "");
-        m_builder->addAttValue("MaxScatAngle",    (float)(vecLink->getMaxScatAngle()),       "");
-        m_builder->addAttValue("Angle2NextLink",  (float)(vecLink->getAngleToNextLink()),    "");
-        m_builder->addAttValue("Start Position",  getPositionString(vecLink->getPosition()), "");
-        m_builder->addAttValue("Start Direction", getDirectionString(vecLink->getVector()),  "");
-
-        //Build strings for status bits
-        unsigned int statusBits = vecLink->getStatusBits();
-
-        m_builder->addAttValue("Status Low",  getBits(statusBits, 15, 0),  "");
-        m_builder->addAttValue("Status High", getBits(statusBits, 31, 16), "");
-
-        Point firstPoint = vecLink->getPosition();
-        m_builder->addPoint(firstPoint.x(), firstPoint.y(), firstPoint.z());
-
-        Point scndPoint  = vecLink->getBotPosition();
-        m_builder->addPoint(scndPoint.x(), scndPoint.y(), scndPoint.z());
-
-        // Add an instance of TkrVecPointsLinkPos
-        m_builder->addInstance("TkrVecPointsLink","TkrVecPointsLinkPos");
-        m_builder->addAttValue("Color", "yellow", "");
-
-        // Display the attributes
-        m_builder->addAttValue("Position", getPositionString(firstPoint), "");
-
-        // this is the prism that we pick
-        drawPrism(firstPoint.x(), firstPoint.y(), firstPoint.z(), _dH, _dH, _dH);
-
-        // Add an instance of TkrVecPointsLinkPos
-        m_builder->addInstance("TkrVecPointsLink","TkrVecPointsLinkPos");
-
-        // Display the attributes
-        m_builder->addAttValue("Position", getPositionString(scndPoint), "");
-
-        // this is the prism that we pick
-        drawPrism(scndPoint.x(), scndPoint.y(), scndPoint.z(), _dH, _dH, _dH);
-
+        drawSingleVectorLink(vecLink, linkColor);
     }
 
-    if (countEm != numVecLinks)
-    {
-        int canthappenhere = 0;
-    }
+    return;
+}
+
+void TrackElementsFiller::drawSingleVectorLink(const Event::TkrVecPointsLink* vecLink, std::string& linkColor)
+{
+    m_builder->addAttValue("Color",           linkColor,                                 "");
+    m_builder->addAttValue("MaxScatAngle",    (float)(vecLink->getMaxScatAngle()),       "");
+    m_builder->addAttValue("Angle2NextLink",  (float)(vecLink->getAngleToNextLink()),    "");
+    m_builder->addAttValue("Start Position",  getPositionString(vecLink->getPosition()), "");
+    m_builder->addAttValue("Start Direction", getDirectionString(vecLink->getVector()),  "");
+
+    //Build strings for status bits
+    unsigned int statusBits = vecLink->getStatusBits();
+
+    m_builder->addAttValue("Status Low",  getBits(statusBits, 15, 0),  "");
+    m_builder->addAttValue("Status High", getBits(statusBits, 31, 16), "");
+
+    Point firstPoint = vecLink->getPosition();
+    m_builder->addPoint(firstPoint.x(), firstPoint.y(), firstPoint.z());
+
+    Point scndPoint  = vecLink->getBotPosition();
+    m_builder->addPoint(scndPoint.x(), scndPoint.y(), scndPoint.z());
+
+    // Add an instance of TkrVecPointsLinkPos
+    m_builder->addInstance("TkrVecPointsLink","TkrVecPointsLinkPos");
+    m_builder->addAttValue("Color", "yellow", "");
+
+    // Display the attributes
+    m_builder->addAttValue("Position", getPositionString(firstPoint), "");
+
+    // Get size of prism to draw
+    float xClusWid = 0.5*vecLink->getFirstVecPoint()->getXCluster()->size()*_dH;
+    float yClusWid = 0.5*vecLink->getFirstVecPoint()->getYCluster()->size()*_dH;
+
+    // this is the prism that we pick
+    drawPrism(firstPoint.x(), firstPoint.y(), firstPoint.z(), xClusWid, yClusWid, _dH);
+
+    // Add an instance of TkrVecPointsLinkPos
+    m_builder->addInstance("TkrVecPointsLink","TkrVecPointsLinkPos");
+
+    // Display the attributes
+    m_builder->addAttValue("Position", getPositionString(scndPoint), "");
+
+    // Get size of prism to draw
+    xClusWid = 0.5*vecLink->getSecondVecPoint()->getXCluster()->size()*_dH;
+    yClusWid = 0.5*vecLink->getSecondVecPoint()->getYCluster()->size()*_dH;
+
+    // this is the prism that we pick
+    drawPrism(scndPoint.x(), scndPoint.y(), scndPoint.z(), xClusWid, yClusWid, _dH);
 
     return;
 }
@@ -266,28 +311,30 @@ void TrackElementsFiller::drawVectorLinks()
 void TrackElementsFiller::drawNodeTrees()
 {
     // Retrieve pointer to the vector of head nodes in the TDS
-    Event::TkrVecNodeCol* vecNodeCol = SmartDataPtr<Event::TkrVecNodeCol>(m_dpsvc, "/Event/TkrRecon/TkrVecNodeCol");
+    Event::TkrTreeCol* treeCol = SmartDataPtr<Event::TkrTreeCol>(m_dpsvc, "/Event/TkrRecon/TkrTreeCol");
 
     //Now see if we can do the drawing
-    if (!vecNodeCol) return;
+    if (!treeCol) return;
 
     m_builder->addInstance("TkrRecon","Candidate Trees");
 
     // Set the number of nodes so display will know
-    int numNodes = vecNodeCol->size();
+    int numTrees = treeCol->size();
 
-    if (numNodes == 0) return;
+    if (numTrees == 0) return;
+        
+    m_builder->addAttValue("NumTrees", (float)(numTrees), "");
 
-    m_builder->setSubinstancesNumber("Candidate Trees", numNodes);
+    m_builder->setSubinstancesNumber("Candidate Trees", numTrees);
 
     // Set the color and width for the first tree
     std::string lineColor = "red";
-    int         lineWidth = 3;
+    int         lineWidth = 2;
 
     // Loop over the collection of head nodes
-    for(Event::TkrVecNodeCol::iterator nodeItr = vecNodeCol->begin(); nodeItr != vecNodeCol->end(); nodeItr++)
+    for(Event::TkrTreeCol::iterator treeItr = treeCol->begin(); treeItr != treeCol->end(); treeItr++)
     {
-        Event::TkrVecNode* vecNode = *nodeItr;
+        const Event::TkrVecNode* vecNode = (*treeItr)->getHeadNode();
 
         // Recover the details for this tree
         int   treeDepth     = vecNode->getDepth();
@@ -296,6 +343,7 @@ void TrackElementsFiller::drawNodeTrees()
         int   bestNumLayers = vecNode->getBestNumBiLayers();
         float bestRmsAngle  = vecNode->getBestRmsAngle();
         int   numDaughters  = vecNode->size();
+        int   numTracks     = (*treeItr)->size();
 
         // Add the Candidate Tree instance
         m_builder->addInstance("Candidate Trees", "Candidate Tree");
@@ -305,20 +353,25 @@ void TrackElementsFiller::drawNodeTrees()
         m_builder->addAttValue("Number Daughters", (float)numDaughters,  "");
         m_builder->addAttValue("Best RMS angle",   bestRmsAngle,         "");
         m_builder->addAttValue("Best Bi Layers",   (float)bestNumLayers, "");
+        m_builder->addAttValue("Number Tracks",    (float)numTracks,     "");
 
         m_builder->setSubinstancesNumber("Candidate Tree", numVecLinks);
+
+        m_builder->addInstance("Candidate Tree", "TkrVecNodes");
+        m_builder->addAttValue("Number Nodes", (float)numVecLinks,   "");
+
 
         // Now draw the node (which will draw the daughter nodes)
         drawNode(vecNode, lineColor, lineWidth);
 
-        lineColor = "yellow";
-        lineWidth = 2;
+        lineColor = "255,64,64";
+        lineWidth = 1;
     }
 
     return;
 }
 
-void TrackElementsFiller::drawNode(const Event::TkrVecNode* vecNode, std::string lineColor, int lineWidth)
+void TrackElementsFiller::drawNode(const Event::TkrVecNode* vecNode, std::string& lineColor, int lineWidth)
 {
     // Recover the TkrVecPointsLink associated to this node
     const Event::TkrVecPointsLink* vecLink = vecNode->getAssociatedLink();
@@ -326,7 +379,7 @@ void TrackElementsFiller::drawNode(const Event::TkrVecNode* vecNode, std::string
     // Note that the top node will not have an associated link as it is the anchor node
     if (vecLink)
     {
-        m_builder->addInstance("Candidate Tree","Tree Links");
+        m_builder->addInstance("TkrVecNodes","TkrVecNode");
         
         // Recover the details for this tree
         int   treeDepth     = vecNode->getDepth();
@@ -336,32 +389,25 @@ void TrackElementsFiller::drawNode(const Event::TkrVecNode* vecNode, std::string
         float rmsAngle      = vecNode->getRmsAngle();
         int   bestNumLayers = vecNode->getBestNumBiLayers();
         float bestRmsAngle  = vecNode->getBestRmsAngle();
+        int   numAngInRms   = vecNode->getNumAnglesInSum();
+        int   distToMain    = vecNode->getBiLyrs2MainBrch();
 
-        m_builder->addAttValue("LineWidth",        (float)lineWidth,                          "");
-        m_builder->addAttValue("Color",            lineColor,                                 "");
         m_builder->addAttValue("Nodes below",      (float)treeDepth,                          "");
         m_builder->addAttValue("Leaves below",     (float)numLeaves,                          "");
         m_builder->addAttValue("Links below",      (float)numVecLinks,                        "");
         m_builder->addAttValue("Number Daughters", (float)numDaughters,                       "");
         m_builder->addAttValue("RMS angle",        rmsAngle,                                  "");
-        m_builder->addAttValue("Start Position",   getPositionString(vecLink->getPosition()), "");
-        m_builder->addAttValue("Start Direction",  getDirectionString(vecLink->getVector()),  "");
-        m_builder->addAttValue("Best RMS angle",   bestRmsAngle,         "");
-        m_builder->addAttValue("Best Bi Layers",   (float)bestNumLayers, "");
+        m_builder->addAttValue("Best RMS angle",   bestRmsAngle,                              "");
+        m_builder->addAttValue("Best Bi Layers",   float(bestNumLayers),                      "");
+        m_builder->addAttValue("Dist to Main",     float(numAngInRms),                        "");
+        m_builder->addAttValue("Num in Best RMS",  float(distToMain),                         "");
 
-        //Build strings for status bits
-        unsigned int statusBits = vecLink->getStatusBits();
+        // Now draw the actual link
+        m_builder->addInstance("TkrVecNode", "TkrVecPointsLink");
+        m_builder->addAttValue("LineWidth",        (float)lineWidth,                          "");
+        m_builder->addAttValue("Color",            lineColor,                                 "");
 
-        m_builder->addAttValue("Status Low",  getBits(statusBits, 15, 0),  "");
-        m_builder->addAttValue("Status High", getBits(statusBits, 31, 16), "");
-
-        //Point firstPoint = vecLink->getFirstVecPoint()->getPosition();
-        Point firstPoint = vecLink->getPosition();
-        m_builder->addPoint(firstPoint.x(), firstPoint.y(), firstPoint.z());
-
-        //Point scndPoint  = vecLink->getSecondVecPoint()->getPosition();
-        Point scndPoint  = vecLink->getBotPosition();
-        m_builder->addPoint(scndPoint.x(), scndPoint.y(), scndPoint.z());
+        drawSingleVectorLink(vecLink, lineColor);
     }
 
     // Now draw the links associated to the daughters of this node

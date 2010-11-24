@@ -72,6 +72,7 @@ void TrackFiller::buildTypes()
     m_builder->addAttDef("Projection","Plane Projection","Physics","");
     m_builder->addAttDef("RadLen","Radiation Lengths to Plane","Phsyics","");
     m_builder->addAttDef("ActDist","Active Distance","Physics","mm");
+    m_builder->addAttDef("Kink Angle","Kink Angle","Physics","");
     m_builder->addAttDef("Measured","Hit Position","Physics","");
     m_builder->addAttDef("Filter Position","Filter Fit Position","Physics","");
     m_builder->addAttDef("Filter Slope","Filter Fit Slope","Phyiscs","");
@@ -220,6 +221,7 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
             m_builder->addAttValue("Energy",(float)(plane.getEnergy()),"");
             m_builder->addAttValue("RadLen",(float)(plane.getRadLen()),"");
             m_builder->addAttValue("ActDist",(float)(plane.getActiveDist()),"");
+            m_builder->addAttValue("Kink Angle", (float)(plane.getKinkAngle()),"");
             if (hitOnFit) {
                 m_builder->addAttValue("ChiSquareFilter",
                     (float)(plane.getChiSquareFilter()),"");
