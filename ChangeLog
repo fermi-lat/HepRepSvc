@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: usher  Thu Dec 16 12:46:00 PST 2010
+HepRepSvc/src/Tracker
+
+Modified Files:
+	TkrEventParams.cxx TrackElementsFiller.cxx 
+	TrackElementsFiller.h 
+Log Message:
+    *
+------------------------------------------------------------
 User: jrb  Wed Nov 24 12:43:18 PST 2010
 GlastRelease-scons/HepRepSvc/src
 
