@@ -2,7 +2,7 @@
 #define TrackElementsFiller_H
 
 #include "src/Filler.h"
-#include "geometry/Vector.h"
+//#include "geometry/Vector.h"
 
 class IGlastDetSvc;
 class IDataProviderSvc;
@@ -11,8 +11,14 @@ class HepRepInitSvc;
 
 namespace Event
 {
+    class TkrFilterParams;
+    class TkrBoundBox;
+    class TkrBoundBoxPoints;
     class TkrVecNode;
     class TkrVecPointsLink;
+    template <class T1, class T2> class RelTable;
+    typedef RelTable<TkrFilterParams, TkrBoundBox>       TkrFilterParamsToBoxTab;
+    typedef RelTable<TkrFilterParams, TkrBoundBoxPoints> TkrFilterParamsToPointsTab;
 }
 
 #include <string>
@@ -44,6 +50,10 @@ public:
 private:
 
   void drawVectorPoints();
+  void drawFilterParamsCol();
+  void drawFilterParams(Event::TkrFilterParams* filterParams);
+  void drawTkrBoundBoxes(Event::TkrFilterParams* filterParams, Event::TkrFilterParamsToBoxTab& paramsToBoxTab);
+  void drawTkrBoundBoxPoints(Event::TkrFilterParams* filterParams, Event::TkrFilterParamsToPointsTab& paramsToPointsTab);
   void drawVectorLinks();
   void drawNodeTrees();
   void drawNode(const Event::TkrVecNode* vecNode, std::string& lineColor, int lineWidth = 2);

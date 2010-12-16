@@ -40,7 +40,8 @@ void TkrEventParamsFiller::buildTypes()
     m_builder->addType("TkrRecon","TkrEventParams", "Tracker Event Parameters","");
     //m_builder->addType("TkrEventParams","TkrEventParams","Tracker Event Parameters","");
     m_builder->addAttValue("DrawAs","Line","");
-    m_builder->addAttValue("Color","0.98,0.50,0.45",""); // "Salmon"
+//    m_builder->addAttValue("Color","0.98,0.50,0.45",""); // "Salmon"
+    m_builder->addAttValue("Color","0.527,0.805,0.977",""); // "Salmon"
     m_builder->addAttDef("Status Bits", "Status Bits","Physics","");
     m_builder->addAttDef("Position","Track position","Physics","");
     m_builder->addAttDef("Direction","Track direction","Physics","");

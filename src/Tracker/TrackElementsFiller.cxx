@@ -12,13 +12,16 @@
 #include "Event/TopLevel/EventModel.h"
 #include "Event/Recon/TkrRecon/TkrTrackElements.h"
 #include "Event/Recon/TkrRecon/TkrTree.h"
+#include "Event/Recon/TkrRecon/TkrFilterParams.h"
+#include "Event/Recon/TkrRecon/TkrBoundBox.h"
+#include "Event/Recon/TkrRecon/TkrBoundBoxPoints.h"
 
 #include <sstream>
 #include <iostream>
 #include <algorithm>
 
 namespace {
-    const float _dH = 0.225; // size of TkrVecPoint hit
+    const float _dH = 0.228; // size of TkrVecPoint hit
 }
 
 // Constructor
@@ -46,6 +49,56 @@ void TrackElementsFiller::buildTypes()
     m_builder->addAttValue("Fill", true, "");
     m_builder->addAttDef("BiLayer", "Bi-layer of point", "Physics", "");
     m_builder->addAttDef("Position", "Position", "Physics", "");
+
+    // Define the collection of TkrBoundBoxes to go with the above points
+    m_builder->addType("TkrRecon", "TkrFilterParamsCol", "TkrFilterParamsCol", "");
+    m_builder->addAttDef("Number Filter Params", "Number of TkrFilterParamsCol", "Physics", "");
+
+    m_builder->addType("TkrFilterParamsCol","TkrFilterParams", "Tracker Filter Parameters","");
+    m_builder->addAttValue("DrawAs","Line","");
+    m_builder->addAttValue("Color","0.98,0.50,0.45",""); // "Salmon"
+    m_builder->addAttDef("Status Bits", "Status Bits","Physics","");
+    m_builder->addAttDef("Position","Track position","Physics","");
+    m_builder->addAttDef("Direction","Track direction","Physics","");
+    m_builder->addAttDef("Energy","Event Energy","Physics","MeV");
+    m_builder->addAttDef("NumBiLayerHits","Number Bilayers Hit","Physics","#");
+    m_builder->addAttDef("NumIterations","Number Iterations","Physics","#");
+    m_builder->addAttDef("NumHitsTotal","Number Hits Total","Physics","#");
+    m_builder->addAttDef("NumDropped","Number Dropped Hits","Physics","#");
+    m_builder->addAttDef("ChiSquare","Moments ChiSquare","Physics","#");
+    m_builder->addAttDef("TransRms","Scaled Transvers Moment","Physics","#");
+    m_builder->addAttDef("LongRmsAve","Average Longitudinal Moment","Physics","#");
+
+    // Define the collection of TkrBoundBoxes to go with the above points
+    m_builder->addType("TkrFilterParams", "TkrBoundBoxes", "TkrBoundBox collection", "");
+    m_builder->addAttDef("Number Boxes", "Number of TkrBoundBoxes", "Physics", "");
+
+    // Define the individual TkrBoundBoxes
+    m_builder->addType("TkrBoundBoxes", "TkrBoundBox", "TkrBoundBox", "");
+    m_builder->addAttValue("DrawAs", "Prism", "");
+    m_builder->addAttValue("Color", "yellow", "");
+    m_builder->addAttValue("FillColor", "purple", "");
+    m_builder->addAttValue("FillType", "NonZero", "");
+    m_builder->addAttValue("Fill", true, "");
+    // Output the quantities stored in the box
+    m_builder->addAttDef("NumVecPoints",  "Number of TkrVecPoints in Box",      "Physics", "");
+    m_builder->addAttDef("BiLayer",       "BiLayer for this box",               "Physics", "");
+    m_builder->addAttDef("BoxCenter",     "Box Center Position",                "Physics", "");
+    m_builder->addAttDef("AvePosition",   "Average Position of TkrVecPoints",   "Physics", "");
+    m_builder->addAttDef("Hit Density",   "Density of TkrVecPoints in Box",     "Physics", "");
+    m_builder->addAttDef("Mean Distance", "Mean Distance Between TkrVecPoints", "Physics", "");
+    m_builder->addAttDef("RMS Distance",  "RMS Distance Between TkrVecPoints",  "Physics", "");
+
+    // Define the collection of TkrBoundBoxPoints to go with the above boxes
+    m_builder->addType("TkrFilterParams", "TkrBoundBoxPointsCol", "TkrBoundBoxPoints Collection", "");
+    m_builder->addAttDef("Number Points", "Number of TkrBoundBoxPoints", "Physics", "");
+
+    // Define the individual TkrBoundBoxes
+    m_builder->addType("TkrBoundBoxPointsCol", "TkrBoundBoxPoints", "TkrBoundBoxPoints", "");
+    m_builder->addAttValue("DrawAs", "Line", "");
+    m_builder->addAttValue("Color", "green", "");
+    // Output the quantities stored in the box
+    m_builder->addAttDef("Distance", "Distance between associated TkrVecPoints", "Physics", "");
 
     // Now the TkrVecPointsLinks collection
     m_builder->addType("TkrRecon","TkrVecPointsLinks", "Vector links","");
@@ -125,6 +178,11 @@ void TrackElementsFiller::fillInstances (std::vector<std::string>& typesList)
         drawVectorPoints();
     }
 
+    if (hasType(typesList,"Recon/TkrRecon/TkrFilterParamsCol"))    ///TkrVecPointsLink"))
+    {
+        drawFilterParamsCol();
+    }
+
     if (hasType(typesList,"Recon/TkrRecon/TkrVecPointsLinks"))    ///TkrVecPointsLink"))
     {
         drawVectorLinks();
@@ -157,6 +215,8 @@ void TrackElementsFiller::drawVectorPoints()
 
     m_builder->setSubinstancesNumber("TkrVecPoints", numVecPoints);
 
+    double lineWidth = 2;
+
     // Loop through all the links in the collection
     for(Event::TkrVecPointCol::iterator vecPointItr = vecPointsCol->begin();
         vecPointItr != vecPointsCol->end();
@@ -172,17 +232,211 @@ void TrackElementsFiller::drawVectorPoints()
 
         // Add an instance of TkrVecPoint
         m_builder->addInstance("TkrVecPoints","TkrVecPoint");
+        
+        m_builder->addAttValue("LineWidth", (float)lineWidth, "");
 
         // Display the attributes
         m_builder->addAttValue("BiLayer",   (float)(layer),              "");
         m_builder->addAttValue("Position",  getPositionString(position), "");
 
         // this is the prism that we pick
-        drawPrism(position.x(), position.y(), position.z(), xClusWid, yClusWid, _dH);
+        drawPrism(position.x(), position.y(), position.z(), xClusWid, yClusWid, 0.9*_dH);
     }
 
     return;
 }
+  
+void TrackElementsFiller::drawFilterParamsCol()
+{
+    // Retrieve pointer to the TkrFilterParams collection in the TDS
+    Event::TkrFilterParamsCol* tkrFilterParamsCol = 
+        SmartDataPtr<Event::TkrFilterParamsCol>(m_dpsvc, EventModel::TkrRecon::TkrFilterParamsCol);
+
+    // No Filter Params, no work
+    if (!tkrFilterParamsCol) return;
+    
+    // Now retrieve the relations between the TkrFilterParams and their associated TkrBoundBoxes
+    Event::TkrFilterParamsToBoxTabList* tkrFilterParamsToBoxList = 
+        SmartDataPtr<Event::TkrFilterParamsToBoxTabList>(m_dpsvc, EventModel::TkrRecon::TkrFilterParamsToBoxTab);
+
+    // Dummy list in case nothing in TDS
+    Event::TkrFilterParamsToBoxTabList dummyList;
+    dummyList.clear();
+
+    if (!tkrFilterParamsToBoxList) tkrFilterParamsToBoxList = &dummyList;
+
+    // Use the above to now make a relational table between TkrFilterParams and TkrBoundBoxes
+    Event::TkrFilterParamsToBoxTab tkrFilterParamsToBoxTab(tkrFilterParamsToBoxList);
+
+    // And now retrieve the relations between the TkrFilterParams and their associated TkrBoundBoxPoints
+    Event::TkrFilterParamsToPointsTabList* tkrFilterParamsToPointsList = 
+        SmartDataPtr<Event::TkrFilterParamsToPointsTabList>(m_dpsvc, EventModel::TkrRecon::TkrFilterParamsToPointsTab);
+
+    // Dummy list in case nothing in TDS
+    Event::TkrFilterParamsToPointsTabList dummyPointsList;
+    dummyPointsList.clear();
+
+    if (!tkrFilterParamsToPointsList) tkrFilterParamsToPointsList = &dummyPointsList;
+
+    // And now make a relational table between TkrFilterParams and TkrBoundBoxPoints
+    Event::TkrFilterParamsToPointsTab tkrFilterParamsToPointsTab(tkrFilterParamsToPointsList);
+
+    // Ready for work, initiate the drawing sequence
+    m_builder->addInstance("TkrRecon","TkrFilterParamsCol");
+
+    int numFilterParams = tkrFilterParamsCol->size();
+        
+    m_builder->addAttValue("Number Filter Params", (float)(numFilterParams), "");
+
+    m_builder->setSubinstancesNumber("TkrFilterParamsCol", numFilterParams);
+
+    // Loop through the collection
+    for(Event::TkrFilterParamsCol::iterator paramsItr  = tkrFilterParamsCol->begin();
+                                            paramsItr != tkrFilterParamsCol->end();
+                                            paramsItr++)
+    {
+        // Recover a pointer to to the TkrFilterParams
+        Event::TkrFilterParams* tkrFilterParams = *paramsItr;
+
+        // Output the information contained in the TkrFilterParams
+        drawFilterParams(tkrFilterParams);
+
+        // Draw the boxes associated with these params
+        drawTkrBoundBoxes(tkrFilterParams, tkrFilterParamsToBoxTab);
+
+        // Draw the connections between TkrVecPoints for the associated hits
+        drawTkrBoundBoxPoints(tkrFilterParams, tkrFilterParamsToPointsTab);
+    }
+
+    return;
+}
+
+void TrackElementsFiller::drawFilterParams(Event::TkrFilterParams* tkrFilterParams)
+{
+    // Add an instance of the drawing object to the collection
+    m_builder->addInstance("TkrFilterParamsCol","TkrFilterParams");
+
+    // And start filling it
+    m_builder->addAttValue("Position",       getPositionString(tkrFilterParams->getEventPosition()), "");
+    m_builder->addAttValue("Direction",      getDirectionString(tkrFilterParams->getEventAxis()), "");
+    m_builder->addAttValue("Energy",         (float)tkrFilterParams->getEventEnergy(), "");
+    m_builder->addAttValue("NumBiLayerHits", tkrFilterParams->getNumBiLayers(), "");
+    m_builder->addAttValue("NumIterations",  tkrFilterParams->getNumIterations(), "");
+    m_builder->addAttValue("NumHitsTotal",   tkrFilterParams->getNumHitsTotal(), "");
+    m_builder->addAttValue("NumDropped",     tkrFilterParams->getNumDropped(), "");
+    m_builder->addAttValue("ChiSquare",      (float)tkrFilterParams->getChiSquare(), "");
+    m_builder->addAttValue("TransRms",       (float)tkrFilterParams->getTransRms(), "");
+    m_builder->addAttValue("LongRmsAve",     (float)tkrFilterParams->getLongRmsAve(), "");
+
+    //Build strings for status bits
+    unsigned int statBits = tkrFilterParams->getStatusBits();
+    m_builder->addAttValue("Status Bits",getBits(statBits, 15, 0),"");
+
+    // Set up to draw the track
+    Point  position = tkrFilterParams->getEventPosition();
+    Vector axis     = tkrFilterParams->getEventAxis();
+
+    Point  start    = position - 500. * axis;
+    Point  stop     = position + 500. * axis;
+
+    m_builder->addPoint(start.x(), start.y(), start.z());
+    m_builder->addPoint(stop.x(),  stop.y(),  stop.z());
+
+    return;
+}
+
+void TrackElementsFiller::drawTkrBoundBoxes(Event::TkrFilterParams* tkrFilterParams, Event::TkrFilterParamsToBoxTab& paramsToBoxTab)
+{
+    // Use this to get a vector containing all related TkrBoundBoxes
+    std::vector<Event::TkrFilterParamsToBoxRel*> paramsToBoxVec = paramsToBoxTab.getRelByFirst(tkrFilterParams);
+
+    // Add an instance of TkrVecPoints
+    m_builder->addInstance("TkrFilterParams","TkrBoundBoxes");
+
+    // Figure out how many we have and tell the display what to expect
+    int numVecPointBoxes = paramsToBoxVec.size();
+        
+    m_builder->addAttValue("Number Boxes", (float)(numVecPointBoxes), "");
+
+    m_builder->setSubinstancesNumber("TkrBoundBoxes", numVecPointBoxes);
+
+    // Now loop through this vector to draw the bounding boxes
+    std::vector<Event::TkrFilterParamsToBoxRel*>::iterator paramsToBoxItr = paramsToBoxVec.begin();
+
+    while(paramsToBoxItr != paramsToBoxVec.end())
+    {
+        Event::TkrBoundBox* vecPointBox = (*paramsToBoxItr++)->getSecond();
+
+        // Add an instance of TkrVecPoint
+        m_builder->addInstance("TkrBoundBoxes","TkrBoundBox");
+
+        // Retrieve and fill stuff we want to see
+        int           nPoints     = vecPointBox->size();
+        int           biLayer     = vecPointBox->getBiLayer();
+        const  Point& boxCenter   = vecPointBox->getBoxCenterPos();
+        const  Point& avePosition = vecPointBox->getAveragePosition();
+        double        hitDensity  = vecPointBox->getHitDensity();
+        double        meanDist    = vecPointBox->getMeanDist();
+        double        rmsDist     = vecPointBox->getRmsDist();
+
+        m_builder->addAttValue("NumVecPoints",  float(nPoints),                 "");
+        m_builder->addAttValue("BiLayer",       float(biLayer),                 "");
+        m_builder->addAttValue("BoxCenter",     getPositionString(boxCenter),   "");
+        m_builder->addAttValue("AvePosition",   getPositionString(avePosition), "");
+        m_builder->addAttValue("Hit Density",   float(hitDensity),              "");
+        m_builder->addAttValue("Mean Distance", float(meanDist),                "");
+        m_builder->addAttValue("RMS Distance",  float(rmsDist),                 "");
+
+        // Set up to draw the shape
+        const  Point& lowEdge   = vecPointBox->getLowCorner();
+        const  Point& highEdge  = vecPointBox->getHighCorner();
+        double boxSigmaX        = 0.5 * (highEdge.x() - lowEdge.x());
+        double boxSigmaY        = 0.5 * (highEdge.y() - lowEdge.y());
+
+        drawPrism(boxCenter.x(), boxCenter.y(), boxCenter.z(), boxSigmaX, boxSigmaY, _dH);
+    }
+
+    return;
+}
+
+void TrackElementsFiller::drawTkrBoundBoxPoints(Event::TkrFilterParams* tkrFilterParams, 
+                                                Event::TkrFilterParamsToPointsTab& paramsToPointsTab)
+{
+    // First up let's draw the links between TkrVecPoints from the minimum spanning tree (if they are there)
+    std::vector<Event::TkrFilterParamsToPointsRel*> paramsToPointsVec = paramsToPointsTab.getRelByFirst(tkrFilterParams);
+
+    // Add an instance of TkrVecPoints
+    m_builder->addInstance("TkrFilterParams","TkrBoundBoxPointsCol");
+
+    // Figure out how many we have and tell the display what to expect
+    int numTkrBoundBoxPoints = paramsToPointsVec.size();
+        
+    m_builder->addAttValue("Number Points", (float)(numTkrBoundBoxPoints), "");
+
+    m_builder->setSubinstancesNumber("TkrBoundBoxPoints", numTkrBoundBoxPoints);
+
+    // Now loop through this vector to draw the links between TkrVecPoints
+    std::vector<Event::TkrFilterParamsToPointsRel*>::iterator paramsToPointsItr = paramsToPointsVec.begin();
+
+    while(paramsToPointsItr != paramsToPointsVec.end())
+    {
+        Event::TkrBoundBoxPoints* boxPoints = (*paramsToPointsItr++)->getSecond();
+
+        // Add an instance of TkrBoundBoxPoints
+        m_builder->addInstance("TkrBoundBoxPointsCol","TkrBoundBoxPoints");
+
+        m_builder->addAttValue("Distance",  float(boxPoints->getSeparation()), "");
+
+        Point firstPoint = boxPoints->getFirstTkrVecPoint()->getPosition();
+        m_builder->addPoint(firstPoint.x(), firstPoint.y(), firstPoint.z());
+
+        Point scndPoint  = boxPoints->getSecondTkrVecPoint()->getPosition();
+        m_builder->addPoint(scndPoint.x(), scndPoint.y(), scndPoint.z());
+    }
+
+    return;
+}
+
 
 void TrackElementsFiller::drawVectorLinks()
 {
