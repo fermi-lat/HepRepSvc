@@ -292,7 +292,7 @@ void CalReconFiller::drawClusters(Event::CalClusterCol* clusters, Event::CalClus
                 // Special cases, first see if we have "uber" cluster
                 if (clusIter == clusters->end() && clusters->size() > 1) j = m_maxColors;
                 // Check that energy is low
-                else if (cl->getCalParams().getEnergy() < m_minEnergy) j = m_maxColors - 1;
+                else if (cl->getMomParams().getEnergy() < m_minEnergy) j = m_maxColors - 1;
 
                 clusColor = m_colorArray[j];
             }
@@ -321,7 +321,7 @@ void CalReconFiller::drawCluster(Event::CalCluster* cluster, std::string color)
 
     // get total energy in the calorimeter: 
     // energySum is not filled when reading from Root!
-    double clusEnergy = cluster->getCalParams().getEnergy();
+    double clusEnergy = cluster->getMomParams().getEnergy();
 
     m_builder->addAttValue("E", (float)clusEnergy, "");
 
@@ -340,9 +340,9 @@ void CalReconFiller::drawCluster(Event::CalCluster* cluster, std::string color)
         //m_builder->addAttValue("numTotXtal",   cluster->size(),     "");
         m_builder->addAttValue("numTruncXtal", nTrunc,         "");
         m_builder->addAttValue("Centroid",     
-            getPositionString(cluster->getCalParams().getCentroid()), "");
+            getPositionString(cluster->getMomParams().getCentroid()), "");
         m_builder->addAttValue("Axis",         
-            getDirectionString(cluster->getCalParams().getAxis()), "");
+            getDirectionString(cluster->getMomParams().getAxis()), "");
 
         // Draw the cluster center
         double x = (cluster->getPosition()).x();
@@ -390,9 +390,9 @@ void CalReconFiller::drawCluster(Event::CalCluster* cluster, std::string color)
             // Draw the cluster direction
             m_builder->addInstance("Cluster", "ClusterDir");    
             m_builder->addAttValue("Centroid",     
-                getPositionString(cluster->getCalParams().getCentroid()), "");
+                getPositionString(cluster->getMomParams().getCentroid()), "");
             m_builder->addAttValue("Axis",         
-                getDirectionString(cluster->getCalParams().getAxis()), "");
+                getDirectionString(cluster->getMomParams().getAxis()), "");
 
             // No point in drawing if moments not done
             if (rmsTran > 0. && rmsLong > 0.)
