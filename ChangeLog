@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: lbaldini  Sun Dec 19 09:30:33 PST 2010
+HepRepSvc/src
+
+Modified Files:
+	CalReconFiller.cxx 
+Log Message:
+Modifications for the new container CalMomParams.
+    *
+------------------------------------------------------------
 User: usher  Thu Dec 16 12:46:00 PST 2010
 HepRepSvc/src/Tracker
 
