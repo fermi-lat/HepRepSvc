@@ -13,12 +13,12 @@ namespace Event
 {
     class TkrFilterParams;
     class TkrBoundBox;
-    class TkrBoundBoxPoints;
+    class TkrBoundBoxPoint;
     class TkrVecNode;
     class TkrVecPointsLink;
     template <class T1, class T2> class RelTable;
-    typedef RelTable<TkrFilterParams, TkrBoundBox>       TkrFilterParamsToBoxTab;
-    typedef RelTable<TkrFilterParams, TkrBoundBoxPoints> TkrFilterParamsToPointsTab;
+    typedef RelTable<TkrFilterParams, TkrBoundBox>      TkrFilterParamsToBoxTab;
+    typedef RelTable<TkrFilterParams, TkrBoundBoxPoint> TkrFilterParamsToPointsTab;
 }
 
 #include <string>
@@ -54,6 +54,7 @@ private:
   void drawFilterParams(Event::TkrFilterParams* filterParams);
   void drawTkrBoundBoxes(Event::TkrFilterParams* filterParams, Event::TkrFilterParamsToBoxTab& paramsToBoxTab);
   void drawTkrBoundBoxPoints(Event::TkrFilterParams* filterParams, Event::TkrFilterParamsToPointsTab& paramsToPointsTab);
+  void drawTkrBoundBoxPoint(const Event::TkrBoundBoxPoint* curPoint);
   void drawVectorLinks();
   void drawNodeTrees();
   void drawNode(const Event::TkrVecNode* vecNode, std::string& lineColor, int lineWidth = 2);

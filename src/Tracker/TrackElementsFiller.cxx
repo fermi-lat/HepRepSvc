@@ -98,7 +98,10 @@ void TrackElementsFiller::buildTypes()
     m_builder->addAttValue("DrawAs", "Line", "");
     m_builder->addAttValue("Color", "green", "");
     // Output the quantities stored in the box
-    m_builder->addAttDef("Distance", "Distance between associated TkrVecPoints", "Physics", "");
+    m_builder->addAttDef("Position", "Position", "Physics", "");
+    m_builder->addAttDef("Distance Left",  "Distance to Left Daughter",   "Physics", "");
+    m_builder->addAttDef("Distance Right", "Distance to Right Daughter",  "Physics", "");
+    m_builder->addAttDef("AveSeparation",  "Average Separation to point", "Physics", "");
 
     // Now the TkrVecPointsLinks collection
     m_builder->addType("TkrRecon","TkrVecPointsLinks", "Vector links","");
@@ -410,28 +413,62 @@ void TrackElementsFiller::drawTkrBoundBoxPoints(Event::TkrFilterParams* tkrFilte
 
     // Figure out how many we have and tell the display what to expect
     int numTkrBoundBoxPoints = paramsToPointsVec.size();
+
+    // Recover the top TkrBoundBoxPoint and start doing some drawing! 
+    const Event::TkrBoundBoxPoint* topPoint = paramsToPointsVec.front()->getSecond();
+
+    // Number of bound box points we'll end up drawing
+    numTkrBoundBoxPoints = 750;
         
     m_builder->addAttValue("Number Points", (float)(numTkrBoundBoxPoints), "");
 
     m_builder->setSubinstancesNumber("TkrBoundBoxPoints", numTkrBoundBoxPoints);
 
-    // Now loop through this vector to draw the links between TkrVecPoints
-    std::vector<Event::TkrFilterParamsToPointsRel*>::iterator paramsToPointsItr = paramsToPointsVec.begin();
+    drawTkrBoundBoxPoint(topPoint);
 
-    while(paramsToPointsItr != paramsToPointsVec.end())
+    return;
+}
+
+void TrackElementsFiller::drawTkrBoundBoxPoint(const Event::TkrBoundBoxPoint* curPoint)
+{
+    // If no daughters then nothing to do 
+    if (curPoint->getLeft() || curPoint->getRight())
     {
-        Event::TkrBoundBoxPoints* boxPoints = (*paramsToPointsItr++)->getSecond();
-
         // Add an instance of TkrBoundBoxPoints
         m_builder->addInstance("TkrBoundBoxPointsCol","TkrBoundBoxPoints");
 
-        m_builder->addAttValue("Distance",  float(boxPoints->getSeparation()), "");
+        Point firstPoint = curPoint->getPosition();
+        Point leftPoint  = firstPoint;
+        Point rightPoint = firstPoint;
 
-        Point firstPoint = boxPoints->getFirstTkrVecPoint()->getPosition();
+        if (curPoint->getLeft()) leftPoint = curPoint->getLeft()->getPosition();
+
+        if (curPoint->getRight()) rightPoint = curPoint->getRight()->getPosition();
+
+        // Define a midpoint
+        Point midPoint = leftPoint;
+
+        midPoint += rightPoint;
+        midPoint *= 0.5;
+
+        double distanceLeft  = (firstPoint - leftPoint).mag();
+        double distanceRight = (firstPoint - rightPoint).mag();
+
+        // Add output
+        m_builder->addAttValue("Position",       getPositionString(firstPoint),       "");
+        m_builder->addAttValue("Distance Left",  float(distanceLeft),                 "");
+        m_builder->addAttValue("Distance Right", float(distanceRight),                "");
+        m_builder->addAttValue("AveSeparation",  float(curPoint->getAveSeparation()), "");
+
+        // Now draw the lines
         m_builder->addPoint(firstPoint.x(), firstPoint.y(), firstPoint.z());
+        m_builder->addPoint(midPoint.x(),   midPoint.y(),   midPoint.z()  );
+        m_builder->addPoint(leftPoint.x(),  leftPoint.y(),  leftPoint.z()  );
+        m_builder->addPoint(rightPoint.x(), rightPoint.y(), rightPoint.z()  );
 
-        Point scndPoint  = boxPoints->getSecondTkrVecPoint()->getPosition();
-        m_builder->addPoint(scndPoint.x(), scndPoint.y(), scndPoint.z());
+        // Now draw points below
+        if (curPoint->getLeft())  drawTkrBoundBoxPoint(curPoint->getLeft());
+        if (curPoint->getRight()) drawTkrBoundBoxPoint(curPoint->getRight());
     }
 
     return;
@@ -504,7 +541,7 @@ void TrackElementsFiller::drawVectorLinks()
                 break;
             }
         }
-        else if (vecLink->associated()) continue;
+        //else if (vecLink->associated()) continue;
 
         drawSingleVectorLink(vecLink, linkColor);
     }
