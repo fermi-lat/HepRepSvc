@@ -14,6 +14,7 @@
 #include "Event/Recon/TkrRecon/TkrTree.h"
 #include "Event/Recon/TkrRecon/TkrFilterParams.h"
 #include "Event/Recon/TkrRecon/TkrBoundBox.h"
+#include "Event/Recon/TkrRecon/TkrBoundBoxLinks.h"
 #include "Event/Recon/TkrRecon/TkrBoundBoxPoints.h"
 
 #include <sstream>
@@ -70,11 +71,18 @@ void TrackElementsFiller::buildTypes()
     m_builder->addAttDef("LongRmsAve","Average Longitudinal Moment","Physics","#");
 
     // Define the collection of TkrBoundBoxes to go with the above points
-    m_builder->addType("TkrFilterParams", "TkrBoundBoxes", "TkrBoundBox collection", "");
-    m_builder->addAttDef("Number Boxes", "Number of TkrBoundBoxes", "Physics", "");
+    m_builder->addType("TkrFilterParams", "TkrBoundBoxLinkCol", "TkrBoundLink collection", "");
+    m_builder->addAttDef("Number Links", "Number of TkrBoundBoxLinks", "Physics", "");
 
-    // Define the individual TkrBoundBoxes
-    m_builder->addType("TkrBoundBoxes", "TkrBoundBox", "TkrBoundBox", "");
+    // Define the collection of TkrBoundBoxLinks which comprise the TkrFilterParams
+    m_builder->addType("TkrBoundBoxLinkCol", "TkrBoundBoxLink", "TkrBoundBoxLinks", "");
+    m_builder->addAttValue("DrawAs","Line","");
+    m_builder->addAttValue("Color", "green", "");
+    m_builder->addAttDef("Position",           "Position",             "Physics", "");
+    m_builder->addAttDef("Distance to Parent", "Distance to Parent",   "Physics", "");
+
+    // Define the individual TkrBoundBoxes which go with each link
+    m_builder->addType("TkrBoundBoxLink", "TkrBoundBox", "TkrBoundBox", "");
     m_builder->addAttValue("DrawAs", "Prism", "");
     m_builder->addAttValue("Color", "yellow", "");
     m_builder->addAttValue("FillColor", "purple", "");
@@ -90,7 +98,7 @@ void TrackElementsFiller::buildTypes()
     m_builder->addAttDef("RMS Distance",  "RMS Distance Between TkrVecPoints",  "Physics", "");
 
     // Define the collection of TkrBoundBoxPoints to go with the above boxes
-    m_builder->addType("TkrFilterParams", "TkrBoundBoxPointsCol", "TkrBoundBoxPoints Collection", "");
+    m_builder->addType("TkrBoundBoxLink", "TkrBoundBoxPointsCol", "TkrBoundBoxPoints Collection", "");
     m_builder->addAttDef("Number Points", "Number of TkrBoundBoxPoints", "Physics", "");
 
     // Define the individual TkrBoundBoxes
@@ -258,19 +266,19 @@ void TrackElementsFiller::drawFilterParamsCol()
     // No Filter Params, no work
     if (!tkrFilterParamsCol) return;
     
-    // Now retrieve the relations between the TkrFilterParams and their associated TkrBoundBoxes
-    Event::TkrFilterParamsToBoxTabList* tkrFilterParamsToBoxList = 
-        SmartDataPtr<Event::TkrFilterParamsToBoxTabList>(m_dpsvc, EventModel::TkrRecon::TkrFilterParamsToBoxTab);
+    // Now retrieve the relations between the TkrFilterParams and their associated TkrBoundBoxLinks
+    Event::TkrFilterParamsToLinksTabList* tkrFilterParamsToLinksList = 
+        SmartDataPtr<Event::TkrFilterParamsToLinksTabList>(m_dpsvc, EventModel::TkrRecon::TkrFilterParamsToLinksTab);
 
     // Dummy list in case nothing in TDS
-    Event::TkrFilterParamsToBoxTabList dummyList;
+    Event::TkrFilterParamsToLinksTabList dummyList;
     dummyList.clear();
 
-    if (!tkrFilterParamsToBoxList) tkrFilterParamsToBoxList = &dummyList;
+    if (!tkrFilterParamsToLinksList) tkrFilterParamsToLinksList = &dummyList;
 
     // Use the above to now make a relational table between TkrFilterParams and TkrBoundBoxes
-    Event::TkrFilterParamsToBoxTab tkrFilterParamsToBoxTab(tkrFilterParamsToBoxList);
-
+    Event::TkrFilterParamsToLinksTab tkrFilterParamsToLinksTab(tkrFilterParamsToLinksList);
+/*
     // And now retrieve the relations between the TkrFilterParams and their associated TkrBoundBoxPoints
     Event::TkrFilterParamsToPointsTabList* tkrFilterParamsToPointsList = 
         SmartDataPtr<Event::TkrFilterParamsToPointsTabList>(m_dpsvc, EventModel::TkrRecon::TkrFilterParamsToPointsTab);
@@ -283,7 +291,7 @@ void TrackElementsFiller::drawFilterParamsCol()
 
     // And now make a relational table between TkrFilterParams and TkrBoundBoxPoints
     Event::TkrFilterParamsToPointsTab tkrFilterParamsToPointsTab(tkrFilterParamsToPointsList);
-
+*/
     // Ready for work, initiate the drawing sequence
     m_builder->addInstance("TkrRecon","TkrFilterParamsCol");
 
@@ -304,11 +312,14 @@ void TrackElementsFiller::drawFilterParamsCol()
         // Output the information contained in the TkrFilterParams
         drawFilterParams(tkrFilterParams);
 
+        // Now draw the associated stuff that goes with this TkrFilterParam
+        drawTkrBoundBoxLinks(tkrFilterParams, tkrFilterParamsToLinksTab);
+
         // Draw the boxes associated with these params
-        drawTkrBoundBoxes(tkrFilterParams, tkrFilterParamsToBoxTab);
+//        drawTkrBoundBoxes(tkrFilterParams, tkrFilterParamsToBoxTab);
 
         // Draw the connections between TkrVecPoints for the associated hits
-        drawTkrBoundBoxPoints(tkrFilterParams, tkrFilterParamsToPointsTab);
+//        drawTkrBoundBoxPoints(tkrFilterParams, tkrFilterParamsToPointsTab);
     }
 
     return;
@@ -344,6 +355,102 @@ void TrackElementsFiller::drawFilterParams(Event::TkrFilterParams* tkrFilterPara
 
     m_builder->addPoint(start.x(), start.y(), start.z());
     m_builder->addPoint(stop.x(),  stop.y(),  stop.z());
+
+    return;
+}
+
+void TrackElementsFiller::drawTkrBoundBoxLinks(Event::TkrFilterParams* tkrFilterParams, Event::TkrFilterParamsToLinksTab& paramsToLinksTab)
+{
+    // Use this to get a vector containing all related TkrBoundBoxes
+    std::vector<Event::TkrFilterParamsToLinksRel*> paramsToLinksVec = paramsToLinksTab.getRelByFirst(tkrFilterParams);
+
+    // Add an instance of TkrVecPoints
+    m_builder->addInstance("TkrFilterParams","TkrBoundBoxLinkCol");
+
+    // Figure out how many we have and tell the display what to expect
+    int nBoundBoxLinks = paramsToLinksVec.size();
+        
+    m_builder->addAttValue("Number Links", (float)(nBoundBoxLinks), "");
+
+    m_builder->setSubinstancesNumber("TkrBoundBoxLink", nBoundBoxLinks);
+
+    // Now loop through this vector to draw the bounding boxes
+    std::vector<Event::TkrFilterParamsToLinksRel*>::iterator paramsToLinkItr = paramsToLinksVec.begin();
+
+    try {
+
+    while(paramsToLinkItr != paramsToLinksVec.end())
+    {
+        // Recover the TkrBoundBoxLink from our list iterator
+        Event::TkrBoundBoxLink* bbLink = (*paramsToLinkItr++)->getSecond();
+
+        // Add an instance of TkrBoundBoxLink
+        m_builder->addInstance("TkrBoundBoxLinkCol","TkrBoundBoxLink");
+
+        // Recover and print position and distance to parent
+        m_builder->addAttValue("Position",           getPositionString(bbLink->getPosition()),   "");
+        m_builder->addAttValue("Distance to Parent", float(bbLink->getDistToParent()),           "");
+
+        // If we have a parent then we need to draw line to it
+        if (const Event::TkrBoundBoxLink* parent = bbLink->getParent())
+        {
+            Point firstPoint = bbLink->getPosition();
+            m_builder->addPoint(firstPoint.x(), firstPoint.y(), firstPoint.z());
+
+            Point scndPoint  = parent->getPosition();
+            m_builder->addPoint(scndPoint.x(), scndPoint.y(), scndPoint.z());
+        }
+
+        // Now recover the pointer to the associated TkrBoundBox
+        const Event::TkrBoundBox* box = bbLink->getBoundBox();
+
+        // Add an instance of TkrBoundBox
+        m_builder->addInstance("TkrBoundBoxLink","TkrBoundBox");
+
+        // Retrieve and fill stuff we want to see
+        int           nPoints     = box->size();
+        int           biLayer     = box->getBiLayer();
+        const  Point& boxCenter   = const_cast<Event::TkrBoundBox*>(box)->getBoxCenterPos();
+        const  Point& avePosition = box->getAveragePosition();
+        double        hitDensity  = box->getHitDensity();
+        double        meanDist    = box->getMeanDist();
+        double        rmsDist     = box->getRmsDist();
+
+        m_builder->addAttValue("NumVecPoints",  float(nPoints),                 "");
+        m_builder->addAttValue("BiLayer",       float(biLayer),                 "");
+        m_builder->addAttValue("BoxCenter",     getPositionString(boxCenter),   "");
+        m_builder->addAttValue("AvePosition",   getPositionString(avePosition), "");
+        m_builder->addAttValue("Hit Density",   float(hitDensity),              "");
+        m_builder->addAttValue("Mean Distance", float(meanDist),                "");
+        m_builder->addAttValue("RMS Distance",  float(rmsDist),                 "");
+
+        // Set up to draw the shape
+        const  Point& lowEdge   = box->getLowCorner();
+        const  Point& highEdge  = box->getHighCorner();
+        double boxSigmaX        = 0.5 * (highEdge.x() - lowEdge.x());
+        double boxSigmaY        = 0.5 * (highEdge.y() - lowEdge.y());
+
+        drawPrism(boxCenter.x(), boxCenter.y(), boxCenter.z(), boxSigmaX, boxSigmaY, _dH);
+
+        // Now draw the points associated with this box
+        m_builder->addInstance("TkrBoundBoxLink","TkrBoundBoxPointsCol");
+
+        // Recover the top TkrBoundBoxPoint and start doing some drawing! 
+        const Event::TkrBoundBoxPoint* topPoint = bbLink->getTopPoint();
+
+        // Number of bound box points we'll end up drawing
+        int numTkrBoundBoxPoints = 60;
+        
+        m_builder->addAttValue("Number Points", (float)(numTkrBoundBoxPoints), "");
+
+        m_builder->setSubinstancesNumber("TkrBoundBoxPoints", numTkrBoundBoxPoints);
+
+        drawTkrBoundBoxPoint(topPoint);
+    }
+
+    } catch(...) {
+        int whathappened = 0;
+    }
 
     return;
 }
