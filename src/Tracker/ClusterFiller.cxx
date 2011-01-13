@@ -125,10 +125,10 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
         int hit;
         for(hit=0; hit<nHits; ++hit) {
             Event::TkrCluster* pCluster = (*pClusters)[hit];
-            if(!pCluster->hitFlagged()) nNotUsed++;
+            if(pCluster->isSet(Event::TkrCluster::maskUSEDANY)==0) nNotUsed++;
         }
 
-        m_builder->setSubinstancesNumber("TkrClusterCol",nNotUsed);
+        m_builder->setSubinstancesNumber("TkrClusterCol",nNotUsed); 
 
         m_builder->addAttValue("# Total Clusters", nHits, "");
         m_builder->addAttValue("# Clusters not used", nNotUsed, "");
@@ -142,7 +142,7 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
         for(hit=0; hit<nHits; ++hit) {
             {
                 Event::TkrCluster* pCluster = (*pClusters)[hit];
-                if(pCluster->hitFlagged()) continue;
+                if(pCluster->isSet(Event::TkrCluster::maskUSEDANY)) continue;
                 m_builder->addInstance("TkrClusterCol","TkrCluster");
                 m_builder->addAttValue("Sequence",    hit, "");
 
