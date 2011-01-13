@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: lsrea  Thu Jan 13 11:42:58 PST 2011
+HepRepSvc/src/Tracker
+
+Modified Files:
+	ClusterFiller.cxx TrackFiller.cxx 
+Log Message:
+Teach HepRepSvc about USEDCR bits, to get the display working properly for CR tracks
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-35-05, operation: add
 Package: HepRepSvc
