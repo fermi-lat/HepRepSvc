@@ -247,7 +247,7 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
             Event::TkrClusterPtr pCluster = plane.getClusterPtr();
 
             if(pCluster) {               
-                if(!pCluster->hitFlagged()) continue;
+                if(!pCluster->isSet(Event::TkrCluster::maskUSEDANY)) continue;
 
                 m_builder->addInstance("TkrTrackHit","TkrCluster");
                 m_builder->addAttValue("Sequence",    hit, "");
