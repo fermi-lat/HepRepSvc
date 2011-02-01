@@ -1,8 +1,9 @@
 /* @file release.notes
  * Package HepRepSvc
- * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.89 2011/01/11 23:49:52 usher Exp $
+ * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.90 2011/01/13 19:47:03 lsrea Exp $
  *           EOH
 
+ HepRepSvc-00-36-01  1-Feb-2011 TU Modify track display to use new TkrCRTrackCol for CR tracks
  HepRepSvc-00-36-00 13-Jan-2011  lsrea fix up TreeBased/CR conflict
  HepRepSvc-00-35-05 11-Jan-2011 TU Updates to display of tracker filter stuff
  HepRepSvc-00-35-04 04-Jan-2011 TU Updates for new Cal, tracker filter
