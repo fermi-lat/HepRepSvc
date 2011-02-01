@@ -1,5 +1,14 @@
 ------------------------------------------------------------
 User: usher  Tue Feb  1 12:32:04 PST 2011
+HepRepSvc/src/Tracker
+
+Modified Files:
+	TrackFiller.cxx 
+Log Message:
+Modify track filler to use the new TkrCRTrackCol for cosmic ray tracks (they will be drawn after the regular pat rec tracks)
+    *
+------------------------------------------------------------
+User: usher  Tue Feb  1 12:32:04 PST 2011
 HepRepSvc/src
 
 Modified Files:
