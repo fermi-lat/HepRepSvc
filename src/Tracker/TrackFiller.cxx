@@ -98,195 +98,213 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
 {
     if (!hasType(typesList,"Recon/TkrRecon/Tracks/Track")) return;
 
+    std::vector<Event::TkrTrackCol*> trackColVec;
+
+    // First look up the normal track collection
     Event::TkrTrackCol* pTracks = 
         SmartDataPtr<Event::TkrTrackCol>(m_dpsvc,
         EventModel::TkrRecon::TkrTrackCol);
 
-    //Event::TkrClusterCol* pClusters = 
-    //    SmartDataPtr<Event::TkrClusterCol>(m_dpsvc,  
-    //    EventModel::TkrRecon::TkrClusterCol);
+    if (pTracks) trackColVec.push_back(pTracks);
+
+    // Now look up the normal track collection
+    pTracks = SmartDataPtr<Event::TkrTrackCol>(m_dpsvc,
+        EventModel::TkrRecon::TkrCRTrackCol);
+
+    if (pTracks) trackColVec.push_back(pTracks);
 
     //Now see if we can do the drawing
-    if (!pTracks) return;
+    if (trackColVec.empty()) return;
 
     m_builder->addInstance("TkrRecon","Tracks");
 
-    int numTracks = pTracks->size();
+    int numTracks = trackColVec.front()->size() + trackColVec.back()->size();
 
     if (numTracks==0) return;
+
     m_builder->setSubinstancesNumber("Tracks",numTracks);
 
-    int trackId  = 0;
-    double trackWid = 2.0;
-    Event::TkrTrackCol::iterator it = pTracks->begin();
-
-    while(it != pTracks->end())
+    // Outside loop is over the track collections
+    for(std::vector<Event::TkrTrackCol*>::iterator colItr  = trackColVec.begin();
+                                                   colItr != trackColVec.end();
+                                                   colItr++)
     {
-        m_builder->addInstance("Tracks","Track");
-        Event::TkrTrack& track = **it++;
+        pTracks = *colItr;
 
-        Event::TkrTrackHit::ParamType fit = Event::TkrTrackHit::SMOOTHED;
-        Event::TkrTrackHit::ParamType typ = Event::TkrTrackHit::SMOOTHED;
+        int trackId  = 0;
+        double trackWid = 2.0;
+        Event::TkrTrackCol::iterator it = pTracks->begin();
 
-        if (trackId > 1) trackWid = 1.0;
-
-        m_builder->addAttValue("TrackId",            trackId++, "");
-        m_builder->addAttValue("LineWidth",          (float)trackWid, "");
-        idents::TkrId id = track[0]->getTkrId();
-        std::string str = getTkrIdString(id);
-
-        m_builder->addAttValue("Start Volume",       str, "");
-        m_builder->addAttValue("Quality",            (float)(track.getQuality()),          "");
-        m_builder->addAttValue("Energy",             (float)(track.getInitialEnergy()),    "");
-        m_builder->addAttValue("# Hits",             (int)(track.size()),                  "");
-
-        m_builder->addAttValue("Chi-square(filter)", (float)(track.getChiSquareFilter()),  "");
-        m_builder->addAttValue("Chi-Square(smooth)", (float)(track.getChiSquareSmooth()),  "");
-        m_builder->addAttValue("# Deg of Free",      (int)(track.getNDegreesOfFreedom()),  "");
-        m_builder->addAttValue("RMS resid",          (float)(track.getScatter()),          "");
-        m_builder->addAttValue("Tkr-Cal RadLens",    (float)(track.getTkrCalRadlen()),     "");
-        m_builder->addAttValue("Kalman Theta MS",    (float)(track.getKalThetaMS()),       "");
-        m_builder->addAttValue("Kalman Energy",      (float)(track.getKalEnergy()),        "");
-        m_builder->addAttValue("Start Position",     
-            getPositionString(track.getInitialPosition()), "");
-        m_builder->addAttValue("Start Direction",    
-            getDirectionString(track.getInitialDirection()), "");
-
-        //Build strings for status bits
-        unsigned int statBits = track.getStatusBits();
-        m_builder->addAttValue("Status",getBits(statBits, 15, 0),"");
-
-        std::stringstream outString;
-        m_builder->addAttValue("Status High",getBits(statBits, 31, 16),"");
-        //first loop through to draw the track
-        Event::TkrTrackHitVecItr hitIter = track.begin();
-        Event::TkrTrackHitVecItr lastHit  = --track.end();
-        for(; hitIter!=lastHit; ++hitIter)
+        while(it != pTracks->end())
         {
-            Event::TkrTrackHit& plane = **hitIter;
-            Point planePos = plane.getPoint(fit);
-            m_builder->addPoint(planePos.x(),planePos.y(),planePos.z());
+            m_builder->addInstance("Tracks","Track");
+            Event::TkrTrack& track = **it++;
 
-            Vector planeDir = plane.getDirection(fit);
-            Event::TkrTrackHit& nextPlane = **(hitIter+1);
-            Point nextPos = nextPlane.getPoint(fit);
-            double deltaZ = planePos.z() - nextPos.z();
-            double dist = fabs(deltaZ/planeDir.z());
-            Point nextPoint = planePos + dist*planeDir;
-            m_builder->addPoint(nextPoint.x(),nextPoint.y(),nextPoint.z());
-        }
+            Event::TkrTrackHit::ParamType fit = Event::TkrTrackHit::SMOOTHED;
+            Event::TkrTrackHit::ParamType typ = Event::TkrTrackHit::SMOOTHED;
 
-        //Second loop through to draw the hits
-        hitIter = track.begin();
-        lastHit  = --track.end();
-        int hit = 0;
+            if (trackId > 1) trackWid = 1.0;
 
-        m_builder->setSubinstancesNumber("Track", track.size());
- 
-        for(hitIter=track.begin(); hitIter!=track.end(); ++hitIter, ++hit)
-        {
-            m_builder->addInstance("Track","TkrTrackHit");
-            m_builder->addAttValue("LineWidth", (float)trackWid, "");
+            m_builder->addAttValue("TrackId",            trackId++, "");
+            m_builder->addAttValue("LineWidth",          (float)trackWid, "");
+            idents::TkrId id = track[0]->getTkrId();
+            std::string str = getTkrIdString(id);
 
-            Event::TkrTrackHit& plane = **hitIter;
+            m_builder->addAttValue("Start Volume",       str, "");
+            m_builder->addAttValue("Quality",            (float)(track.getQuality()),          "");
+            m_builder->addAttValue("Energy",             (float)(track.getInitialEnergy()),    "");
+            m_builder->addAttValue("# Hits",             (int)(track.size()),                  "");
 
-            double x0, y0, z0;
-            idents::TkrId tkrId = plane.getTkrId();
-            x0 = plane.getTrackParams(typ).getxPosition();
-            y0 = plane.getTrackParams(fit).getyPosition(); 
-            z0 = plane.getZPlane();
+            m_builder->addAttValue("Chi-square(filter)", (float)(track.getChiSquareFilter()),  "");
+            m_builder->addAttValue("Chi-Square(smooth)", (float)(track.getChiSquareSmooth()),  "");
+            m_builder->addAttValue("# Deg of Free",      (int)(track.getNDegreesOfFreedom()),  "");
+            m_builder->addAttValue("RMS resid",          (float)(track.getScatter()),          "");
+            m_builder->addAttValue("Tkr-Cal RadLens",    (float)(track.getTkrCalRadlen()),     "");
+            m_builder->addAttValue("Kalman Theta MS",    (float)(track.getKalThetaMS()),       "");
+            m_builder->addAttValue("Kalman Energy",      (float)(track.getKalEnergy()),        "");
+            m_builder->addAttValue("Start Position",     
+                getPositionString(track.getInitialPosition()), "");
+            m_builder->addAttValue("Start Direction",    
+                getDirectionString(track.getInitialDirection()), "");
 
-            // this is the prism that we pick
-            drawPrism(x0, y0, z0, _dH, _dH, _dH);
+            //Build strings for status bits
+            unsigned int statBits = track.getStatusBits();
+            m_builder->addAttValue("Status",getBits(statBits, 15, 0),"");
 
-            m_builder->addAttValue("Sequence #", hit, "");
-            m_builder->addAttValue("Hit Volume", 
-                getTkrIdString(plane.getTkrId()), "");
-
-            //Build string for the measuring view
-            std::stringstream hitView("No valid hit found");
-
-            bool hitOnFit = ((plane.getStatusBits() & Event::TkrTrackHit::HITONFIT)!=0);
-            if(hitOnFit) 
+            std::stringstream outString;
+            m_builder->addAttValue("Status High",getBits(statBits, 31, 16),"");
+            //first loop through to draw the track
+            Event::TkrTrackHitVecItr hitIter = track.begin();
+            Event::TkrTrackHitVecItr lastHit  = --track.end();
+            for(; hitIter!=lastHit; ++hitIter)
             {
-                if (plane.getTkrId().getView() == idents::TkrId::eMeasureX) { 
-                    hitView << "This is an X measuring plane";
-                } else {                                                     
-                    hitView << "This is a Y measuring plane";
-                }
+                Event::TkrTrackHit& plane = **hitIter;
+                Point planePos = plane.getPoint(fit);
+                m_builder->addPoint(planePos.x(),planePos.y(),planePos.z());
+
+                Vector planeDir = plane.getDirection(fit);
+                Event::TkrTrackHit& nextPlane = **(hitIter+1);
+                Point nextPos = nextPlane.getPoint(fit);
+                double deltaZ = planePos.z() - nextPos.z();
+                double dist = fabs(deltaZ/planeDir.z());
+                Point nextPoint = planePos + dist*planeDir;
+                m_builder->addPoint(nextPoint.x(),nextPoint.y(),nextPoint.z());
             }
 
-            m_builder->addAttValue("Projection",hitView.str(),"");
-            //m_builder->addAttValue("ClusterID",clusterId,"");
-            m_builder->addAttValue("Energy",(float)(plane.getEnergy()),"");
-            m_builder->addAttValue("RadLen",(float)(plane.getRadLen()),"");
-            m_builder->addAttValue("ActDist",(float)(plane.getActiveDist()),"");
-            m_builder->addAttValue("Kink Angle", (float)(plane.getKinkAngle()),"");
-            if (hitOnFit) {
-                m_builder->addAttValue("ChiSquareFilter",
-                    (float)(plane.getChiSquareFilter()),"");
-                m_builder->addAttValue("ChiSquareSmooth",
-                    (float)(plane.getChiSquareSmooth()),"");
-            }
-            m_builder->addAttValue("Measured",
-                getPositionString(plane.getPoint(Event::TkrTrackHit::MEASURED)),"");
-            m_builder->addAttValue("Filter Position", 
-                getPositionString(plane.getPoint(Event::TkrTrackHit::FILTERED)),"");
-            m_builder->addAttValue("Filter Slope",    
-                getSlopeString(plane.getTrackParams(Event::TkrTrackHit::FILTERED)),"");
-            m_builder->addAttValue("Smooth Position", 
-                getPositionString(plane.getPoint(Event::TkrTrackHit::SMOOTHED)),"");
-            m_builder->addAttValue("Smooth Slope",    
-                getSlopeString(plane.getTrackParams(Event::TkrTrackHit::SMOOTHED)),"");
+            //Second loop through to draw the hits
+            hitIter = track.begin();
+            lastHit  = --track.end();
+            int hit = 0;
 
-            //Build string for status bits
-            unsigned int      statBits = plane.getStatusBits();
-            m_builder->addAttValue("Hit Status Low",getBits(statBits, 15, 0),"");
-            m_builder->addAttValue("Hit Status High",getBits(statBits, 31, 16),"");
+            m_builder->setSubinstancesNumber("Track", track.size());
+  
+            for(hitIter=track.begin(); hitIter!=track.end(); ++hitIter, ++hit)
+            {
+                m_builder->addInstance("Track","TkrTrackHit");
+                m_builder->addAttValue("LineWidth", (float)trackWid, "");
 
-            Event::TkrClusterPtr pCluster = plane.getClusterPtr();
+                Event::TkrTrackHit& plane = **hitIter;
 
-            if(pCluster) {               
-                if(!pCluster->isSet(Event::TkrCluster::maskUSEDANY)) continue;
+                double x0, y0, z0;
+                idents::TkrId tkrId = plane.getTkrId();
+                x0 = plane.getTrackParams(typ).getxPosition();
+                y0 = plane.getTrackParams(fit).getyPosition(); 
+                z0 = plane.getZPlane();
 
-                m_builder->addInstance("TkrTrackHit","TkrCluster");
-                m_builder->addAttValue("Sequence",    hit, "");
+                // this is the prism that we pick
+                drawPrism(x0, y0, z0, _dH, _dH, _dH);
 
-                buildClusterInstance(m_builder, pCluster);
-            }
+                m_builder->addAttValue("Sequence #", hit, "");
+                m_builder->addAttValue("Hit Volume", 
+                    getTkrIdString(plane.getTkrId()), "");
 
-            bool doSigma = true;
-            if(doSigma) {
+                //Build string for the measuring view
+                std::stringstream hitView("No valid hit found");
 
-                // now the "sigma"
-                m_builder->addInstance("TkrTrackHit", "HitSigma");
-                if (tkrId.hasView()) {
-                    // try something like sqrt, but min and max it.
-                    // with this choice, .01 < chisq < 1000.
-                    double delta1=  std::max(0.01, plane.getChiSquareSmooth());
-                    delta1 = sqrt(std::min(delta1, 1000.));
-                    double delta2 = 0.0;
-
-                    if( plane.getTkrId().getView() == idents::TkrId::eMeasureY) {
-                        std::swap(delta1, delta2);
+                bool hitOnFit = ((plane.getStatusBits() & Event::TkrTrackHit::HITONFIT)!=0);
+                if(hitOnFit) 
+                {
+                    if (plane.getTkrId().getView() == idents::TkrId::eMeasureX) { 
+                        hitView << "This is an X measuring plane";
+                    } else {                                                     
+                        hitView << "This is a Y measuring plane";
                     }
+                }
 
-                    double xl, xr, yl, yr;
-                    xl = x0 - delta1;
-                    xr = x0 + delta1;
-                    yl = y0 - delta2;
-                    yr = y0 + delta2;
+                m_builder->addAttValue("Projection",hitView.str(),"");
+                //m_builder->addAttValue("ClusterID",clusterId,"");
+                m_builder->addAttValue("Energy",(float)(plane.getEnergy()),"");
+                m_builder->addAttValue("RadLen",(float)(plane.getRadLen()),"");
+                m_builder->addAttValue("ActDist",(float)(plane.getActiveDist()),"");
+                m_builder->addAttValue("Kink Angle", (float)(plane.getKinkAngle()),"");
+                if (hitOnFit) {
+                    m_builder->addAttValue("ChiSquareFilter",
+                        (float)(plane.getChiSquareFilter()),"");
+                    m_builder->addAttValue("ChiSquareSmooth",
+                        (float)(plane.getChiSquareSmooth()),"");
+                }
+                m_builder->addAttValue("Measured",
+                    getPositionString(plane.getPoint(Event::TkrTrackHit::MEASURED)),"");
+                m_builder->addAttValue("Filter Position", 
+                    getPositionString(plane.getPoint(Event::TkrTrackHit::FILTERED)),"");
+                m_builder->addAttValue("Filter Slope",    
+                    getSlopeString(plane.getTrackParams(Event::TkrTrackHit::FILTERED)),"");
+                m_builder->addAttValue("Smooth Position", 
+                    getPositionString(plane.getPoint(Event::TkrTrackHit::SMOOTHED)),"");
+                m_builder->addAttValue("Smooth Slope",    
+                    getSlopeString(plane.getTrackParams(Event::TkrTrackHit::SMOOTHED)),"");
 
-                    // this is all hidden inside the wafer...
-                    //   so for experts only!
-                    m_builder->addPoint(xl, yl, z0);
-                    m_builder->addPoint(xl, yl, z0-_hE);
-                    m_builder->addPoint(xr, yr, z0+_hE);
-                    m_builder->addPoint(xr, yr, z0);
+                //Build string for status bits
+                unsigned int      statBits = plane.getStatusBits();
+                m_builder->addAttValue("Hit Status Low",getBits(statBits, 15, 0),"");
+                m_builder->addAttValue("Hit Status High",getBits(statBits, 31, 16),"");
+
+                Event::TkrClusterPtr pCluster = plane.getClusterPtr();
+
+                if(pCluster) {               
+                    if(!pCluster->isSet(Event::TkrCluster::maskUSEDANY)) continue;
+
+                    m_builder->addInstance("TkrTrackHit","TkrCluster");
+                    m_builder->addAttValue("Sequence",    hit, "");
+
+                    buildClusterInstance(m_builder, pCluster);
+                }
+
+                bool doSigma = true;
+                if(doSigma) {
+
+                    // now the "sigma"
+                    m_builder->addInstance("TkrTrackHit", "HitSigma");
+                    if (tkrId.hasView()) {
+                        // try something like sqrt, but min and max it.
+                        // with this choice, .01 < chisq < 1000.
+                        double delta1=  std::max(0.01, plane.getChiSquareSmooth());
+                        delta1 = sqrt(std::min(delta1, 1000.));
+                        double delta2 = 0.0;
+
+                        if( plane.getTkrId().getView() == idents::TkrId::eMeasureY) {
+                            std::swap(delta1, delta2);
+                        }
+
+                        double xl, xr, yl, yr;
+                        xl = x0 - delta1;
+                        xr = x0 + delta1;
+                        yl = y0 - delta2;
+                        yr = y0 + delta2;
+
+                        // this is all hidden inside the wafer...
+                        //   so for experts only!
+                        m_builder->addPoint(xl, yl, z0);
+                        m_builder->addPoint(xl, yl, z0-_hE);
+                        m_builder->addPoint(xr, yr, z0+_hE);
+                        m_builder->addPoint(xr, yr, z0);
+                    }
                 }
             }
         }
     }
+
+    return;
 }
 std::string TrackFiller::getTkrIdString(const idents::TkrId& tkrId)
 {

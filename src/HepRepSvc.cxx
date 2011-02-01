@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.28 2010/07/18 00:29:57 lsrea Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.29 2010/08/25 21:55:12 lsrea Exp $
 // 
 //  Original author: R.Giannitrapani
 //
@@ -109,7 +109,7 @@ StatusCode HepRepSvc::initialize ()
 
     // get the Particle Property Service
     IParticlePropertySvc* pps = 0;
-    status = service("ParticlePropertySvc", pps);
+    status = service("ParticlePropertySvc", pps, true);
     if( status.isFailure()) {
       log << MSG::ERROR << "Could not find ParticlePropertySvc" << endreq;
       return status;
