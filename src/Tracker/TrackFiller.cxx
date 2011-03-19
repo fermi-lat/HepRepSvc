@@ -12,6 +12,8 @@
 #include "Event/TopLevel/EventModel.h"
 #include "Event/Recon/TkrRecon/TkrTrack.h"
 
+#include "TkrUtil/ITkrTrackVecTool.h"
+
 #include "CLHEP/Vector/LorentzVector.h"
 
 #include <sstream>
@@ -99,26 +101,34 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
     if (!hasType(typesList,"Recon/TkrRecon/Tracks/Track")) return;
 
     std::vector<Event::TkrTrackCol*> trackColVec;
+    int numStTracks = 0;
+    int numCRTracks = 0;
 
     // First look up the normal track collection
     Event::TkrTrackCol* pTracks = 
         SmartDataPtr<Event::TkrTrackCol>(m_dpsvc,
         EventModel::TkrRecon::TkrTrackCol);
 
-    if (pTracks) trackColVec.push_back(pTracks);
+    if (pTracks) {
+        numStTracks = pTracks->size();
+        trackColVec.push_back(pTracks);
+    }
 
-    // Now look up the normal track collection
+    // Now look up the CR track collection
     pTracks = SmartDataPtr<Event::TkrTrackCol>(m_dpsvc,
         EventModel::TkrRecon::TkrCRTrackCol);
 
-    if (pTracks) trackColVec.push_back(pTracks);
+    if (pTracks) {
+        numCRTracks = pTracks->size();
+        trackColVec.push_back(pTracks);
+    }
 
     //Now see if we can do the drawing
     if (trackColVec.empty()) return;
 
     m_builder->addInstance("TkrRecon","Tracks");
 
-    int numTracks = trackColVec.front()->size() + trackColVec.back()->size();
+    int numTracks = numStTracks + numCRTracks;
 
     if (numTracks==0) return;
 
@@ -139,6 +149,10 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
         {
             m_builder->addInstance("Tracks","Track");
             Event::TkrTrack& track = **it++;
+            bool isCR = (track.getStatusBits()&Event::TkrTrack::COSMICRAY)!=0;
+
+            m_builder->addAttValue("Color",    (isCR ? "255,100,27" : "blue"), "");
+            m_builder->addAttValue("LineStyle",(isCR ? "Dashed" : "Solid"), "");
 
             Event::TkrTrackHit::ParamType fit = Event::TkrTrackHit::SMOOTHED;
             Event::TkrTrackHit::ParamType typ = Event::TkrTrackHit::SMOOTHED;
@@ -262,7 +276,7 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
                 Event::TkrClusterPtr pCluster = plane.getClusterPtr();
 
                 if(pCluster) {               
-                    if(!pCluster->isSet(Event::TkrCluster::maskUSEDANY)) continue;
+                    //if(!pCluster->isSet(Event::TkrCluster::maskUSEDANY)) continue;
 
                     m_builder->addInstance("TkrTrackHit","TkrCluster");
                     m_builder->addAttValue("Sequence",    hit, "");
