@@ -26,9 +26,16 @@ namespace AcdHepRepPointFiller {
 
   /// Create the outline of a Ribbon
   void addPointsAcdRibbon( IBuilder& builder, const AcdRibbonDim& ribbon );
+
+  typedef HepGeom::Point3D<double> HepPoint3D;
+  typedef HepGeom::Vector3D<double> HepVector3D;
   
   /// Fill the error axes for a tile
   void addErrors( IBuilder& builder, const HepPoint3D& center, const HepVector3D& vect);
+
+typedef HepGeom::Point3D<double> HepPoint3D;
+typedef HepGeom::Vector3D<double> HepVector3D;
+
 
 };
 
