@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: heather  Fri May 20 08:41:54 PDT 2011
+HepRepSvc
+
+Modified Files:
+	SConscript 
+Log Message:
+CLHEP 2.1.0.1
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-36-02, operation: add
 Package: HepRepSvc
