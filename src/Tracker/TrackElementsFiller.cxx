@@ -339,8 +339,10 @@ void TrackElementsFiller::drawFilterParams(Event::TkrFilterParams* tkrFilterPara
     m_builder->addAttValue("NumHitsTotal",   tkrFilterParams->getNumHitsTotal(), "");
     m_builder->addAttValue("NumDropped",     tkrFilterParams->getNumDropped(), "");
     m_builder->addAttValue("ChiSquare",      (float)tkrFilterParams->getChiSquare(), "");
+    m_builder->addAttValue("AverageDistance",  (float)tkrFilterParams->getAverageDistance(), "");
     m_builder->addAttValue("TransRms",       (float)tkrFilterParams->getTransRms(), "");
-    m_builder->addAttValue("LongRmsAve",     (float)tkrFilterParams->getLongRmsAve(), "");
+    m_builder->addAttValue("LongRmsAve",     (float)tkrFilterParams->getLongRms(), "");
+    m_builder->addAttValue("LongRmsAsym",     (float)tkrFilterParams->getLongRmsAsym(), "");
 
     //Build strings for status bits
     unsigned int statBits = tkrFilterParams->getStatusBits();
