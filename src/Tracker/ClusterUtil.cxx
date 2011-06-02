@@ -92,7 +92,7 @@ void ClusterUtil::buildClusterTypes(IBuilder* builder)
     builder->addAttDef("Sequence", "Position in TkrClusterCol", "Physics", "");
     builder->addAttDef("Tower","Cluster Tower #","Physics","");
     builder->addAttDef("Plane","Cluster Plane #","Physics","");
-    builder->addAttDef("View","Cluster View","Physics","");
+    builder->addAttDef("TkrView","Cluster View","Physics","");
     builder->addAttDef("First Strip","Cluster First Strip","Physics","");
     builder->addAttDef("Last Strip","Cluster Last Strip","Physics","");
     builder->addAttDef("Status-lo", "Cluster Low Status Bits","Physics","");
@@ -146,7 +146,7 @@ void ClusterUtil::buildClusterInstance(IBuilder* builder, Event::TkrCluster* pCl
 
     builder->addAttValue("Tower",       pCluster->tower(),"");
     builder->addAttValue("Plane",       (int)pCluster->getPlane(),"");
-    builder->addAttValue("View",        view,"");
+    builder->addAttValue("TkrView",        view,"");
     builder->addAttValue("First Strip", pCluster->firstStrip(),"");
     builder->addAttValue("Last Strip",  pCluster->lastStrip(),"");
 
