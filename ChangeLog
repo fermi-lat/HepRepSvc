@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: lsrea  Thu Jun  2 16:00:30 PDT 2011
+HepRepSvc/src/Tracker
+
+Modified Files:
+	ClusterFiller.cxx ClusterUtil.cxx TrackFiller.cxx 
+Log Message:
+Minor naming change to allow for suppressing TKR x or y view in WIRED
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-36-03, operation: add
 Package: HepRepSvc
