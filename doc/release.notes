@@ -1,8 +1,9 @@
 /* @file release.notes
  * Package HepRepSvc
- * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.92 2011/03/19 01:34:13 lsrea Exp $
+ * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.93 2011/05/20 15:41:54 heather Exp $
  *           EOH
 
+ HepRepSvc-00-36-04 02-Jun-2011  lsrea Minor change to allow TKR views in WIRED
  HepRepSvc-00-36-03 20-May-2011  hmk   CLHEP 2.1.0.1
  HepRepSvc-00-36-02 18-Mar-2011  lsrea Fix display of CR tracks
  HepRepSvc-00-36-01  1-Feb-2011 TU Modify track display to use new TkrCRTrackCol for CR tracks
