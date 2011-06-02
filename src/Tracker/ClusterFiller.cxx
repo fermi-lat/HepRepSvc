@@ -92,6 +92,7 @@ void ClusterFiller::buildTypes()
     m_builder->addAttDef("numTrunc", "# of Truncated planes", "Physics", "");
     m_builder->addType("TruncationMap", "PlaneInfo", "Plane Info", "");
     m_builder->addAttDef("trunc Type", "trunc Type", "Physics", "");
+    m_builder->addAttDef("TkrView", "view of truncated plane", "Physics", "");
     m_builder->addAttDef("lowEdge", "low X", "Physics", "");
     m_builder->addAttDef("highEdge", "high X", "Physics", "");
     
@@ -310,6 +311,7 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
 
                 m_builder->addInstance("TruncationMap", "PlaneInfo");
                 m_builder->addAttValue("trunc Type", "internal","");
+                m_builder->addAttValue("TkrView", view, "");
                 m_builder->addAttValue("low X", (float)xLow, "");
                 m_builder->addAttValue("high X", (float)xHigh, "");
                 drawPrism(x, y, z, dx, dy, dz);
@@ -330,6 +332,7 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
 
                 m_builder->addInstance("TruncationMap", "PlaneInfo");
                 m_builder->addAttValue("trunc Type", "edge", "");
+                m_builder->addAttValue("TkrView", view, "");
                 m_builder->addAttValue("low X",(float)xLow, "");
                 m_builder->addAttValue("high X",(float)xHigh, "");
                 drawPrism(x, y, z, dx, dy, dz);

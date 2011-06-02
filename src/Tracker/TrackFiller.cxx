@@ -35,9 +35,9 @@ ClusterUtil(hrisvc, gsvc), m_dpsvc(dpsvc),m_ppsvc(ppsvc) {}
 // This method build the types for the HepRep
 void TrackFiller::buildTypes()
 {
-    m_builder->addType("TkrRecon","Tracks", "Reconstructed Tracks collections","");
+    m_builder->addType("TkrRecon","Tracks", "Reconstructed Tracks collection","");
+    m_builder->addType("Tracks","Track","Reconstructed track","");
 
-    m_builder->addType("Tracks","Track","Reconstructed track collection","");
     m_builder->addAttValue("DrawAs","Line","");
     m_builder->addAttValue("Color","blue","");
     m_builder->addAttDef("TrackId","Track ID #","Physics","");
