@@ -85,9 +85,6 @@ void ClusterUtil::buildClusterTypes(IBuilder* builder)
         builder->addAttValue("MarkerSize", "1", "");
     }
 
-    builder->addType("TkrCluster", "Strip", "Strip", "");
-    builder->addType("Strip", "ActiveStrip", "Active Part of Strip", "");
-    builder->addAttValue("DrawAs","Prism","");
     //builder->addAttValue("Color","green","");
     builder->addAttDef("Sequence", "Position in TkrClusterCol", "Physics", "");
     builder->addAttDef("Tower","Cluster Tower #","Physics","");
@@ -100,6 +97,10 @@ void ClusterUtil::buildClusterTypes(IBuilder* builder)
     builder->addAttDef("Position","Cluster Global Position","Physics","");
     builder->addAttDef("RawToT","Cluster Time over Threshold","Physics","");
     builder->addAttDef("Mips","ToT converted to Mips","Physics","");
+
+    builder->addType("TkrCluster", "Strip", "Strip", "");
+    builder->addType("Strip", "ActiveStrip", "Active Part of Strip", "");
+    builder->addAttValue("DrawAs","Prism","");
 
     builder->addType("TkrCluster","TkrClusterToT"," ","");
     builder->addAttValue("DrawAs","Line","");

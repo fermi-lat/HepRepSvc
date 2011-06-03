@@ -51,6 +51,8 @@ class TrackFiller: public ClusterUtil {
 private:
   std::string getTkrIdString(const idents::TkrId& tkrId);
   std::string getSlopeString(const Event::TkrTrackParams& params);
+  void buildTrack( IBuilder* builder);
+
 
   //HepRepInitSvc* m_hrisvc;
   //IGlastDetSvc* m_gdsvc;

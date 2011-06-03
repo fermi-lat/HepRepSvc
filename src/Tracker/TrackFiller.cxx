@@ -35,63 +35,74 @@ ClusterUtil(hrisvc, gsvc), m_dpsvc(dpsvc),m_ppsvc(ppsvc) {}
 // This method build the types for the HepRep
 void TrackFiller::buildTypes()
 {
+    // Build types for the standard and the CR tracks
+    // call the same method to fill in the substructure
     m_builder->addType("TkrRecon","Tracks", "Reconstructed Tracks collection","");
     m_builder->addType("Tracks","Track","Reconstructed track","");
+    buildTrack(m_builder);
 
-    m_builder->addAttValue("DrawAs","Line","");
-    m_builder->addAttValue("Color","blue","");
-    m_builder->addAttDef("TrackId","Track ID #","Physics","");
-    m_builder->addAttDef("Start Volume","Track Volume Information","Physics","");
-    m_builder->addAttDef("Status Low", "Track Low Status Bits","Physics","");
-    m_builder->addAttDef("Status High","Track High Status Bits","Physics","");
-    m_builder->addAttDef("Energy","Fit Track Energy","Physics","MeV");
-    m_builder->addAttDef("Quality","Fit Track Quality","Physics","");
-    m_builder->addAttDef("# Hits","Number of Hits on Track","Physics","");
-    m_builder->addAttDef("Chi-Square(filter)","Fit Track Filtered Chi-Square",
-        "Physics","");
-    m_builder->addAttDef("Chi-Square(smooth)","Fit Track Smoothed Chi-Square",
-        "Physics","");
-    m_builder->addAttDef("# Deg of Free","Number of degrees of freedom in Chi-Square",
-        "Physics","");
-    m_builder->addAttDef("RMS resid","RMS Residual of track hits","Physics","");
-    m_builder->addAttDef("Tkr-Cal RadLens","Fit Track Smoothed Chi-Square",
-        "Physics","");
-    m_builder->addAttDef("Kalman Theta MS","Fit Track Smoothed Chi-Square",
-        "Physics","");
-    m_builder->addAttDef("Kalman Energy","Fit Track Smoothed Chi-Square",
-        "Physics","");
-    m_builder->addAttDef("Start Position","Track start position","Physics","");
-    m_builder->addAttDef("Start Direction","Track start direction","Physics","");
+    m_builder->addType("TkrRecon","CRTracks", "Reconstructed CRTracks collection","");
+    m_builder->addType("CRTracks","Track","Reconstructed CRTrack","");
+    buildTrack(m_builder);
 
-    m_builder->addType("Track","TkrTrackHit", "Track Hit", "");
-    m_builder->addAttValue("DrawAs","Prism", "");
-    m_builder->addAttDef("Sequence #", "Sequence of Hit on Track", "Physics", "");
-    m_builder->addAttDef("Hit Volume","Volume containing this hit","Physics","");
-    m_builder->addAttDef("Hit Status Low","Hit Low Status Bits","Physics","");
-    m_builder->addAttDef("Hit Status High","Hit High Status Bits","Physics","");
-    m_builder->addAttDef("ClusterID","Cluster ID","Physics","");
-    m_builder->addAttDef("Energy","Energy at Plane","Physics","MeV");
-    m_builder->addAttDef("Projection","Plane Projection","Physics","");
-    m_builder->addAttDef("RadLen","Radiation Lengths to Plane","Phsyics","");
-    m_builder->addAttDef("ActDist","Active Distance","Physics","mm");
-    m_builder->addAttDef("Kink Angle","Kink Angle","Physics","");
-    m_builder->addAttDef("Measured","Hit Position","Physics","");
-    m_builder->addAttDef("Filter Position","Filter Fit Position","Physics","");
-    m_builder->addAttDef("Filter Slope","Filter Fit Slope","Phyiscs","");
-    m_builder->addAttDef("Smooth Position","Smooth Fit Position","Physics","");
-    m_builder->addAttDef("Smooth Slope","Smooth Fit Slope","Phyiscs","");
-    m_builder->addAttDef("ChiSquareFilter","Filter Chi Square Contribution",
+}
+
+void TrackFiller::buildTrack(IBuilder* builder) {
+    builder->addAttValue("DrawAs","Line","");
+    builder->addAttValue("Color","blue","");
+    builder->addAttDef("TrackId","Track ID #","Physics","");
+    builder->addAttDef("Start Volume","Track Volume Information","Physics","");
+    builder->addAttDef("Status Low", "Track Low Status Bits","Physics","");
+    builder->addAttDef("Status High","Track High Status Bits","Physics","");
+    builder->addAttDef("Energy","Fit Track Energy","Physics","MeV");
+    builder->addAttDef("Quality","Fit Track Quality","Physics","");
+    builder->addAttDef("# Hits","Number of Hits on Track","Physics","");
+    builder->addAttDef("Chi-Square(filter)","Fit Track Filtered Chi-Square",
         "Physics","");
-    m_builder->addAttDef("ChiSquareSmooth","Smoother Chi Square Contribution",
+    builder->addAttDef("Chi-Square(smooth)","Fit Track Smoothed Chi-Square",
+        "Physics","");
+    builder->addAttDef("# Deg of Free","Number of degrees of freedom in Chi-Square",
+        "Physics","");
+    builder->addAttDef("RMS resid","RMS Residual of track hits","Physics","");
+    builder->addAttDef("Tkr-Cal RadLens","Fit Track Smoothed Chi-Square",
+        "Physics","");
+    builder->addAttDef("Kalman Theta MS","Fit Track Smoothed Chi-Square",
+        "Physics","");
+    builder->addAttDef("Kalman Energy","Fit Track Smoothed Chi-Square",
+        "Physics","");
+    builder->addAttDef("Start Position","Track start position","Physics","");
+    builder->addAttDef("Start Direction","Track start direction","Physics","");
+
+    builder->addType("Track","TkrTrackHit", "Track Hit", "");
+    builder->addAttValue("DrawAs","Prism", "");
+    builder->addAttDef("Sequence #", "Sequence of Hit on Track", "Physics", "");
+    builder->addAttDef("Hit Volume","Volume containing this hit","Physics","");
+    builder->addAttDef("Hit Status Low","Hit Low Status Bits","Physics","");
+    builder->addAttDef("Hit Status High","Hit High Status Bits","Physics","");
+    builder->addAttDef("ClusterID","Cluster ID","Physics","");
+    builder->addAttDef("Energy","Energy at Plane","Physics","MeV");
+    builder->addAttDef("Projection","Plane Projection","Physics","");
+    builder->addAttDef("RadLen","Radiation Lengths to Plane","Phsyics","");
+    builder->addAttDef("ActDist","Active Distance","Physics","mm");
+    builder->addAttDef("Kink Angle","Kink Angle","Physics","");
+    builder->addAttDef("Measured","Hit Position","Physics","");
+    builder->addAttDef("Filter Position","Filter Fit Position","Physics","");
+    builder->addAttDef("Filter Slope","Filter Fit Slope","Phyiscs","");
+    builder->addAttDef("Smooth Position","Smooth Fit Position","Physics","");
+    builder->addAttDef("Smooth Slope","Smooth Fit Slope","Phyiscs","");
+    builder->addAttDef("ChiSquareFilter","Filter Chi Square Contribution",
+        "Physics","");
+    builder->addAttDef("ChiSquareSmooth","Smoother Chi Square Contribution",
         "Physics","");
 
-    //m_builder->addType("TkrTrackHit","NoCluster","No Cluster","");
-    m_builder->addType("TkrTrackHit","HitSigma","Hit Sigma", "");
-    m_builder->addAttValue("DrawAs", "Line","");
+    //builder->addType("TkrTrackHit","NoCluster","No Cluster","");
+    builder->addType("TkrTrackHit","HitSigma","Hit Sigma", "");
+    builder->addAttValue("DrawAs", "Line","");
 
-    m_builder->addType("TkrTrackHit","TkrCluster","Reconstructed Cluster",""); 
+    builder->addType("TkrTrackHit","TkrCluster","Reconstructed Cluster",""); 
 
-    buildClusterTypes(m_builder);
+    buildClusterTypes(builder);
+
 }
 
 
@@ -100,54 +111,47 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
 {
     if (!hasType(typesList,"Recon/TkrRecon/Tracks/Track")) return;
 
-    std::vector<Event::TkrTrackCol*> trackColVec;
+    //std::vector<Event::TkrTrackCol*> trackColVec;
     int numStTracks = 0;
     int numCRTracks = 0;
+    std::string colName;
 
-    // First look up the normal track collection
-    Event::TkrTrackCol* pTracks = 
-        SmartDataPtr<Event::TkrTrackCol>(m_dpsvc,
-        EventModel::TkrRecon::TkrTrackCol);
+    int iCol;
+    Event::TkrTrackCol* pTracks;
 
-    if (pTracks) {
-        numStTracks = pTracks->size();
-        trackColVec.push_back(pTracks);
-    }
+    // until we get the map of collections, we explicitly loop over
+    // the 2 current track collections
 
-    // Now look up the CR track collection
-    pTracks = SmartDataPtr<Event::TkrTrackCol>(m_dpsvc,
-        EventModel::TkrRecon::TkrCRTrackCol);
+    for(iCol=0; iCol<2; ++iCol) {
+        if(iCol==0) {
+            // First look up the normal track collection
+            pTracks = SmartDataPtr<Event::TkrTrackCol>(m_dpsvc,
+                EventModel::TkrRecon::TkrTrackCol);
+            if(pTracks==0) continue;
+            numStTracks = pTracks->size();
+            if (numStTracks==0) continue;
+            m_builder->addInstance("TkrRecon","Tracks");
+            m_builder->setSubinstancesNumber("Tracks",numStTracks);
+            colName = "Tracks";
+        } else {
+            // or the CR track collection
+            pTracks = SmartDataPtr<Event::TkrTrackCol>(m_dpsvc,
+                EventModel::TkrRecon::TkrCRTrackCol);
+            if(pTracks==0) continue;
+            numCRTracks = pTracks->size();
+            if(numCRTracks==0) continue;
+            m_builder->addInstance("TkrRecon","CRTracks");
+            m_builder->setSubinstancesNumber("CRTracks",numCRTracks);
+            colName = "CRTracks";
+        }
 
-    if (pTracks) {
-        numCRTracks = pTracks->size();
-        trackColVec.push_back(pTracks);
-    }
-
-    //Now see if we can do the drawing
-    if (trackColVec.empty()) return;
-
-    m_builder->addInstance("TkrRecon","Tracks");
-
-    int numTracks = numStTracks + numCRTracks;
-
-    if (numTracks==0) return;
-
-    m_builder->setSubinstancesNumber("Tracks",numTracks);
-
-    // Outside loop is over the track collections
-    for(std::vector<Event::TkrTrackCol*>::iterator colItr  = trackColVec.begin();
-                                                   colItr != trackColVec.end();
-                                                   colItr++)
-    {
-        pTracks = *colItr;
+        Event::TkrTrackCol::iterator it = pTracks->begin();
 
         int trackId  = 0;
         double trackWid = 2.0;
-        Event::TkrTrackCol::iterator it = pTracks->begin();
 
-        while(it != pTracks->end())
-        {
-            m_builder->addInstance("Tracks","Track");
+        while(it != pTracks->end()) {
+            m_builder->addInstance(colName,"Track");
             Event::TkrTrack& track = **it++;
             bool isCR = (track.getStatusBits()&Event::TkrTrack::COSMICRAY)!=0;
 
@@ -211,7 +215,7 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
             int hit = 0;
 
             m_builder->setSubinstancesNumber("Track", track.size());
-  
+
             for(hitIter=track.begin(); hitIter!=track.end(); ++hitIter, ++hit)
             {
                 m_builder->addInstance("Track","TkrTrackHit");
