@@ -43,6 +43,8 @@ class ISvcAdapter
   /// This method return a dir with a FRED installation, if set so in the
   /// jobOptions file; otherwise it returns (by default) an empty string
   virtual std::string getStartFred() = 0; 
+  /// same, wired
+  virtual std::string getStartWired() = 0;
 };
 
 #endif //ISVCADAPTER_H
