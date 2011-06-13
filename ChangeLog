@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: lsrea  Mon Jun 13 14:48:37 PDT 2011
+HepRepSvc/src
+
+Modified Files:
+      Tag: GlastReleasev17r35p1
+	HepRepSvc.cxx HepRepSvc.h SvcAdapter.cxx SvcAdapter.h 
+Log Message:
+Adding WIRED capability
+
+    *
+------------------------------------------------------------
 User: lsrea  Mon Jun 13 14:48:36 PDT 2011
 HepRepSvc/HepRepSvc
 
