@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: lsrea  Mon Jun 13 14:48:36 PDT 2011
+HepRepSvc/HepRepSvc
+
+Modified Files:
+      Tag: GlastReleasev17r35p1
+	ISvcAdapter.h 
+Log Message:
+Adding WIRED capability
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-36-06, operation: add
 Package: HepRepSvc
