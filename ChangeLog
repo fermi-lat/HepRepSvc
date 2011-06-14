@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: lsrea  Mon Jun 13 21:05:07 PDT 2011
+HepRepSvc/src
+
+Modified Files:
+	SvcAdapter.cxx 
+Log Message:
+Add tkrview to active strips, 
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-31-02-gr01, operation: add
 Package: HepRepSvc
