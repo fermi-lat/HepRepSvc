@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: heather  Mon Jun 13 20:04:19 PDT 2011
+HepRepSvc
+
+Modified Files:
+      Tag: GlastReleasev17r35p1
+	SConscript 
+Log Message:
+tagging Leon's changes for L1proc
+    *
+------------------------------------------------------------
 User: lsrea  Mon Jun 13 14:48:37 PDT 2011
 HepRepSvc/src
 
