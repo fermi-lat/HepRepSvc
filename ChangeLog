@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: heather  Mon Jun 13 20:04:19 PDT 2011
+HepRepSvc/doc
+
+Modified Files:
+      Tag: GlastReleasev17r35p1
+	release.notes 
+Log Message:
+tagging Leon's changes for L1proc
+    *
+------------------------------------------------------------
+User: heather  Mon Jun 13 20:04:19 PDT 2011
 HepRepSvc/cmt
 
 Modified Files:
