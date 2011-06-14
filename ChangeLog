@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: lsrea  Mon Jun 13 21:05:07 PDT 2011
+HepRepSvc/src/Tracker
+
+Modified Files:
+	ClusterUtil.cxx 
+Log Message:
+Add tkrview to active strips, 
+
+    *
+------------------------------------------------------------
+User: lsrea  Mon Jun 13 21:05:07 PDT 2011
 HepRepSvc/src
 
 Modified Files:
