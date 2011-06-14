@@ -123,6 +123,6 @@ std::string SvcAdapter::getStartFred()
 // Same for WIRED
 std::string SvcAdapter::getStartWired()
 {
-  return m_hrsvc->getStartWired();
+    return m_hrsvc->getStartWired();
 } 
 

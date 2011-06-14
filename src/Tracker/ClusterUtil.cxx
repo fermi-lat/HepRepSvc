@@ -101,10 +101,12 @@ void ClusterUtil::buildClusterTypes(IBuilder* builder)
     builder->addType("TkrCluster", "Strip", "Strip", "");
     builder->addType("Strip", "ActiveStrip", "Active Part of Strip", "");
     builder->addAttValue("DrawAs","Prism","");
+    builder->addAttDef("TkrView","Cluster View","Physics","");
 
     builder->addType("TkrCluster","TkrClusterToT"," ","");
     builder->addAttValue("DrawAs","Line","");
     builder->addAttValue("Color","red","");
+    builder->addAttDef("TkrView", "tracker view", "Physics", "");
 
     //builder->addType("TkrCluster", "ClusterMarker", " ", "");
 }
@@ -188,7 +190,8 @@ void ClusterUtil::buildClusterInstance(IBuilder* builder, Event::TkrCluster* pCl
 
         if(isAcc) builder->addAttValue("LineStyle","Dashed","");
         builder->addAttValue("Color", clusterColor, "");
-        builder->addPoint(xToT, yToT, z);       
+        builder->addPoint(xToT, yToT, z);  
+        builder->addAttValue("TkrView", view, "");
     }
 
     builder->addInstance("TkrCluster", "Strip");
@@ -202,6 +205,7 @@ void ClusterUtil::buildClusterInstance(IBuilder* builder, Event::TkrCluster* pCl
         builder->addInstance("Strip", "ActiveStrip");
         if(clusterColor!="green") builder->addAttValue("LineStyle","Dashed","");
         builder->addAttValue("Color", clusterColor, "");
+        builder->addAttValue("TkrView", view, "");
         double delta = offset + wafer*waferPitch;
         x  = clusPos.x();
         y  = clusPos.y() + delta;
@@ -223,5 +227,6 @@ void ClusterUtil::buildClusterInstance(IBuilder* builder, Event::TkrCluster* pCl
         if(isAcc) builder->addAttValue("LineStyle", "Dashed", "");
         builder->addPoint(xToT,yToT,z);
         builder->addPoint(xToT,yToT,z+ToT);
+        builder->addAttValue("TkrView", view, "");
     }
 }
