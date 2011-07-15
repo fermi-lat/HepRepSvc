@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: lsrea  Fri Jul 15 16:35:17 PDT 2011
+HepRepSvc/src
+
+Modified Files:
+	HepRepSvc.cxx HepRepSvc.h SvcAdapter.cxx SvcAdapter.h 
+Log Message:
+add getNumberOfEvents() to support WIRED
+
+    *
+------------------------------------------------------------
 User: lsrea  Fri Jul 15 16:35:16 PDT 2011
 HepRepSvc/HepRepSvc
 
