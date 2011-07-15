@@ -1,8 +1,9 @@
 /* @file release.notes
  * Package HepRepSvc
- * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.96 2011/06/13 18:22:08 lsrea Exp $
+ * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.97 2011/06/14 04:21:27 lsrea Exp $
  *           EOH
 
+ HepRepSvc-00-37-00 15-Jul-2011  lsrea add getNumberOfEvents() to support WIRED
  HepRepSvc-00-36-07 13-Jun-2011  lsrea Add tkrview to active strips (again?)
  HepRepSvc-00-36-06 13-Jun-2011  lsrea Add view cut to active strips
  HepRepSvc-00-36-05 02-Jun-2011  lsrea Display standard and CR track cols separately
