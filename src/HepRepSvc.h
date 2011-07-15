@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.h,v 1.16 2010/07/18 00:29:57 lsrea Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.h,v 1.17 2010/08/25 21:55:12 lsrea Exp $
 // 
 //  Original author: R.Giannitrapani
 
@@ -92,6 +92,9 @@ class HepRepSvc : virtual public Service,
 
   /// This method set the Event index 
   bool setEventIndex(int index);
+
+  /// get the number of events in the file
+  long long getNumberOfEvents();
 
   /// This method replay a given algorithm
   bool replayAlgorithm(std::string algName);
