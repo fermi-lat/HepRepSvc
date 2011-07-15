@@ -45,6 +45,9 @@ class ISvcAdapter
   virtual std::string getStartFred() = 0; 
   /// same, wired
   virtual std::string getStartWired() = 0;
+
+  /// get the number of events in the current file
+  virtual long long getNumberOfEvents() = 0;
 };
 
 #endif //ISVCADAPTER_H

@@ -126,3 +126,7 @@ std::string SvcAdapter::getStartWired()
     return m_hrsvc->getStartWired();
 } 
 
+long long SvcAdapter::getNumberOfEvents() {
+    return m_hrsvc->getNumberOfEvents();
+}
+

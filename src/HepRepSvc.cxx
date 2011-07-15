@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.29 2010/08/25 21:55:12 lsrea Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.30 2011/02/01 20:32:04 usher Exp $
 // 
 //  Original author: R.Giannitrapani
 //
@@ -462,6 +462,11 @@ std::string HepRepSvc::getEventId()
   else
     return "";
   
+}
+
+// returns the number of events in the current file
+long long HepRepSvc::getNumberOfEvents() {
+    return m_rtsvc->getNumberOfEvents();
 }
 
 // This method set the Event index

@@ -47,6 +47,7 @@ class SvcAdapter: public ISvcAdapter
   virtual std::string getStartFred(); 
   virtual std::string getStartWired();
 
+  virtual long long getNumberOfEvents();
   
  private:
   HepRepSvc* m_hrsvc;
