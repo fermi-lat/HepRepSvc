@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: lsrea  Fri Jul 15 16:35:16 PDT 2011
+HepRepSvc/HepRepSvc
+
+Modified Files:
+	ISvcAdapter.h 
+Log Message:
+add getNumberOfEvents() to support WIRED
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-36-07, operation: add
 Package: HepRepSvc
