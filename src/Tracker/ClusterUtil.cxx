@@ -64,10 +64,7 @@ std::string ClusterUtil::getClusterColor(Event::TkrCluster* pCluster, bool isAcc
     if (showDiagnosticGhosts) {
         return "blue";
     }
-    if (
-        (pCluster->isSet(Event::TkrCluster::maskSAMETRACK) && m_useTriggerInfo) ||
-        (pCluster->isSet(Event::TkrCluster::maskSAMETRACKD)&& m_useDiagnosticInfo)
-    ) {
+    if (pCluster->isSet(Event::TkrCluster::maskSAMETRACK) ) {
         return "yellow"; 
     } 
     return "green";
