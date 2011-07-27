@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: heather  Wed Jul 27 07:29:36 PDT 2011
+HepRepSvc/doc
+
+Modified Files:
+      Tag: GlastReleasev17r35p1
+	release.notes 
+Log Message:
+merge in SCons updates for P7
+    *
+------------------------------------------------------------
+User: heather  Wed Jul 27 07:29:36 PDT 2011
 HepRepSvc/cmt
 
 Modified Files:
