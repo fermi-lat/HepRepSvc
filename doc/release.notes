@@ -1,8 +1,9 @@
 /* @file release.notes
  * Package HepRepSvc
- * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.72 2009/04/09 20:10:56 lsrea Exp $
+ * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.72.44.1 2011/06/14 03:04:19 heather Exp $
  *           EOH
 
+ * v0r31p2gr02 27-Jul-2011 HMK Merge in SCons updates for P7
  * v0r31p2gr01 13-Jun-2011 LSR Merge in updates for Wired into new L1proc 
          branch
  * v0r31p2 09-Apr-2009 LSR  1) color CAL Edep boxes yellow for "saturated" xtals

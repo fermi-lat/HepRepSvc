@@ -1,29 +1,28 @@
 # -*- python -*-
 # $Header
 # Authors: Riccardo Giannitrapani <riccardo@fisica.uniud.it> 
-# Version: HepRepSvc-00-31-02-gr01
+# Version: HepRepSvc-00-31-02-gr02
 Import('baseEnv')
 Import('listFiles')
 Import('packages')
 progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
 
-libEnv.Tool('HepRepSvcLib', depsOnly = 1)
+libEnv.Tool('addLinkDeps', package='HepRepSvc', toBuild='component')
 
 HepRepSvc = libEnv.SharedLibrary('HepRepSvc', listFiles(['src/*.cxx',
-				'src/Dll/*.cxx',
-				'src/Tracker/*.cxx',
-				'src/xml/*.cxx']))
+                                                         'src/Dll/*.cxx',
+                                                         'src/Tracker/*.cxx',
+                                                         'src/xml/*.cxx']))
 
 progEnv.Tool('HepRepSvcLib')
-test_HepRepSvc = progEnv.GaudiProgram('test_HepRepSvc', listFiles(['src/test/*.cxx']), test =1)
 
-progEnv.Tool('registerObjects', package = 'HepRepSvc',
-             libraries = [HepRepSvc],
-             testApps = [test_HepRepSvc], 
-             includes = listFiles(['HepRepSvc/*.h']))
+test_HepRepSvc = progEnv.GaudiProgram('test_HepRepSvc',
+                                      listFiles(['src/test/*.cxx']),
+                                      test =1, package='HepRepSvc')
 
-
-
-
-
+progEnv.Tool('registerTargets', package = 'HepRepSvc',
+             libraryCxts = [[HepRepSvc, libEnv]],
+             testAppCxts = [[test_HepRepSvc, progEnv]], 
+             includes = listFiles(['HepRepSvc/*.h'], recursive=1),
+             jo = ['src/test/jobOptions.txt'])
