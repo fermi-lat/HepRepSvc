@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: heather  Wed Jul 27 07:29:36 PDT 2011
+HepRepSvc
+
+Modified Files:
+      Tag: GlastReleasev17r35p1
+	HepRepSvcLib.py SConscript 
+Log Message:
+merge in SCons updates for P7
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-37-01, operation: add
 Package: HepRepSvc
