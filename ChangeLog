@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: lsrea  Thu Jul 28 18:07:26 PDT 2011
+HepRepSvc/src/Tracker
+
+Modified Files:
+	TrackFiller.cxx 
+Log Message:
+Fix the colors: Tracks: CR->red, otherwise->blue; normal->solid, ghost->dashed
+Filter track: green
+
+
+    *
+------------------------------------------------------------
 User: lsrea  Thu Jul 28 18:07:25 PDT 2011
 HepRepSvc/src
 
