@@ -153,10 +153,14 @@ void TrackFiller::fillInstances (std::vector<std::string>& typesList)
         while(it != pTracks->end()) {
             m_builder->addInstance(colName,"Track");
             Event::TkrTrack& track = **it++;
-            bool isCR = (track.getStatusBits()&Event::TkrTrack::COSMICRAY)!=0;
+            unsigned status = track.getStatusBits();
+            bool isCR = (status&Event::TkrTrack::COSMICRAY)!=0;
+            bool isGhost = (status&Event::TkrTrack::GHOST)!=0;
 
-            m_builder->addAttValue("Color",    (isCR ? "255,100,27" : "blue"), "");
-            m_builder->addAttValue("LineStyle",(isCR ? "Dashed" : "Solid"), "");
+            
+
+            m_builder->addAttValue("Color",    (isCR ? "red" : "0,100,255"), ""); // orangey and lighter blue
+            m_builder->addAttValue("LineStyle",(isGhost ? "Dashed" : "Solid"), "");
 
             Event::TkrTrackHit::ParamType fit = Event::TkrTrackHit::SMOOTHED;
             Event::TkrTrackHit::ParamType typ = Event::TkrTrackHit::SMOOTHED;

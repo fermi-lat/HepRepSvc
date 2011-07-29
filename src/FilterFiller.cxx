@@ -40,7 +40,8 @@ void FilterFiller::buildTypes()
     m_builder->addType("Filter", "FilterTrack", "Onboard Track", "");
     m_builder->addAttDef("Filter Track Dir","OBF track direction","","");
     m_builder->addAttValue("DrawAs", "Line", "");
-    m_builder->addAttValue("Color", "red","");
+    //m_builder->addAttValue("Color", "255,218,185",""); // sorta peach
+    m_builder->addAttValue("Color", "green",""); // sorta peach
     m_builder->addAttValue("LineStyle","Dashed","");
     m_builder->addAttDef("Filter Track Pos","OBF track position","","");
 }
