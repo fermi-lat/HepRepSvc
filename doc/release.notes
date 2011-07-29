@@ -1,8 +1,9 @@
 /* @file release.notes
  * Package HepRepSvc
- * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.98 2011/07/15 23:39:14 lsrea Exp $
+ * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.99 2011/07/24 20:21:42 lsrea Exp $
  *           EOH
 
+ HepRepSvc-00-37-02 28-Jul-2011  lsrea slightly rearrange the colors of the tracks
  HepRepSvc-00-37-01 24-Jul-2011  lsrea Fixed the cluster-color logic
  HepRepSvc-00-37-00 15-Jul-2011  lsrea add getNumberOfEvents() to support WIRED
  HepRepSvc-00-36-07 13-Jun-2011  lsrea Add tkrview to active strips (again?)
