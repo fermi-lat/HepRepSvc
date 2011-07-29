@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: lsrea  Thu Jul 28 18:07:25 PDT 2011
+HepRepSvc/src
+
+Modified Files:
+	FilterFiller.cxx 
+Log Message:
+Fix the colors: Tracks: CR->red, otherwise->blue; normal->solid, ghost->dashed
+Filter track: green
+
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-31-02-gr02, operation: add
 Package: HepRepSvc
