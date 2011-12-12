@@ -1,5 +1,16 @@
 ------------------------------------------------------------
 User: heather  Mon Dec 12 12:51:40 PST 2011
+GlastRelease-scons/HepRepSvc/src
+
+Modified Files:
+	HepRepInitSvc.cxx HepRepSvc.cxx HepRepSvc.h SvcAdapter.cxx 
+Added Files:
+	HepRepObs.cxx HepRepObs.h 
+Log Message:
+merge Gaudi v21r7
+    *
+------------------------------------------------------------
+User: heather  Mon Dec 12 12:51:40 PST 2011
 GlastRelease-scons/HepRepSvc/doc
 
 Modified Files:
