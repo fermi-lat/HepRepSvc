@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: heather  Mon Dec 12 12:51:40 PST 2011
+GlastRelease-scons/HepRepSvc/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+merge Gaudi v21r7
+    *
+------------------------------------------------------------
 User: heather  Mon Dec 12 12:51:39 PST 2011
 GlastRelease-scons/HepRepSvc/cmt
 
