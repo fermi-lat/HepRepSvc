@@ -1,5 +1,5 @@
 package HepRepSvc
-version v0r38p0
+version v0r38p1
 
 author Riccardo Giannitrapani <riccardo@fisica.uniud.it>
 author Leon Rochester <lsrea@slac.stanford.edu>
@@ -21,6 +21,7 @@ apply_pattern packageShr
 apply_pattern package_include
 
 private 
+use G4Propagator *
 use RootmapPolicy * GlastPolicy
 use gr_app
 use OnboardFilterTds 

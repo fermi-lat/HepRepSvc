@@ -1,8 +1,9 @@
 /* @file release.notes
  * Package HepRepSvc
- * $Header: /nfs/slac/g/glast/ground/cvs/GlastRelease-scons/HepRepSvc/doc/release.notes,v 1.100 2011/07/29 01:08:46 lsrea Exp $
+ * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.101 2011/12/12 20:51:39 heather Exp $
  *           EOH
 
+ HepRepSvc-00-38-01 17-Jan-2012  hmk   use G4Propagator
  HepRepSvc-00-38-00 08-Dec-2011  hmk   Merge in Gaudi v21r7
  HepRepSvc-00-37-02 28-Jul-2011  lsrea slightly rearrange the colors of the tracks
  HepRepSvc-00-37-01 24-Jul-2011  lsrea Fixed the cluster-color logic
