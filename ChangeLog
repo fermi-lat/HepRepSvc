@@ -1,5 +1,14 @@
 ------------------------------------------------------------
 User: heather  Tue Jan 17 14:10:26 PST 2012
+HepRepSvc/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+add use G4Prop
+    *
+------------------------------------------------------------
+User: heather  Tue Jan 17 14:10:26 PST 2012
 HepRepSvc/cmt
 
 Modified Files:
