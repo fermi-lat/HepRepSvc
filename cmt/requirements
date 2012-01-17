@@ -45,3 +45,5 @@ apply_pattern generate_rootmap library=HepRepSvc
 public 
 set JOBOPTIONS ${HEPREPSVCROOT}/src/test/jobOptions.txt
 apply_pattern package_test
+application test_HepRepSvc ${WinMain}
+
