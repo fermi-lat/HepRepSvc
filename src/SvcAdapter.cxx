@@ -5,8 +5,8 @@
 #include "GaudiKernel/IIncidentSvc.h"
 #include "GaudiKernel/Property.h"
 #include "GaudiKernel/SmartIF.h"
-#include "GaudiKernel/IObjManager.h"
-#include "GaudiKernel/IToolFactory.h"
+//#include "GaudiKernel/IObjManager.h"
+//#include "GaudiKernel/IToolFactory.h"
 #include "GaudiKernel/IAlgManager.h"
 #include "GaudiKernel/Algorithm.h"
 #include "GaudiKernel/MsgStream.h"
@@ -19,7 +19,7 @@ bool SvcAdapter::nextEvent(int i)
 
 	IAlgManager* theAlgMgr;
   sc = m_hrsvc->serviceLocator( )->getService( "ApplicationMgr",
-        IID_IAlgManager,
+        IAlgManager::interfaceID(),
         (IInterface*&)theAlgMgr );
 
 
