@@ -1,5 +1,5 @@
 package HepRepSvc
-version v0r31p2gr02
+version v0r31p2gr03
 
 author Riccardo Giannitrapani <riccardo@fisica.uniud.it>
 author Leon Rochester <lsrea@slac.stanford.edu>
@@ -21,7 +21,8 @@ apply_pattern packageShr
 apply_pattern package_include
 
 private 
-
+use G4Propagator *
+use RootmapPolicy * GlastPolicy
 use gr_app
 use OnboardFilterTds 
 
@@ -32,10 +33,10 @@ macro source "*.cxx" WIN32 "*.h *.cxx"
 
 library HepRepSvc $(HepRepSvc_headers) \
          *.cxx \
-        -s=Dll $(source)\
         -s=Tracker $(source)\
         -s=xml $(source)
- 
+
+apply_pattern generate_rootmap library=HepRepSvc 
 
 # test program, using local joboptions
 # test program doesn't actually do anything, but the test
@@ -44,3 +45,5 @@ library HepRepSvc $(HepRepSvc_headers) \
 public 
 set JOBOPTIONS ${HEPREPSVCROOT}/src/test/jobOptions.txt
 apply_pattern package_test
+application test_HepRepSvc ${WinMain}
+

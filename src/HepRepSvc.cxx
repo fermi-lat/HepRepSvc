@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.27 2009/01/12 15:54:43 heather Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.27.94.1 2011/06/13 21:48:37 lsrea Exp $
 // 
 //  Original author: R.Giannitrapani
 //
@@ -12,8 +12,8 @@
 #include "GaudiKernel/SmartDataPtr.h"
 #include "GaudiKernel/Incident.h"
 #include "GaudiKernel/IIncidentSvc.h"
-#include "GaudiKernel/IObjManager.h"
-#include "GaudiKernel/IToolFactory.h"
+//#include "GaudiKernel/IObjManager.h"
+//#include "GaudiKernel/IToolFactory.h"
 #include "GaudiKernel/IAppMgrUI.h"
 #include "GaudiKernel/Property.h"
 #include "GaudiKernel/IParticlePropertySvc.h"
@@ -54,12 +54,13 @@
 #include "ntupleWriterSvc/INTupleWriterSvc.h"
 
 // declare the service factories for the FluxSvc
-static SvcFactory<HepRepSvc> a_factory;
-const  ISvcFactory& HepRepSvcFactory = a_factory;
+//static SvcFactory<HepRepSvc> a_factory;
+//const  ISvcFactory& HepRepSvcFactory = a_factory;
+DECLARE_SERVICE_FACTORY(HepRepSvc);
 
 // Standard Constructor
 HepRepSvc::HepRepSvc(const std::string& name,ISvcLocator* svc)
-: Service(name,svc)
+: Service(name,svc), m_heprepObs(0)
 {
   /// This property turn on/off the auto streaming of the heprep at
   /// the end of each event and to start (or not) a FRED instance
@@ -76,6 +77,11 @@ HepRepSvc::HepRepSvc(const std::string& name,ISvcLocator* svc)
 // Standard Destructor
 HepRepSvc::~HepRepSvc()  
 {
+  if (m_heprepObs) {
+     m_toolSvc->unRegisterObserver(m_heprepObs);
+     delete m_heprepObs;
+     m_heprepObs = 0;
+  }
 }
 
 // This method implement the IRunnable run method by delegating it to
@@ -96,7 +102,7 @@ StatusCode HepRepSvc::initialize ()
     setProperties ();
 
     // get the application manager UI
-    serviceLocator()->queryInterface(IID_IAppMgrUI, (void**)&m_appMgrUI);
+    serviceLocator()->queryInterface(IAppMgrUI::interfaceID(), (void**)&m_appMgrUI);
 
     // Build the registry
     m_registry = new Registry();
@@ -217,7 +223,16 @@ StatusCode HepRepSvc::initialize ()
     
     // look for a factory of an AlgTool that implements the IRegister interface:
     // if found, make one and call the special method 
-    
+
+    status = service("ToolSvc", m_toolSvc, true);
+    if (!status.isSuccess()) {
+      log << MSG::ERROR << "Unable to get a handle to the tool service" << endreq;
+      return status;
+    } else {
+        log << MSG::DEBUG << "Got ptr to ToolSvc " << endreq;
+    }
+   
+/* 
     // Manager of the AlgTool Objects
     IObjManager* objManager=0;             
     
@@ -253,7 +268,11 @@ StatusCode HepRepSvc::initialize ()
       }
       
     }
-    
+*/
+   
+    m_heprepObs = new HepRepObs();
+    m_toolSvc->registerObserver(m_heprepObs);
+ 
     return StatusCode::SUCCESS;
 }
 
@@ -468,7 +487,8 @@ bool HepRepSvc::setAlgProperty(std::string algName,
     return 0;    
   }
   
-  SmartIF<IProperty> propMgr(IID_IProperty, alg);
+  //SmartIF<IProperty> propMgr(IProperty::interfaceID(), alg);
+  SmartIF<IProperty> propMgr(alg);
 
   if (propMgr->setProperty(propName, propValue).isFailure())
   {
@@ -510,10 +530,10 @@ bool HepRepSvc::replayAlgorithm(std::string algName)
 
 /// Query interface
 StatusCode HepRepSvc::queryInterface(const InterfaceID& riid, void** ppvInterface)  {
-    if ( IID_IHepRepSvc.versionMatch(riid) )  {
+    if ( IHepRepSvc::interfaceID()==riid )  {
         *ppvInterface = (IHepRepSvc*)this;
     }
-    else if (IID_IRunable.versionMatch(riid) ) {
+    else if (IRunable::interfaceID()==riid ) {
       *ppvInterface = (IRunable*)this;
     }
     else  {
