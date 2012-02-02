@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: heather  Thu Feb  2 09:53:19 PST 2012
+HepRepSvc
+
+Modified Files:
+	SConscript 
+Log Message:
+try out event dispaly
+    *
+------------------------------------------------------------
 TAG
 Tag name: GlastRelease-17-35-24-gr21, operation: add
 Package: HepRepSvc
