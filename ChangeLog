@@ -1,5 +1,14 @@
 ------------------------------------------------------------
 User: heather  Thu Feb  2 09:53:19 PST 2012
+HepRepSvc/src
+
+Modified Files:
+	HepRepObs.cxx HepRepObs.h HepRepSvc.cxx HepRepSvc.h 
+Log Message:
+try out event dispaly
+    *
+------------------------------------------------------------
+User: heather  Thu Feb  2 09:53:19 PST 2012
 HepRepSvc/doc
 
 Modified Files:
