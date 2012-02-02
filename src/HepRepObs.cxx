@@ -1,21 +1,17 @@
-/** @file GuiObs.cxx 
-   @brief Implementation file for GuiSvc
+/** @file HepRepObs.cxx 
+   @brief Implementation file for HepRepObs 
 
-gets adresses 
- of CLHEP random number engines used in Gleam shared libraries
- and sets seeds for them based on run and particle sequence
- number obtained from the MCHeader
 
- $Header: /nfs/slac/g/glast/ground/cvs/GlastRelease-scons/HepRepSvc/src/Attic/HepRepObs.cxx,v 1.1.2.1 2010/09/18 03:46:49 heather Exp $
+   finds instances of IRegister tools
 
- Author: Toby Burnett, Karl Young
+ $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepObs.cxx,v 1.2 2011/12/12 20:51:40 heather Exp $
+
 */
 
 #include "HepRepObs.h"
-#include "facilities/Util.h"
+#include "HepRepSvc/IRegister.h"
 
 #include <iterator>
-#include <fstream>
 #include "GaudiKernel/Incident.h"
 #include "GaudiKernel/IIncidentSvc.h"
 #include "GaudiKernel/SvcFactory.h"
@@ -26,7 +22,7 @@ gets adresses
 #include "GaudiKernel/SmartDataPtr.h"
 
 
-HepRepObs::HepRepObs():IToolSvc::Observer(),m_guiMgr(0)
+HepRepObs::HepRepObs():IToolSvc::Observer()
 {
    
 }
@@ -35,10 +31,10 @@ HepRepObs::HepRepObs():IToolSvc::Observer(),m_guiMgr(0)
 void HepRepObs::onCreate(IAlgTool& tool) {
 
 
-    IGuiTool* gtool;
-    StatusCode status =tool.queryInterface( IGuiTool::interfaceID(), (void**)&gtool);
+    IRegister* gtool;
+    StatusCode status =tool.queryInterface( IRegister::interfaceID(), (void**)&gtool);
     if( status.isSuccess() ){
-        gtool->initialize(m_guiMgr);
+        gtool->registerMe(m_hepRepSvc);
     }
 
 
