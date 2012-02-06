@@ -92,6 +92,7 @@ void ClusterFiller::buildTypes()
     m_builder->addType("TruncationMap", "PlaneInfo", "Plane Info", "");
     m_builder->addAttValue("DrawAs", "Prism","");
     m_builder->addAttValue("Color", "gray", "");
+    //m_builder->addAttValue("FillColor", "gray", "");  // doesn't do anything
 }
 
 // This method fill the instance tree Event with the actual TDS content
@@ -257,6 +258,8 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
             if (status!=0) numTrunc++;
         }
         m_builder->setSubinstancesNumber("TruncationMap",numTrunc);
+        m_builder->addAttValue("numTrunc", numTrunc, "");
+        iter = truncMap->begin();
 
         for(; iter!=truncMap->end(); ++iter) {
             Event::TkrTruncatedPlane trunc = iter->second;
@@ -302,6 +305,10 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
                 y += offsetY;
 
                 m_builder->addInstance("TruncationMap", "PlaneInfo");
+                m_builder->addAttValue("trunc Type", "internal","");
+                m_builder->addAttValue("TkrView", view, "");
+                m_builder->addAttValue("low X", (float)xLow, "");
+                m_builder->addAttValue("high X", (float)xHigh, "");
                 drawPrism(x, y, z, dx, dy, dz);
             }
             if((status&Event::TkrTruncatedPlane::CC1SET)>0 && numStrips[1]>0){
@@ -319,6 +326,10 @@ void ClusterFiller::fillInstances (std::vector<std::string>& typesList)
                 y += offsetY;
 
                 m_builder->addInstance("TruncationMap", "PlaneInfo");
+                m_builder->addAttValue("trunc Type", "edge", "");
+                m_builder->addAttValue("TkrView", view, "");
+                m_builder->addAttValue("low X",(float)xLow, "");
+                m_builder->addAttValue("high X",(float)xHigh, "");
                 drawPrism(x, y, z, dx, dy, dz);
             }
         }
