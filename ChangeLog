@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: lsrea  Mon Feb  6 11:08:51 PST 2012
+HepRepSvc/src/Tracker
+
+Modified Files:
+      Tag: GlastRelease-17-35-24-br02
+	ClusterFiller.cxx 
+Log Message:
+Mods for truncations
+
+    *
+------------------------------------------------------------
 User: heather  Thu Feb  2 09:53:19 PST 2012
 HepRepSvc/src
 
