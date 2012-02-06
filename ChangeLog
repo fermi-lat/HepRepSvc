@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: lsrea  Mon Feb  6 11:32:48 PST 2012
+HepRepSvc
+
+Modified Files:
+      Tag: GlastRelease-17-35-24-br02
+	SConscript 
+Log Message:
+stag/GoGui_auto-tag
+    *
+------------------------------------------------------------
 User: lsrea  Mon Feb  6 11:08:51 PST 2012
 HepRepSvc/src/Tracker
 
