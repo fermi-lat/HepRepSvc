@@ -4,7 +4,7 @@
 
    finds instances of IRegister tools
 
- $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepObs.cxx,v 1.2 2011/12/12 20:51:40 heather Exp $
+ $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepObs.cxx,v 1.3 2012/02/02 17:53:19 heather Exp $
 
 */
 
@@ -28,13 +28,13 @@ HepRepObs::HepRepObs():IToolSvc::Observer()
 }
 
 
-void HepRepObs::onCreate(IAlgTool& tool) {
+void HepRepObs::onCreate(const IAlgTool* tool) {
 
 
     IRegister* gtool;
-    StatusCode status =tool.queryInterface( IRegister::interfaceID(), (void**)&gtool);
+    StatusCode status =const_cast<IAlgTool*>(tool)->queryInterface( IRegister::interfaceID(), (void**)&gtool);
     if( status.isSuccess() ){
-        gtool->registerMe(m_hepRepSvc);
+        gtool->registerMe(const_cast<HepRepSvc*>(m_hepRepSvc));
     }
 
 
