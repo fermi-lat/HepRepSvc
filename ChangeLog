@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: heather  Wed Feb 15 12:20:28 PST 2012
+HepRepSvc/src
+
+Modified Files:
+	HepRepObs.cxx HepRepObs.h 
+Log Message:
+patch Observer use
+    *
+------------------------------------------------------------
 TAG
 Tag name: GlastRelease-19-04-01-gr13, operation: add
 Package: HepRepSvc
