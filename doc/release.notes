@@ -1,9 +1,10 @@
 /* @file release.notes
  * Package HepRepSvc
- * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.102 2012/01/17 22:10:26 heather Exp $
+ * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.103 2012/02/02 17:53:19 heather Exp $
  *           EOH
 
- HepRepSvc-00-39-00 02-Feb-2012  hmk   Fix up HepRepSvc to set up tools
+ HepRepSvc-00-39-00 02-Feb-2012  hmk   Fix up HepRepSvc to set up tools using
+   observer
  HepRepSvc-00-38-01 17-Jan-2012  hmk   use G4Propagator
  HepRepSvc-00-38-00 08-Dec-2011  hmk   Merge in Gaudi v21r7
  HepRepSvc-00-37-02 28-Jul-2011  lsrea slightly rearrange the colors of the tracks
