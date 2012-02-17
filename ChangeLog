@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: heather  Fri Feb 17 13:23:42 PST 2012
+HepRepSvc/cmt
+
+Modified Files:
+      Tag: GlastRelease-17-35-24-br01
+	requirements 
+Log Message:
+patch observer
+    *
+------------------------------------------------------------
+User: heather  Fri Feb 17 13:23:42 PST 2012
 HepRepSvc
 
 Modified Files:
