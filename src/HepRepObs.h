@@ -1,7 +1,7 @@
 /** @file HepRepObs.h
 @brief definition of the class HepRepObs
 
-$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepObs.h,v 1.2 2011/12/12 20:51:40 heather Exp $
+$Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepObs.h,v 1.4 2012/02/15 20:20:28 heather Exp $
 
 */
 #ifndef _HepRepObs_H
@@ -10,7 +10,9 @@ $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepObs.h,v 1.2 2011/12/12
 #include "GaudiKernel/IToolSvc.h"
 #include "GaudiKernel/Property.h"
 
-#include "GuiSvc/IGuiTool.h"
+//#include "GuiSvc/IGuiTool.h"
+
+#include "HepRepSvc.h"
 
 /** @class HepRepObs
 *
@@ -32,7 +34,7 @@ $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepObs.h,v 1.2 2011/12/12
 *
 * @authors Toby Burnett, Karl Young
 *
-* $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepObs.h,v 1.2 2011/12/12 20:51:40 heather Exp $
+* $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepObs.h,v 1.4 2012/02/15 20:20:28 heather Exp $
 */
 class HepRepObs : public IToolSvc::Observer
 {
@@ -42,14 +44,14 @@ public:
 
     virtual ~HepRepObs() { };
 
-    void onCreate(IAlgTool& tool);
+    virtual void onCreate(const IAlgTool* tool);
    
-    void onRetrieve(IAlgTool& tool) { };
+    virtual void onRetrieve(const IAlgTool* tool) { };
 
-    void setHepRepMgr(gui::GuiMgr* guiMgr) { m_guiMgr = guiMgr; };
+    void setHepRepSvc(const HepRepSvc* svc){ m_hepRepSvc = svc; };
 
 private:  
-    gui::GuiMgr* m_guiMgr;
+    const HepRepSvc* m_hepRepSvc;
 
 };
 
