@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.27.94.1 2011/06/13 21:48:37 lsrea Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.27.94.1.14.1 2012/01/30 19:07:28 heather Exp $
 // 
 //  Original author: R.Giannitrapani
 //
@@ -30,6 +30,7 @@
 #include "SvcAdapter.h"
 #include "HepRepSvc.h"
 #include "HepRepGeometry.h"
+#include "HepRepObs.h"
 
 #include "HeaderFiller.h"
 #include "MonteCarloFiller.h"
@@ -272,6 +273,7 @@ StatusCode HepRepSvc::initialize ()
    
     m_heprepObs = new HepRepObs();
     m_toolSvc->registerObserver(m_heprepObs);
+    m_heprepObs->setHepRepSvc(this);
  
     return StatusCode::SUCCESS;
 }

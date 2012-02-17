@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.h,v 1.15.94.1 2011/06/13 21:48:37 lsrea Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.h,v 1.15.94.1.14.1 2012/01/30 19:07:28 heather Exp $
 // 
 //  Original author: R.Giannitrapani
 
@@ -11,8 +11,9 @@
 #include "GaudiKernel/Service.h"
 #include "GaudiKernel/IIncidentListener.h"
 #include "GaudiKernel/IRunable.h"
+#include "GaudiKernel/IToolSvc.h"
 #include "HepRepSvc/IHepRepSvc.h"
-#include "HepRepObs.h"
+//#include "HepRepObs.h"
 
 //forward declarations
 template <class TYPE> class SvcFactory;
@@ -27,6 +28,7 @@ class IFluxSvc;
 class IRootIoSvc;
 class IDataProviderSvc;
 class IAlgManager;
+class HepRepObs;
 
 class HepRepSvc : virtual public Service,  
                   virtual public IIncidentListener, 
