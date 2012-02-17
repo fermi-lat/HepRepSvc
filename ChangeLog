@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: heather  Fri Feb 17 13:23:43 PST 2012
+HepRepSvc/src
+
+Modified Files:
+      Tag: GlastRelease-17-35-24-br01
+	HepRepObs.cxx HepRepObs.h HepRepSvc.cxx HepRepSvc.h 
+Log Message:
+patch observer
+    *
+------------------------------------------------------------
+User: heather  Fri Feb 17 13:23:43 PST 2012
 HepRepSvc/doc
 
 Modified Files:
