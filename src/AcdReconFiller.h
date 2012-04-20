@@ -15,7 +15,7 @@ class HepRepInitSvc;
 namespace Event {
   class AcdReconV2;
   class AcdHit;
-  class AcdTkrAssoc;
+  class AcdAssoc;
   class AcdTkrGapPoca;
   class AcdTkrHitPoca;
   class AcdTkrPoint;
@@ -108,7 +108,7 @@ class AcdReconFiller: public Filler{
   void addAcdHit( const char* parent, const Event::AcdHit& aHit );
 
   /// Fill the HepRep for a single AcdTkrAssoc
-  void addAcdTkrAssoc( const char* parent, const Event::AcdTkrAssoc& anAssoc );
+  void addAcdTkrAssoc( const char* parent, const Event::AcdAssoc& anAssoc );
 
   /// Fill the HepRep for a AcdTkrHitPoca
   void addAcdTkrHitPoca( const char* parent, const Event::AcdTkrHitPoca& aPoca );  
