@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: kadrlica  Thu Apr 19 21:05:42 PDT 2012
+HepRepSvc/src
+
+Modified Files:
+      Tag: GlastReleasev19r4p1
+	AcdReconFiller.cxx AcdReconFiller.h 
+Log Message:
+Removed some std::cout statements. Changed AcdTkrAssoc to AcdAssoc.
+    *
+------------------------------------------------------------
 TAG
 Tag name: GlastRelease-19-04-01-gr15, operation: add
 Package: HepRepSvc
