@@ -211,7 +211,7 @@ void AcdReconFiller::fillAcdRecon(std::vector<std::string>& typesList ) {
   
   SmartDataPtr<Event::AcdReconV2> acdRec(m_dpsvc, EventModel::AcdReconV2::Event);
   if ( acdRec == 0 ) {    
-    std::cout << "No AcdRecon " << EventModel::AcdRecon::Event << ' ' << m_dpsvc << std::endl;
+    //std::cout << "No AcdRecon " << EventModel::AcdRecon::Event << ' ' << m_dpsvc << std::endl;
     return; 
   }
   
@@ -248,9 +248,9 @@ void AcdReconFiller::fillAcdTkrAssocCol( const Event::AcdReconV2& recon ) {
   const Event::AcdTkrAssocCol& col = recon.getTkrAssocCol();
   if ( col.size() == 0 ) return;
     
-  std::vector<const Event::AcdTkrAssoc*> toDraw;
+  std::vector<const Event::AcdAssoc*> toDraw;
   for ( Event::AcdTkrAssocCol::const_iterator itr = col.begin(); itr != col.end(); itr++ ) {
-    const Event::AcdTkrAssoc* obj = *itr;
+    const Event::AcdAssoc* obj = *itr;
     if ( obj->getTrackIndex() < 0 ) continue;
     toDraw.push_back(obj);
   }
@@ -258,8 +258,8 @@ void AcdReconFiller::fillAcdTkrAssocCol( const Event::AcdReconV2& recon ) {
   m_builder->addInstance("AcdRecon","AcdTkrAssocCol");
   m_builder->setSubinstancesNumber("AcdTkrAssocCol", toDraw.size() );
 
-  for ( std::vector<const Event::AcdTkrAssoc*>::const_iterator itrD = toDraw.begin(); itrD != toDraw.end(); itrD++ ) {
-    const Event::AcdTkrAssoc* obj = *itrD;
+  for ( std::vector<const Event::AcdAssoc*>::const_iterator itrD = toDraw.begin(); itrD != toDraw.end(); itrD++ ) {
+    const Event::AcdAssoc* obj = *itrD;
     addAcdTkrAssoc("AcdTkrAssocCol",*obj);
   }
 }
@@ -271,8 +271,8 @@ void AcdReconFiller::fillAcdEventTopology( const Event::AcdReconV2& recon ) {
   m_builder->addAttValue("TileCount",(int)topo.getTileCount(),"");
   m_builder->addAttValue("RibbonCount",(int)topo.getRibbonCount(),"");
   m_builder->addAttValue("TileVeto",(int)topo.getTileVeto(),"");
-  m_builder->addAttValue("TileEnergy",(float)topo.getTileEnergy(),"");
-  m_builder->addAttValue("RibbonEnergy",(float)topo.getRibbonEnergy(),"");
+  m_builder->addAttValue("TileEnergy",(float)topo.getTotalTileEnergy(),"");
+  m_builder->addAttValue("RibbonEnergy",(float)topo.getTotalRibbonEnergy(),"");
   m_builder->addAttValue("NTilesByFace","xxx","");
   m_builder->addAttValue("NTilesByRow","xxx","");
   m_builder->addAttValue("EnergyByFace","xxx","");
@@ -329,7 +329,7 @@ void AcdReconFiller::addAcdHit( const char* parent, const Event::AcdHit& aHit ) 
 }
 
 /// Fill the HepRep for a single AcdTkrAssoc
-void AcdReconFiller::addAcdTkrAssoc( const char* parent, const Event::AcdTkrAssoc& anAssoc ) {
+void AcdReconFiller::addAcdTkrAssoc( const char* parent, const Event::AcdAssoc& anAssoc ) {
   m_builder->addInstance(parent,"AcdTkrAssoc"); 
 
   m_builder->addAttValue("Index",(int)anAssoc.getTrackIndex(),"");
@@ -392,7 +392,7 @@ void AcdReconFiller::addAcdTkrGapPoca( const char* parent, const Event::AcdTkrGa
 
   addAcdPocaData("AcdTkrGapPoca",aPoca);  
   idents::AcdId tid(0,id.face(),id.row(),id.col()); 
-  std::cout << "Gap " << id.asShort() << ' ' << tid.id() << std::endl;
+  //std::cout << "Gap " << id.asShort() << ' ' << tid.id() << std::endl;
   addAcdTkrLocalCoords("AcdTkrGapPoca",tid,aPoca);
 }
 
