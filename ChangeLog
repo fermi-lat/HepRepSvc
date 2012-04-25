@@ -1,5 +1,14 @@
 ------------------------------------------------------------
 User: heather  Tue Apr 24 21:56:15 PDT 2012
+HepRepSvc/src
+
+Modified Files:
+	AcdReconFiller.cxx AcdReconFiller.h 
+Log Message:
+P8 merge
+    *
+------------------------------------------------------------
+User: heather  Tue Apr 24 21:56:15 PDT 2012
 HepRepSvc/doc
 
 Modified Files:
