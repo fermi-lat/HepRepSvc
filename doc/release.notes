@@ -1,12 +1,16 @@
 /* @file release.notes
  * Package HepRepSvc
- * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.103 2012/02/02 17:53:19 heather Exp $
+ * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.104 2012/02/16 03:01:22 heather Exp $
  *           EOH
 
+ HepRepSvc-00-40-00 24-Apr-2012 hmk Merge GlastReleasev19r4p1 branch
  HepRepSvc-00-39-00 02-Feb-2012  hmk   Fix up HepRepSvc to set up tools using
    observer
  HepRepSvc-00-38-01 17-Jan-2012  hmk   use G4Propagator
  HepRepSvc-00-38-00 08-Dec-2011  hmk   Merge in Gaudi v21r7
+ -- End GlastReleasev19r4p1 branch
+ HepRepSvc-00-37-02-gr01 19-Apr-2012 kadrlica Removed some std::cout statements. Changed AcdTkrAssoc to AcdAssoc.
+ -- Start GlastRelasev19r4p1 branch
  HepRepSvc-00-37-02 28-Jul-2011  lsrea slightly rearrange the colors of the tracks
  HepRepSvc-00-37-01 24-Jul-2011  lsrea Fixed the cluster-color logic
  HepRepSvc-00-37-00 15-Jul-2011  lsrea add getNumberOfEvents() to support WIRED
