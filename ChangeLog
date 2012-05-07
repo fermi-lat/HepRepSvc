@@ -1,4 +1,12 @@
 ------------------------------------------------------------
+User: usher  Mon May  7 11:12:06 PDT 2012
+HepRepSvc/src
+
+Modified Files:
+	HepRepSvc.cxx SvcAdapter.cxx 
+Log Message:
+    *
+------------------------------------------------------------
 TAG
 Tag name: GlastRelease-17-35-24-gr30, operation: add
 Package: HepRepSvc
