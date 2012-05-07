@@ -5,6 +5,7 @@
 //#include "geometry/Vector.h"
 
 class IGlastDetSvc;
+class ITkrGeometrySvc;
 class IDataProviderSvc;
 class IParticlePropertySvc;
 class HepRepInitSvc;
@@ -40,31 +41,35 @@ class TrackElementsFiller : public Filler
 public:
     TrackElementsFiller(HepRepInitSvc* hrisvc,
                         IGlastDetSvc* gsvc,
+                        ITkrGeometrySvc* tgsvc,
                         IDataProviderSvc* dpsvc,
                         IParticlePropertySvc* ppsvc);
   
-  /// This method init the type tree
-  virtual void buildTypes ();
-  /// This method fill the instance tree, using the string vector to decide
-  /// which subinstances to fill
-  virtual void fillInstances (std::vector<std::string>&);
+    /// This method init the type tree
+    virtual void buildTypes ();
+    /// This method fill the instance tree, using the string vector to decide
+    /// which subinstances to fill
+    virtual void fillInstances (std::vector<std::string>&);
 
 private:
 
-  void drawVectorPoints();
-  void drawFilterParamsCol();
-  void drawFilterParams(Event::TkrFilterParams* filterParams);
-  void drawTkrBoundBoxLinks(Event::TkrFilterParams* tkrFilterParams, Event::TkrFilterParamsToLinksTab& paramsToLinksTab);
-  void drawTkrBoundBoxes(Event::TkrFilterParams* filterParams, Event::TkrFilterParamsToBoxTab& paramsToBoxTab);
-  void drawTkrBoundBoxPoints(Event::TkrFilterParams* filterParams, Event::TkrFilterParamsToPointsTab& paramsToPointsTab);
-  void drawTkrBoundBoxPoint(const Event::TkrBoundBoxPoint* curPoint);
-  void drawVectorLinks();
-  void drawNodeTrees();
-  void drawNode(const Event::TkrVecNode* vecNode, std::string& lineColor, int lineWidth = 2);
-  void drawSingleVectorLink(const Event::TkrVecPointsLink* vecLink, std::string& lineColor);
+    void defineLinkAttributes();
+    void drawVectorPoints();
+    void drawFilterParamsCol();
+    void drawFilterParams(const Event::TkrFilterParams* filterParams, std::string& parent, std::string& instance);
+    void drawTkrBoundBoxLinks(Event::TkrFilterParams* tkrFilterParams, Event::TkrFilterParamsToLinksTab& paramsToLinksTab);
+    void drawTkrBoundBoxes(Event::TkrFilterParams* filterParams, Event::TkrFilterParamsToBoxTab& paramsToBoxTab);
+    int  countTkrBoundBoxPoints(const Event::TkrBoundBoxPoint* point);
+    void drawTkrBoundBoxPoints(Event::TkrFilterParams* filterParams, Event::TkrFilterParamsToPointsTab& paramsToPointsTab);
+    void drawTkrBoundBoxPoint(const Event::TkrBoundBoxPoint* curPoint);
+    void drawVectorLinks();
+    void drawNodeTrees();
+    void drawNode(const Event::TkrVecNode* vecNode, std::string& lineColor, int lineWidth = 2);
+    void drawSingleVectorLink(const Event::TkrVecPointsLink* vecLink, std::string& lineColor, bool drawExtended=false);
 
-  IDataProviderSvc*     m_dpsvc;
-  IParticlePropertySvc* m_ppsvc;
+    ITkrGeometrySvc*      m_tgsvc;
+    IDataProviderSvc*     m_dpsvc;
+    IParticlePropertySvc* m_ppsvc;
 };
 
 #endif //TrackElementsFiller_H
