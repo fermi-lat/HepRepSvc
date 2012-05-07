@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.33 2012/02/02 17:53:19 heather Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.34 2012/05/07 18:12:06 usher Exp $
 // 
 //  Original author: R.Giannitrapani
 //
@@ -233,66 +233,10 @@ StatusCode HepRepSvc::initialize ()
     } else {
         log << MSG::DEBUG << "Got ptr to ToolSvc " << endreq;
     }
-   
-/* 
-    // Manager of the AlgTool Objects
-    IObjManager* objManager=0;             
     
-    // locate Object Manager to locate later the tools 
-    status = serviceLocator()->service("ApplicationMgr", objManager );
-    if( status.isFailure()) {
-      log << MSG::ERROR << "Unable to locate ObjectManager Service" << endreq;
-      return status;
-    }
-    
-    IToolFactory* toolfactory = 0;
-    
-    // search throught all objects (factories?)
-    for(IObjManager::ObjIterator it = objManager->objBegin(); 
-	it !=objManager->objEnd(); ++ it){
-      
-      std::string tooltype= (*it)->ident();
-      // is it a tool factory?
-      const IFactory* factory = objManager->objFactory( tooltype );
-      IFactory* fact = const_cast<IFactory*>(factory);
-      status = fact->queryInterface( IID_IToolFactory, (void**)&toolfactory );
-      if( status.isSuccess() ) {
-	
-	IAlgTool* itool = toolfactory->instantiate(name()+"."+tooltype,  this );       
-	IRegister* ireg;
-	status =itool->queryInterface( IRegister::interfaceID(), (void**)&ireg);
-	if( status.isSuccess() ){
-	  log << MSG::INFO << "Registering HepRep server/streamer " << endreq;
-	  ireg->registerMe(this);
-	}
-	log << MSG::DEBUG << "Releasing the tool " << tooltype << endreq;
-	itool->release();
-      }
-      
-    }
-*/
-
-//  // Let's see if we can rectally cranially extract the tool we want
-//  // Start by extracting the tool service
-//  IToolSvc* toolSvc = 0;
-//  if (sc = service("ToolSvc",toolSvc, true).isSuccess() )
-//  {
-//      IRegister* ireg;
-//      if( (sc = toolSvc->retrieveTool("RegisterCorba", "RegisterCorba", ireg)).isFailure() )
-//      {
-//          throw GaudiException("ToolSvc could not find RegisterCorba", name(), sc);
-//      }
-//
-//       ireg->registerMe(this);
-//    }
-//    else
-//    {
-//        throw GaudiException("Cannot rectally cranially extract the ToolSvc from Gaudi", name(), sc);
-//    }
-   
-    m_heprepObs = new HepRepObs();
-    m_toolSvc->registerObserver(m_heprepObs);
-    m_heprepObs->setHepRepSvc(this);
+//    m_heprepObs = new HepRepObs();
+//    m_toolSvc->registerObserver(m_heprepObs);
+//    m_heprepObs->setHepRepSvc(this);
  
     return StatusCode::SUCCESS;
 }
@@ -329,49 +273,23 @@ void HepRepSvc::endEvent()
   // open the message log
   MsgStream log( msgSvc(), name() );
 
-  std::stringstream sName;
-  
-  // set the name of the instance tree representing the event this is
-  // a temporary hack that set the name as Event-xxx, with xxx an
-  // increasing integer
-  static int temp = 0;
-  //unsigned temp1;
-  sName << "Event-" << temp;
-  temp++;
-
-  // I'm guessing that FRED (?) expects a fixed format for the string sName
-  // so it can't be modified arbitrarily
-
-  //if(m_rootIoSvc) {
-  //    temp1 = m_rootIoSvc->index()-1;
-  //    sName << " (" << temp1 << ")";
-  //}
-
-  // This is to retrive event and run number from the event, but seems to be
-  // broken .. so I comment it out for now
-//  SmartDataPtr<Event::EventHeader>
-//    evt(m_idpsvc, EventModel::EventHeader);
-//   if (evt)
-//   {
-//     unsigned int evtRun = evt->run();
-//     unsigned int evtEvent = evt->event();
-//     sName << "Event-" << evtRun << "-" << evtEvent << "\0"; 
-//   }
+  // Recover the Event ID
+  std::string eventId = getEventId();
 
   // Set the registry with the instance trees names of this event
   // after clearing the names list; we also add the dependency of
   // the event instancetree to the geometry instancetree
   m_registry->clearInstanceTrees();
-  m_registry->addInstanceTree("Geometry3D","GLAST-LAT");
-  m_registry->addInstanceTree("Event",sName.str());
-  m_registry->addDependency(sName.str(),"GLAST-LAT");
+  m_registry->addInstanceTree("Geometry3D", "GLAST-LAT");
+  m_registry->addInstanceTree("Event", eventId);
+  m_registry->addDependency(eventId, "GLAST-LAT");
   
   // If autoStream has been set to a name of a streamer in the
   // jobOptions file, than we save automatically the HepRep to a file
   if (m_autoStream!="")
     {
       std::stringstream sFileName;
-      sFileName << m_streamPath << sName.str();
+      sFileName << m_streamPath << eventId;
       saveHepRep(m_autoStream, sFileName.str());
       log << MSG::DEBUG << "Streamed the HepRep to file using the " << 
     	m_autoStream << " streamer" << endreq;
