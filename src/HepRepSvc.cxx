@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.32 2011/12/12 20:51:40 heather Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.cxx,v 1.33 2012/02/02 17:53:19 heather Exp $
 // 
 //  Original author: R.Giannitrapani
 //
@@ -14,6 +14,7 @@
 #include "GaudiKernel/IIncidentSvc.h"
 //#include "GaudiKernel/IObjManager.h"
 //#include "GaudiKernel/IToolFactory.h"
+#include "HepRepSvc/IRegister.h"
 #include "GaudiKernel/IAppMgrUI.h"
 #include "GaudiKernel/Property.h"
 #include "GaudiKernel/IParticlePropertySvc.h"
@@ -270,6 +271,24 @@ StatusCode HepRepSvc::initialize ()
       
     }
 */
+
+//  // Let's see if we can rectally cranially extract the tool we want
+//  // Start by extracting the tool service
+//  IToolSvc* toolSvc = 0;
+//  if (sc = service("ToolSvc",toolSvc, true).isSuccess() )
+//  {
+//      IRegister* ireg;
+//      if( (sc = toolSvc->retrieveTool("RegisterCorba", "RegisterCorba", ireg)).isFailure() )
+//      {
+//          throw GaudiException("ToolSvc could not find RegisterCorba", name(), sc);
+//      }
+//
+//       ireg->registerMe(this);
+//    }
+//    else
+//    {
+//        throw GaudiException("Cannot rectally cranially extract the ToolSvc from Gaudi", name(), sc);
+//    }
    
     m_heprepObs = new HepRepObs();
     m_toolSvc->registerObserver(m_heprepObs);
