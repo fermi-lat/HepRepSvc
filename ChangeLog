@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: usher  Mon May  7 14:16:46 PDT 2012
+HepRepSvc/src
+
+Modified Files:
+	HepRepSvc.cxx 
+Log Message:
+Reverting to using the root sequence number to control the event ID and also some general cleanup from previous method for doing things
+    *
+------------------------------------------------------------
 User: usher  Mon May  7 11:12:06 PDT 2012
 HepRepSvc/src
 
