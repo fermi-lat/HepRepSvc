@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: usher  Tue May  8 15:11:55 PDT 2012
+HepRepSvc
+
+Modified Files:
+	SConscript 
+Log Message:
+Preparing to tag HepRepSvc-00-40-01
+    *
+------------------------------------------------------------
 TAG
 Tag name: GlastRelease-17-35-24-gr31, operation: add
 Package: HepRepSvc
