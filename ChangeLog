@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: lsrea  Tue May  8 18:41:45 PDT 2012
+HepRepSvc
+
+Modified Files:
+	SConscript 
+Log Message:
+stag/GoGui_auto-tag
+    *
+------------------------------------------------------------
 TAG
 Tag name: HepRepSvc-00-40-01, operation: add
 Package: HepRepSvc
