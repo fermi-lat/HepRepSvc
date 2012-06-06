@@ -18,15 +18,13 @@ bool SvcAdapter::nextEvent(int i)
 	MsgStream log( m_hrsvc->msgSvc(), m_hrsvc->name() );
 
 	IAlgManager* theAlgMgr;
-  sc = m_hrsvc->serviceLocator( )->getService( "ApplicationMgr",
-        IAlgManager::interfaceID(),
-        (IInterface*&)theAlgMgr );
-
-
+    sc = m_hrsvc->serviceLocator( )->getService( "ApplicationMgr",
+                                                 IAlgManager::interfaceID(),
+                                                 (IInterface*&)theAlgMgr );
 
 	IAlgorithm* theIAlg;
-  Algorithm*  theAlgorithm=0;
-  IntegerProperty errorProperty("ErrorCount",0);
+    Algorithm*  theAlgorithm=0;
+    IntegerProperty errorProperty("ErrorCount",0);
 
 	sc = theAlgMgr->getAlgorithm( "Top", theIAlg );
 	if ( sc.isSuccess( ) ) {
@@ -35,22 +33,31 @@ bool SvcAdapter::nextEvent(int i)
 		} catch(...){
             sc = StatusCode::FAILURE;
 		}
-  }
+    }
 
 	if ( sc.isFailure( ) ) {
     log << MSG::WARNING << "Could not find algorithm 'Top'; will not monitor errors" << endreq;
-  }
+    }
 
-	
+    // Retrieve the current state of Gaudi
+    Gaudi::StateMachine::State state = m_hrsvc->getAppMgrUI()->FSMState();
+
+    // If we are not running then need to start things going
+    if (state != Gaudi::StateMachine::RUNNING) sc = m_hrsvc->getAppMgrUI()->start();
+
+    // Trigger the next event
 	sc = m_hrsvc->getAppMgrUI()->nextEvent(i);
 
-  // the single event may have created a failure. Check the ErrorCount propery of the Top alg.
+    // Now put into stopped state to fire the end event we need to get display output
+    sc = m_hrsvc->getAppMgrUI()->stop();
+
+    // the single event may have created a failure. Check the ErrorCount propery of the Top alg.
 	if( theAlgorithm !=0) theAlgorithm->getProperty(&errorProperty);
 	if( sc.isFailure() || errorProperty.value() > 0){
 		sc = StatusCode::FAILURE;
 	}
 
- if (sc.isFailure())
+    if (sc.isFailure())
 		return false;
 	else return true;
 }
@@ -123,7 +130,10 @@ std::string SvcAdapter::getStartFred()
 // Same for WIRED
 std::string SvcAdapter::getStartWired()
 {
-    std::cout << "SvcAdapter: " << m_hrsvc->getStartWired()<< std::endl;
     return m_hrsvc->getStartWired();
 } 
+
+long long SvcAdapter::getNumberOfEvents() {
+    return m_hrsvc->getNumberOfEvents();
+}
 

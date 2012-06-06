@@ -1,8 +1,9 @@
 /* @file release.notes
  * Package HepRepSvc
- * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.72.44.2.2.1 2012/01/30 19:07:28 heather Exp $
+ * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.72.44.2.2.2 2012/02/17 21:23:43 heather Exp $
  *           EOH
 
+ * v0r31p2gr05 06-Jun-2012 HMK Merge in Tracy's Event display updates for P8
  * v0r31p2gr04 17-Feb-2012 HMK Merge in Event display updates no Wired yet
  * v0r31p2gr03 30-Jan-2012 HMK Gaudi v21r7
  * v0r31p2gr02 27-Jul-2011 HMK Merge in SCons updates for P7
