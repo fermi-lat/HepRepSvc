@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.h,v 1.15.94.1.14.1 2012/01/30 19:07:28 heather Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/src/HepRepSvc.h,v 1.20 2012/02/02 17:53:19 heather Exp $
 // 
 //  Original author: R.Giannitrapani
 
@@ -26,6 +26,7 @@ class IAppMgrUI;
 class SvcAdapter;
 class IFluxSvc;
 class IRootIoSvc;
+class INTupleWriterSvc;
 class IDataProviderSvc;
 class IAlgManager;
 class HepRepObs;
@@ -95,6 +96,9 @@ class HepRepSvc : virtual public Service,
   /// This method set the Event index 
   bool setEventIndex(int index);
 
+  /// get the number of events in the file
+  long long getNumberOfEvents();
+
   /// This method replay a given algorithm
   bool replayAlgorithm(std::string algName);
 
@@ -104,10 +108,7 @@ class HepRepSvc : virtual public Service,
   /// This method return a dir with a FRED installation, if set so in the
   /// jobOptions file; otherwise it returns (by default) an empty string
   std::string getStartFred(){return m_startFred;}; 
-  std::string getStartWired() {
-      //std::cout << "HepRepSvc: m_startWired = " << m_startWired << std::endl;
-      return m_startWired;
-  };
+  std::string getStartWired() {return m_startWired;};
   
 protected: 
     
@@ -133,7 +134,6 @@ private:
     std::string m_startFred;
     /// same for WIRED
     std::string m_startWired;
-    
     /// A property to be used to set the saving of XML HepRep files to
     /// true or false by setting the name of a streamer; by default it
     /// is a null string, so autostream is disabled
@@ -169,6 +169,9 @@ private:
     /// The RootIoSvc used to set event Run/Event for random access from Root
     ///files
     IRootIoSvc* m_rootIoSvc;
+
+    /// for the RootTupleSvc
+    INTupleWriterSvc* m_rtsvc;
 
     /// The Data Provider Service Interface.
     IDataProviderSvc* m_idpsvc;
