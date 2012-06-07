@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: heather  Wed Jun  6 19:26:42 PDT 2012
+HepRepSvc
+
+Modified Files:
+      Tag: GlastRelease-17-35-24-br01
+	SConscript 
+Log Message:
+finish merge
+    *
+------------------------------------------------------------
 TAG
 Tag name: GlastRelease-17-35-24-gr32, operation: add
 Package: HepRepSvc
