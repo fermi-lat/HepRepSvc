@@ -48,6 +48,7 @@ void MeritTupleFiller::buildTypes()
     if(!m_hrisvc->getMeritTupleFiller_doIt()) return;
 
     m_builder->addType("","Merit","merit variables","");
+    //m_builder->addAttValue("Layer","Event",""); //kludge
 
     m_tree = 0;
     std::string treeName = "MeritTuple";
@@ -88,7 +89,10 @@ void MeritTupleFiller::buildTypes()
             m_prefixCount++;
             prefix = thisPrefix;
         }
-        m_builder->addAttDef(thisPrefix,thisName, "Physics", "");
+
+        // kludge
+        //m_builder->addAttValue("DrawAs","Prism","");
+        //m_builder->addAttValue("Color","red","");
 
         if( thisName=="GltGemSummary" || thisName=="GltWord")      { // F->lo
             m_conversionFlags[i] = 1;
@@ -117,8 +121,10 @@ void MeritTupleFiller::fillInstances (std::vector<std::string>& typesList)
     m_builder->addInstance("","Merit");
     m_builder->setSubinstancesNumber("Merit", m_prefixCount);
 
+    double delta = -320.; // for kludge
+ 
     int i;
-    for(i=0;i<m_names.size();++i) {
+    for(i=0;i<(int)m_names.size();++i) {
         std::string thisName = m_names[i];
         void * ptr;
         m_rtsvc->getItem("MeritTuple",thisName, ptr);
@@ -126,6 +132,11 @@ void MeritTupleFiller::fillInstances (std::vector<std::string>& typesList)
         if(m_prefixes[i]!=pref) {
             pref = m_prefixes[i];
             m_builder->addInstance("Merit",pref);
+
+
+            // kludge
+            //drawPrism(0.+delta, 0.+delta, 1000., 10., 10., 10.);
+            //delta += 40.;
         }
 
         std::string thisType = m_types[i];
@@ -154,13 +165,13 @@ void MeritTupleFiller::fillInstances (std::vector<std::string>& typesList)
                 getBits( *reinterpret_cast<unsigned*>(ptr),31,16),"");
             continue;
         }
- 
+
         // 32 bits from float
         if(m_conversionFlags[i]==2) {
             m_builder->addAttValue(thisName+"-lo",
-                getBits( *reinterpret_cast<float*>(ptr),15,0),"");
+                getBits( (unsigned)*reinterpret_cast<float*>(ptr),15,0),"");
             m_builder->addAttValue(thisName+"-hi",
-                getBits( *reinterpret_cast<float*>(ptr),31,16),"");
+                getBits( (unsigned)*reinterpret_cast<float*>(ptr),31,16),"");
             continue;
         }
 
@@ -211,7 +222,7 @@ bool MeritTupleFiller::parseTree( TTree* tree)
         int index = leafName.find("[");
         dim = 1;
         dimStr = "1";
-        if(index!=std::string::npos) {
+        if((unsigned)index!=std::string::npos) {
             dim = -1;
             int index1 = leafName.find("]");
             dimStr = leafName.substr(index+1,index1-index-1);

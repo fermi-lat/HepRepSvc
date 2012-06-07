@@ -7,6 +7,8 @@
 
 class IDataProviderSvc;
 class HepRepInitSvc;
+class IRootIoSvc;
+
 /** 
  *  @class HeaderFiller
  *
@@ -21,9 +23,10 @@ class HepRepInitSvc;
 class HeaderFiller: public Filler{
   
  public:
-  HeaderFiller(HepRepInitSvc* hrisvc,
-               IDataProviderSvc* dpsvc):
-    m_dpsvc(dpsvc){};
+  HeaderFiller(HepRepInitSvc* /*hrisvc*/,
+               IDataProviderSvc* dpsvc,
+               IRootIoSvc* rootIoSvc ):
+    m_dpsvc(dpsvc), m_rootIoSvc(rootIoSvc) {};
 
   /// This method init the type tree
   virtual void buildTypes ();
@@ -41,6 +44,8 @@ class HeaderFiller: public Filler{
   HepRepInitSvc* m_hrisvc;
   /// A pointer to the DataService
   IDataProviderSvc* m_dpsvc;
+  /// root svc
+  IRootIoSvc* m_rootIoSvc;
 
 };
 

@@ -46,6 +46,7 @@ class SvcAdapter: public ISvcAdapter
   /// jobOptions file; otherwise it returns (by default) an empty string
   virtual std::string getStartFred(); 
   virtual std::string getStartWired();
+  virtual long long getNumberOfEvents();
 
   
  private:
