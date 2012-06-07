@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: heather  Wed Jun  6 19:26:42 PDT 2012
+HepRepSvc/HepRepSvc
+
+Modified Files:
+      Tag: GlastRelease-17-35-24-br01
+	ISvcAdapter.h 
+Log Message:
+finish merge
+    *
+------------------------------------------------------------
+User: heather  Wed Jun  6 19:26:42 PDT 2012
 HepRepSvc
 
 Modified Files:
