@@ -1,8 +1,9 @@
 /* @file release.notes
  * Package HepRepSvc
- * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.106 2012/05/08 22:11:55 usher Exp $
+ * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.107 2012/05/09 01:41:45 lsrea Exp $
  *           EOH
 
+ HepRepSvc-00-42-00 20-Aug-2012    jrb for Windows no-install-headers
  HepRepSvc-00-41-00 08-May-2012  lsrea Mainly fix for display in new Gaudi
  HepRepSvc-00-40-01  8-May-2012 TU Small changes to make work in new gaudi
  HepRepSvc-00-40-00 24-Apr-2012 hmk Merge GlastReleasev19r4p1 branch
