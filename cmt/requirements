@@ -22,7 +22,7 @@ apply_pattern package_include
 
 private 
 use G4Propagator *
-use RootmapPolicy * GlastPolicy
+#use RootmapPolicy * GlastPolicy
 use gr_app
 use OnboardFilterTds 
 
@@ -36,7 +36,7 @@ library HepRepSvc $(HepRepSvc_headers) \
         -s=Tracker $(source)\
         -s=xml $(source)
 
-apply_pattern generate_rootmap library=HepRepSvc 
+#apply_pattern generate_rootmap library=HepRepSvc 
 
 # test program, using local joboptions
 # test program doesn't actually do anything, but the test
