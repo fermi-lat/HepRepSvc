@@ -1,5 +1,81 @@
 ------------------------------------------------------------
 TAG
+Tag name: GlastRelease-20-08-05, operation: add
+Package: HepRepSvc
+User: heather  Thu Jan 24 10:03:11 2013
+Files:
+  HepRepSvc/.cvsignore  1.4
+  HepRepSvc/ChangeLog  1.798
+  HepRepSvc/HepRepSvcLib.py  1.4
+  HepRepSvc/SConscript  1.57
+  HepRepSvc/HepRepSvc/IRegister.h  1.1
+  HepRepSvc/HepRepSvc/IBuilder.h  1.4
+  HepRepSvc/HepRepSvc/HepRepInitSvc.h  1.6
+  HepRepSvc/HepRepSvc/IHepRepSvc.h  1.2
+  HepRepSvc/HepRepSvc/ISvcAdapter.h  1.13
+  HepRepSvc/HepRepSvc/IServer.h  1.2
+  HepRepSvc/HepRepSvc/IFiller.h  1.4
+  HepRepSvc/HepRepSvc/IRegistry.h  1.4
+  HepRepSvc/HepRepSvc/IStreamer.h  1.1
+  HepRepSvc/HepRepSvc/mainpage.h  1.6
+  HepRepSvc/cmt/requirements  1.111
+  HepRepSvc/doc/release.notes  1.108
+  HepRepSvc/src/MeritTupleFiller.cxx  1.4
+  HepRepSvc/src/HeaderFiller.cxx  1.7
+  HepRepSvc/src/MeritTupleFiller.h  1.1
+  HepRepSvc/src/HepRepInitSvc.cxx  1.7
+  HepRepSvc/src/CalReconFiller.h  1.9
+  HepRepSvc/src/AcdPointFiller.h  1.3
+  HepRepSvc/src/Registry.cxx  1.3
+  HepRepSvc/src/AcdReconFiller.h  1.6
+  HepRepSvc/src/ReconFiller.cxx  1.12
+  HepRepSvc/src/AcdPointFiller.cxx  1.3
+  HepRepSvc/src/FilterFiller.h  1.1
+  HepRepSvc/src/MonteCarloFiller.h  1.7
+  HepRepSvc/src/SvcAdapter.cxx  1.16
+  HepRepSvc/src/HepRepObs.cxx  1.4
+  HepRepSvc/src/AcdDigiFiller.h  1.1
+  HepRepSvc/src/HepRepGeometry.cxx  1.19
+  HepRepSvc/src/ReconFiller.h  1.7
+  HepRepSvc/src/HepRepSvc.cxx  1.35
+  HepRepSvc/src/FilterFiller.cxx  1.3
+  HepRepSvc/src/MonteCarloFiller.cxx  1.25
+  HepRepSvc/src/CalReconFiller.cxx  1.28
+  HepRepSvc/src/AcdReconFiller.cxx  1.11
+  HepRepSvc/src/DigiFiller.h  1.3
+  HepRepSvc/src/Filler.cxx  1.2
+  HepRepSvc/src/HepRepGeometry.h  1.9
+  HepRepSvc/src/GeometryFiller.cxx  1.6
+  HepRepSvc/src/Filler.h  1.3
+  HepRepSvc/src/HepRepObs.h  1.4
+  HepRepSvc/src/SvcAdapter.h  1.13
+  HepRepSvc/src/DigiFiller.cxx  1.2
+  HepRepSvc/src/HeaderFiller.h  1.5
+  HepRepSvc/src/HepRepSvc.h  1.20
+  HepRepSvc/src/Registry.h  1.6
+  HepRepSvc/src/TkrReconFiller.h  1.5
+  HepRepSvc/src/TkrReconFiller.cxx  1.14
+  HepRepSvc/src/GeometryFiller.h  1.7
+  HepRepSvc/src/AcdDigiFiller.cxx  1.1
+  HepRepSvc/src/Dll/HepRepSvc_load.cxx  1.3
+  HepRepSvc/src/Dll/HepRepSvc_dll.cxx  1.2
+  HepRepSvc/src/Tracker/ClusterUtil.h  1.3
+  HepRepSvc/src/Tracker/TrackFiller.h  1.8
+  HepRepSvc/src/Tracker/TkrEventParamsFiller.h  1.3
+  HepRepSvc/src/Tracker/ClusterFiller.h  1.9
+  HepRepSvc/src/Tracker/VertexFiller.cxx  1.11
+  HepRepSvc/src/Tracker/ClusterUtil.cxx  1.8
+  HepRepSvc/src/Tracker/TrackFiller.cxx  1.27
+  HepRepSvc/src/Tracker/TrackElementsFiller.h  1.7
+  HepRepSvc/src/Tracker/VertexFiller.h  1.5
+  HepRepSvc/src/Tracker/TkrEventParams.cxx  1.7
+  HepRepSvc/src/Tracker/TrackElementsFiller.cxx  1.9
+  HepRepSvc/src/Tracker/ClusterFiller.cxx  1.28
+  HepRepSvc/src/test/jobOptions.txt  1.6
+
+    *
+------------------------------------------------------------
+TAG
 Tag name: GlastRelease-20-08-04, operation: add
 Package: HepRepSvc
 User: heather  Thu Jan 17 17:21:29 2013
