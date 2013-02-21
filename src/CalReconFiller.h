@@ -14,7 +14,7 @@ class HepRepInitSvc;
 class Point;
 class Vector;
 
-#include "Event/Recon/CalRecon/CalCluster.h"
+#include "Event/Recon/CalRecon/CalClusterMap.h"
 #include "Event/Recon/CalRecon/CalMipClasses.h" 
 /** 
  *  @class CalReconFiller
@@ -42,7 +42,7 @@ public:
 
 
 private:
-    void drawClusters(Event::CalClusterCol* clusters, Event::CalClusterHitTabList* xTal2ClusTabList);
+    void drawClusters(Event::CalClusterMap* clusters, Event::CalClusterHitTabList* xTal2ClusTabList);
     void drawCluster(Event::CalCluster* cluster, std::string color = "");
     void drawXtals(std::vector<Event::CalClusterHitRel*>& xTalRelVec, std::string color="");
     void drawXtals(Event::CalXtalRecCol* xTalCol, std::string color = "");

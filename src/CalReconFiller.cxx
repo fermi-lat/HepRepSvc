@@ -10,7 +10,7 @@
 
 #include "Event/TopLevel/EventModel.h"
 #include "Event/Recon/CalRecon/CalXtalRecData.h"
-#include "Event/Recon/CalRecon/CalCluster.h"
+#include "Event/Recon/CalRecon/CalClusterMap.h"
 #include "Event/RelTable/RelTable.h"
 #include "Event/Recon/CalRecon/CalMipClasses.h" 
 #include "Event/Recon/CalRecon/CalRecon.h"
@@ -224,15 +224,15 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
         // drawing the cross in the average position for each layer 
 
         //  get pointer to the cluster reconstructed collection
-        Event::CalClusterCol* clusterCol = SmartDataPtr<Event::CalClusterCol>(m_dpsvc,
-            EventModel::CalRecon::CalClusterCol);
+        Event::CalClusterMap* clusterMap = SmartDataPtr<Event::CalClusterMap>(m_dpsvc,
+            EventModel::CalRecon::CalClusterMap);
 
         // Recover the list of xTal to Cluster relations
         Event::CalClusterHitTabList* xTal2ClusTabList = 
             SmartDataPtr<Event::CalClusterHitTabList>(m_dpsvc, EventModel::CalRecon::CalClusterHitTab);
 
         // Draw the clusters
-        drawClusters(clusterCol, xTal2ClusTabList);
+        drawClusters(clusterMap, xTal2ClusTabList);
 
         // Look for the case where no relations exist, then we need to explicitly draw the xTals. 
         if (!xTal2ClusTabList && hasType(typesList, "Recon/CalRecon/XtalCol")) 
@@ -258,7 +258,7 @@ void CalReconFiller::fillInstances (std::vector<std::string>& typesList)
     }
 }
 
-void CalReconFiller::drawClusters(Event::CalClusterCol* clusters, Event::CalClusterHitTabList* xTal2ClusTabList)
+void CalReconFiller::drawClusters(Event::CalClusterMap* clusterMap, Event::CalClusterHitTabList* xTal2ClusTabList)
 {
     // Make the relational table
     Event::CalClusterHitTab* xTal2ClusTab = 0;
@@ -266,9 +266,12 @@ void CalReconFiller::drawClusters(Event::CalClusterCol* clusters, Event::CalClus
     if (xTal2ClusTabList) xTal2ClusTab = new Event::CalClusterHitTab(xTal2ClusTabList);
 
     // if pointer is not zero, start drawing
-    if(clusters)
+    if(clusterMap != 0 && !clusterMap->getRawClusterVec().empty())
     {
-        int numClusters = clusters->size();
+        // Retrieve the CalClusterVec first
+        Event::CalClusterVec clusterVec = clusterMap->getRawClusterVec();
+
+        int numClusters = clusterVec.size();
 
         m_builder->setSubinstancesNumber("ClusterCol", numClusters);
 
@@ -276,8 +279,8 @@ void CalReconFiller::drawClusters(Event::CalClusterCol* clusters, Event::CalClus
 
         m_colorIndex = 0;
 
-        Event::CalClusterCol::iterator clusIter = clusters->begin();
-        while(clusIter != clusters->end())
+        Event::CalClusterVec::iterator clusIter = clusterVec.begin();
+        while(clusIter != clusterVec.end())
         {
             m_builder->addInstance("ClusterCol", "Cluster");  
 
@@ -290,7 +293,7 @@ void CalReconFiller::drawClusters(Event::CalClusterCol* clusters, Event::CalClus
                 int j = std::min(m_colorIndex++,m_maxColors-1);
 
                 // Special cases, first see if we have "uber" cluster
-                if (clusIter == clusters->end() && clusters->size() > 1) j = m_maxColors;
+                if (clusIter == clusterVec.end() && clusterVec.size() > 1) j = m_maxColors;
                 // Check that energy is low
                 else if (cl->getMomParams().getEnergy() < m_minEnergy) j = m_maxColors - 1;
 
@@ -300,7 +303,7 @@ void CalReconFiller::drawClusters(Event::CalClusterCol* clusters, Event::CalClus
             drawCluster(cl, clusColor);
 
             // if we have more than one cluster then skip drawing crystals for the first one
-            if ((clusIter == clusters->end() && clusters->size() > 1) || !xTal2ClusTab) continue;
+            if ((clusIter == clusterVec.end() && clusterVec.size() > 1) || !xTal2ClusTab) continue;
 
             // Now draw the associated crystals. 
             // Start by getting the list for this cluster
@@ -696,12 +699,12 @@ void CalReconFiller::drawMips(Event::CalMipTrackCol* CalMipTrackCol)
             //                 // Number of crystals
             //                 int    numXtals = calMipTrack->size();
 
-            // 		// Update the point
-            //  		double delta  = 2 * numXtals * m_xtalHeight;
-            //  		Point  topPos = mipPos + delta * mipDir;
+            //      // Update the point
+            //          double delta  = 2 * numXtals * m_xtalHeight;
+            //          Point  topPos = mipPos + delta * mipDir;
 
-            // 		// Bottom point
-            // 		mipPos -= delta * mipDir;
+            //      // Bottom point
+            //      mipPos -= delta * mipDir;
 
             //                  // Add the starting point to the display
             //                  m_builder->addPoint(mipPos.x(), mipPos.y(), mipPos.z());
@@ -710,22 +713,22 @@ void CalReconFiller::drawMips(Event::CalMipTrackCol* CalMipTrackCol)
             //                  m_builder->addPoint(topPos.x(), topPos.y(), topPos.z());
 
 
-            // 	      //projection of this hit on track
-            // 	      Point Hp=C+((Hit[hid].P-C)*dir)*dir;
-            // 	      for (int ihh=ih+1; ihh<tr[itr].nh; ihh++)
-            // 		{
-            // 		  int hidd=tr[itr].hid[ihh];
-            // 		  //projection of this hit on track
-            // 		  Point HHp=C+((Hit[hidd].P-C)*dir)*dir;
-            // 		  //vv=Hit[hid].P-Hit[hidd].P;
-            // 		  vv=HHp-Hp;
-            // 		  double d=sqrt(vv*vv);
-            // 		  if (d>tr[itr].length)
-            // 		    {
-            // 		      tr[itr].length=d;
-            // 		      tr[itr].H1=Hp;
-            // 		      tr[itr].H2=HHp;
-            // 		    }
+            //        //projection of this hit on track
+            //        Point Hp=C+((Hit[hid].P-C)*dir)*dir;
+            //        for (int ihh=ih+1; ihh<tr[itr].nh; ihh++)
+            //      {
+            //        int hidd=tr[itr].hid[ihh];
+            //        //projection of this hit on track
+            //        Point HHp=C+((Hit[hidd].P-C)*dir)*dir;
+            //        //vv=Hit[hid].P-Hit[hidd].P;
+            //        vv=HHp-Hp;
+            //        double d=sqrt(vv*vv);
+            //        if (d>tr[itr].length)
+            //          {
+            //            tr[itr].length=d;
+            //            tr[itr].H1=Hp;
+            //            tr[itr].H2=HHp;
+            //          }
 
             Point startPos;
             Point endPos;
@@ -750,7 +753,7 @@ void CalReconFiller::drawMips(Event::CalMipTrackCol* CalMipTrackCol)
                     HepVector3D pXtal2 = xTal2.getXtal()->getPosition();
                     Point H2=xTal2.getXtal()->getPosition();
                     // projection on the track
-                    Point P2=mipPos+((H2-mipPos)*mipDir)*mipDir;			
+                    Point P2=mipPos+((H2-mipPos)*mipDir)*mipDir;            
                     Vector vv=P2-P1;
                     double dist=sqrt(vv*vv);
                     if (dist>dmax)
