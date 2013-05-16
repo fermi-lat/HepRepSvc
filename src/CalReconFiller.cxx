@@ -266,7 +266,7 @@ void CalReconFiller::drawClusters(Event::CalClusterMap* clusterMap, Event::CalCl
     if (xTal2ClusTabList) xTal2ClusTab = new Event::CalClusterHitTab(xTal2ClusTabList);
 
     // if pointer is not zero, start drawing
-    if(clusterMap != 0 && !clusterMap->getRawClusterVec().empty())
+    if(clusterMap != 0 && !clusterMap->empty())
     {
         // Retrieve the CalClusterVec first
         Event::CalClusterVec clusterVec = clusterMap->getRawClusterVec();
