@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: usher  Thu May 16 14:38:06 PDT 2013
+HepRepSvc/src
+
+Modified Files:
+	CalReconFiller.cxx 
+Log Message:
+Provide protection for readback of CalRecon from recon files
+    *
+------------------------------------------------------------
 TAG
 Tag name: GlastRelease-17-35-24-lp43, operation: add
 Package: HepRepSvc
