@@ -1,8 +1,9 @@
 /* @file release.notes
  * Package HepRepSvc
- * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.108 2012/08/20 19:03:46 jrb Exp $
+ * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.109 2013/02/21 21:16:39 usher Exp $
  *           EOH
 
+ HepRepSvc-00-42-02 16-May-2013 TU Provide protection in CalRecon when reading recon.root files
  HepRepSvc-00-42-01 21-Feb-2013 TU Convert from using CalClusterCol to CalClusterMap
  HepRepSvc-00-42-00 20-Aug-2012    jrb for Windows no-install-headers
  HepRepSvc-00-41-00 08-May-2012  lsrea Mainly fix for display in new Gaudi
