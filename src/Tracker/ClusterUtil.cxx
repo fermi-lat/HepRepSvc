@@ -55,6 +55,9 @@ std::string ClusterUtil::getClusterColor(Event::TkrCluster* pCluster, bool isAcc
     bool isDiag  = (pCluster->isSet(Event::TkrCluster::maskDIAGNOSTIC));
     bool showDiagnosticGhosts = (isDiag&&m_useDiagnosticInfo);
     if (isAcc && m_useToTInfo) { return "red"; }
+    if (pCluster->isSet(Event::TkrCluster::maskMERGERESULT) ) {
+        return "7,207,247";   // Some bluish color not already used
+    }
     if (showTriggerGhosts&&showDiagnosticGhosts) {
         return "160,32,240";  // purple (orange+blue!)
     }
