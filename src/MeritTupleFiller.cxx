@@ -185,7 +185,7 @@ void MeritTupleFiller::fillInstances (std::vector<std::string>& typesList)
             std::stringstream tempStr;
             if (thisType=="Double_t") {
                 double dTemp = *reinterpret_cast<double*>(ptr);
-                tempStr.precision(4);
+                tempStr.precision(10);
                 tempStr.setf(std::ios::fixed);
                 tempStr << dTemp;
                 m_builder->addAttValue(thisName, tempStr.str()  ,"");
