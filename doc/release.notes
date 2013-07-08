@@ -1,8 +1,9 @@
 /* @file release.notes
  * Package HepRepSvc
- * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.109 2013/02/21 21:16:39 usher Exp $
+ * $Header: /nfs/slac/g/glast/ground/cvs/HepRepSvc/doc/release.notes,v 1.110 2013/05/16 21:40:04 usher Exp $
  *           EOH
 
+ HepRepSvc-00-42-03 08-Jul-2013  lsrea increase digits for doubles in MeritTupleFiller
  HepRepSvc-00-42-02 16-May-2013 TU Provide protection in CalRecon when reading recon.root files
  HepRepSvc-00-42-01 21-Feb-2013 TU Convert from using CalClusterCol to CalClusterMap
  HepRepSvc-00-42-00 20-Aug-2012    jrb for Windows no-install-headers
