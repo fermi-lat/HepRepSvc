@@ -1,22 +1,4 @@
 ------------------------------------------------------------
-User: usher  Thu Feb 21 13:16:38 PST 2013
-HepRepSvc
-
-Modified Files:
-	SConscript 
-Log Message:
-Preparing to tag HepRepSvc-00-42-01
-    *
-------------------------------------------------------------
-User: usher  Thu Feb 21 13:15:05 PST 2013
-HepRepSvc/src
-
-Modified Files:
-	CalReconFiller.cxx CalReconFiller.h 
-Log Message:
-Converting from CalClusterCol to CalClusterMap
-    *
-------------------------------------------------------------
 TAG
 Tag name: GlastRelease-17-35-24-lp40, operation: add
 Package: HepRepSvc
