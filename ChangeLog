@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: heather  Tue Apr  8 15:19:42 PDT 2014
+HepRepSvc
+
+Modified Files:
+	SConscript 
+Log Message:
+fix SConscript version
+    *
+------------------------------------------------------------
 User: glastrm  Thu Apr  3 14:30:47 PDT 2014
 HepRepSvc
 
